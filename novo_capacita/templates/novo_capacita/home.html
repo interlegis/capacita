@@ -1,0 +1,17 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+    <h1>Teste</h1>
+    {% for necessidade in necessidades %}
+        {{necessidade.txt_descricao}}
+        <br>
+    {% endfor %}
+</body>
+</html>
