@@ -6,10 +6,6 @@ class Area_Conhecimento(models.Model):
     txt_descricao = models.CharField(max_length=200)
     ind_excluido = models.DecimalField(default=0,decimal_places=0, max_digits=2)
 
-    def __init__(self):
-        self.ind_excluido = 0
-        self.save
-
     class Meta:
         db_table = 'Area_Conhecimento'
 
@@ -24,6 +20,9 @@ class Orgao(models.Model):
     cod_orgao = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.nome
+
     class Meta:
         db_table = 'Orgao'
     
@@ -35,9 +34,6 @@ class Avaliacao(models.Model):
     valor_custo = models.DecimalField(decimal_places=2, max_digits=17)
     ind_excluido = models.DecimalField(default=0,decimal_places=0, max_digits=2)
 
-    def __init__(self):
-        self.ind_excluido = 0
-        self.save
 
     class Meta:
         db_table = 'Avaliacao'
@@ -45,6 +41,9 @@ class Avaliacao(models.Model):
 class Turno(models.Model):
     cod_turno = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200)
+
+    def __str__(self):              
+        return self.nome
 
     class Meta:
         db_table = 'Turno'
@@ -84,9 +83,6 @@ class Necessidade(models.Model):
     cod_mes = models.ForeignKey('Mes', on_delete=models.CASCADE)
     ind_excluido = models.DecimalField(default=0,decimal_places=0, max_digits=2)
 
-    def __init__(self):
-        self.ind_excluido = 0
-        self.save
 
     class Meta:
         db_table = 'Necessidade'    
@@ -111,12 +107,11 @@ class Plano_Capacitacao(models.Model):
     cod_plano_capacitacao = models.AutoField(primary_key=True)
     cod_orgao = models.ForeignKey('Orgao', on_delete=models.CASCADE)
     cod_tipo_plano_capacitacao = models.ForeignKey('Tipo_Plano_Capacitacao', on_delete=models.CASCADE)
+    situacao = models.CharField(max_length=200)
+    qtd_servidores_efetivos = models.IntegerField()
+    qtd_servidores_comissionados = models.IntegerField()
     ano_plano_capacitacao = models.DecimalField(decimal_places=0, max_digits=4, null= False)
     ind_excluido = models.DecimalField(default=0,decimal_places=0, max_digits=2)
-
-    def __init__(self):
-        self.ind_excluido = 0
-        self.save
 
     class Meta:
         db_table = 'Plano_Capacitacao' 
@@ -124,12 +119,11 @@ class Plano_Capacitacao(models.Model):
 class Tipo_Plano_Capacitacao(models.Model):
     cod_tipo_plano_capacitacao = models.AutoField(primary_key=True)
     sgl_tipo_plano_capacitacao = models.CharField(max_length = 6, null=False)
-    nom_tipo_plano_capacitacao = models.CharField(max_length= 6, null=False)
+    nome_tipo_plano_capacitacao = models.CharField(max_length= 6, null=False)
     ind_excluido = models.DecimalField(default=0,decimal_places=0, max_digits=2)
 
-    def __init__(self):
-        self.ind_excluido = 0
-        self.save
+    def __str__(self):
+        return self.nome_tipo_plano_capacitacao
 
     class Meta:
         db_table = 'Tipo_Plano_Capacitacao' 

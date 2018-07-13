@@ -1,0 +1,83 @@
+    {% load staticfiles %}
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Novo Plano</title>
+        <link rel="stylesheet" href="{% static 'css/semantic.min.css' %}">
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/semantic.min.js' %}"></script>
+        <script src="{% static 'js/dropdown.js' %}"></script>
+    </head>
+    <body>
+        
+        <div class="ui inverted menu">
+            <div class="item">
+                <img src="{% static 'images/senado.png' %}">
+            </div>
+            <a class="item">Plano de Capacitação</a>
+            <a class="item">Avaliação</a>
+            <div class="ui dropdown item">
+                Administração
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item">Necessidades</div>
+                    <div class="item">Órgãos</div>
+                    <div class="item">Hello</div>
+                </div>
+            </div>
+            <div class="right menu">
+                <a class="ui item">
+                    Sair
+                </a>
+            </div>
+        </div>
+        <div class="ui container">
+            <form class="ui form" method="post">{% csrf_token %}
+                
+                <h4 class="ui dividing header">Inclusão de Plano de Capacitação</h4>
+                <div class="two fields">
+                    <div class="field">
+                        {{ form.cod_orgao.errors }}
+                        <label>Órgão</label>
+                        {{ form.cod_orgao }}
+                    </div>
+                    <div class="field">
+                        {{ form.cod_tipo_plano_capacitacao.errors }}
+                        <label>Tipo de Plano de Capacitação</label>
+                        {{ form.cod_tipo_plano_capacitacao }}
+                    </div>
+                </div>
+                <div class="two fields">
+                    <div class="field">
+                        {{ form.ano_plano_capacitacao.errors }}
+                        <label>Período</label>
+                        {{ form.ano_plano_capacitacao }}
+                    </div>
+                    <div class="field">
+                        {{ form.situacao.errors }}
+                        <label>Situação</label>
+                        {{ form.situacao }}
+                    </div>
+                </div>
+                <div class="two fields">
+                    <div class="field">
+                        {{ form.qtd_servidores_efetivos.errors }}
+                        <label>Quantidade de Servidores Efetivos</label>
+                        {{ form.qtd_servidores_efetivos }}
+                    </div>
+                    <div class="field">
+                        {{ form.qtd_servidores_comissionados.errors }}
+                        <label>Quantidade de Servidores Comissionados</label>
+                        {{ form.qtd_servidores_comissionados }}
+                    </div>
+                </div>
+                <button class="ui primary button" type="submit">Salvar</button>
+            </form>
+        </div>
+        <script>
+            $('.ui.dropdown').dropdown();
+        </script>
+    </body>
+    </html>

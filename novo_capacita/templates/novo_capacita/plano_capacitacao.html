@@ -1,0 +1,87 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Plano de Capacitação</title>
+    <link rel="stylesheet" href="{% static 'css/semantic.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/semantic.min.js' %}"></script>
+    <script src="{% static 'js/dropdown.js' %}"></script>
+</head>
+<body>
+    <div class="ui inverted menu">
+        <div class="item">
+            <img src="{% static 'images/senado.png' %}">
+        </div>
+        <a class="item">Plano de Capacitação</a>
+        <a class="item">Avaliação</a>
+        <div class="ui dropdown item">
+            Administração
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <div class="item">Necessidades</div>
+                <div class="item">Órgãos</div>
+                <div class="item">Hello</div>
+            </div>
+        </div>
+        <div class="right menu">
+            <a class="ui item">
+                Sair
+            </a>
+        </div>
+    </div>
+    
+    <div class="table_div">
+
+        <form class="ui form" method="get">
+            <div class="select_orgao">
+                {{ filter.form.cod_orgao }}
+            </div>
+            <button class="ui button" type="submit">Search</button>
+        </form>
+        
+        <h4 class="ui dividing header">Planos de Capacitação</h4>
+        <table class="ui celled table">
+            <thead>
+                <tr>
+                <th>Órgão</th>
+                <th>Tipo de Plano</th>
+                <th>Período</th>
+                <th>Situação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plano in filter.qs %}
+                    <tr>
+                        <td>{{plano.cod_orgao}}</td>
+                        <td>{{plano.cod_tipo_plano_capacitacao}}</td>
+                        <td>{{plano.ano_plano_capacitacao}}</td>
+                        <td>{{plano.situacao}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr><th colspan="4">
+                <div class="ui right floated pagination menu">
+                    <a class="icon item">
+                    <i class="left chevron icon"></i>
+                    </a>
+                    <a class="item">1</a>
+                    <a class="item">2</a>
+                    <a class="item">3</a>
+                    <a class="item">4</a>
+                    <a class="icon item">
+                    <i class="right chevron icon"></i>
+                    </a>
+                </div>
+                </th>
+            </tr></tfoot>
+        </table>
+    </div>
+    <script>
+        $('.ui.dropdown').dropdown();
+    </script>
+</body>
+</html>
