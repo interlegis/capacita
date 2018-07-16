@@ -1,0 +1,76 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Plano de Capacitação</title>
+    <link rel="stylesheet" href="{% static 'css/semantic.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/semantic.min.js' %}"></script>
+    <script src="{% static 'js/dropdown.js' %}"></script>
+</head>
+<body>
+    <div class="ui inverted menu">
+        <div class="item">
+            <img src="{% static 'images/senado.png' %}">
+        </div>
+        <a href="/plano/" class="item">Plano de Capacitação</a>
+        <a class="item">Avaliação</a>
+        <div class="ui dropdown item">
+            Administração
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <div class="item">Necessidades</div>
+                <div class="item">Órgãos</div>
+                <div class="item">Área de Interesse</div>
+            </div>
+        </div>
+        <div class="right menu">
+            <a class="ui item" href="/logout/">
+                Sair
+            </a>
+        </div>
+    </div>
+    
+    <div class="table_div">
+
+        <br>
+        <h4 class="ui dividing header">Plano {{ plano.cod_plano_capacitacao }}</h4>
+        <div class="ui raised segments">
+            <div class="ui segment">
+                <p><b>Órgão:</b> {{ plano.cod_orgao }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Tipo de plano:</b> {{ plano.cod_tipo_plano_capacitacao }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Situação:</b> {{ plano.situacao }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Quantidade de servidores efetivos:</b> {{ plano.qtd_servidores_efetivos }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Quantidade de servidores comissionados:</b> {{ plano.qtd_servidores_comissionados }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Período:</b> {{ plano.ano_plano_capacitacao }}</p>
+            </div>
+        </div>
+        <br>
+        
+    </div>
+    <script>
+        $('.ui.dropdown').dropdown();
+    </script>
+</body>
+<script>
+    
+    $("#id_cod_orgao").on('change', function() {
+        $("form").submit();
+    });
+
+    $('.ui.dropdown').dropdown();
+        
+</script>
+</html>

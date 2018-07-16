@@ -13,6 +13,15 @@ def plano(request):
     form = PlanoForm()
     return render(request, 'novo_capacita/plano_capacitacao.html', {'filter' : plano_filter, 'form' : form})
 
+def plano_delete(request, id):
+    plano = get_object_or_404(Plano_Capacitacao, pk=id)
+    plano.delete()
+    return redirect("plano")
+
+def plano_show(request, id):
+    plano = get_object_or_404(Plano_Capacitacao, pk=id)
+    return render(request, 'novo_capacita/plano_show.html', {'plano' : plano})
+    
 def necessidade_new(request):
     if request.method == "POST":
         form = NecessidadeForm(request.POST)
@@ -30,9 +39,21 @@ def plano_new(request):
         if form.is_valid():
             plano = form.save(commit=False)
             plano.save()
-            return redirect('home')
+            return redirect('plano')
     else:
         form = PlanoForm()
+    return render(request, 'novo_capacita/plano_edit.html', {'form' : form})
+
+def plano_edit(request, id):
+    plano = get_object_or_404(Plano_Capacitacao, pk=id)
+    if request.method == "POST":
+        form = PlanoForm(request.POST, instance=plano)
+        if form.is_valid():
+            plano = form.save(commit=False)
+            plano.save()
+            return redirect("plano")
+    else:
+        form = PlanoForm(instance=plano)
     return render(request, 'novo_capacita/plano_edit.html', {'form' : form})
 
 def necessidade_edit(request, pk):
@@ -44,6 +65,6 @@ def necessidade_edit(request, pk):
             necessidade.save()
             return redirect('home')
     else:
-        form = AcaoForm(instance=acao)
+        form = AcaoForm(instance=necessidade)
     return render(request, 'novo_capacita/necessidade_edit.html', {'form': form})
 

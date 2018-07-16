@@ -4,4 +4,11 @@
     padding-top: 2%;
 }
 
+.select_orgao{
+    width: 10% !important;
+}
 
+.links{
+    -webkit-appearance: none;
+    color: rgb(0, 0, 0);
+}
