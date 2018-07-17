@@ -21,20 +21,30 @@
             Administração
             <i class="dropdown icon"></i>
             <div class="menu">
-                <div class="item">Necessidades</div>
-                <div class="item">Órgãos</div>
+                <a class="item" href="/necessidade/">Necessidade</a>
+                <a class="item" href="/orgao/">Órgão</a>
                 <div class="item">Área de Interesse</div>
             </div>
         </div>
         <div class="right menu">
+            <div class="ui item">
+                {{ user.username }}
+            </div>
             <a class="ui item" href="/logout/">
                 Sair
             </a>
         </div>
     </div>
     
-    {% block content %}
-    {% endblock %}
+        {% if user.is_authenticated %}
+            {% block content %}
+            {% endblock %}
+        {% else %}
+            <div class="ui container">
+                <h4 class="ui dividing header">Você não está logado, por favor realize o login</h4>
+                <a href="{% url 'login' %}">login</a>
+            </div>
+        {% endif %}
     
 </body>
 <script>

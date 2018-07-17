@@ -26,6 +26,12 @@ class PlanoForm(forms.ModelForm):
     class Meta:
         model = Plano_Capacitacao
         fields = ('cod_orgao', 'cod_tipo_plano_capacitacao', 'ano_plano_capacitacao','situacao', 'qtd_servidores_efetivos', 'qtd_servidores_comissionados')
+
+class OrgaoForm(forms.ModelForm):
+
+    class Meta:
+        model = Orgao
+        fields = ('nome', )
         labels = {
-            'cod_orgao' : 'Órgão'
+            'nome' : 'Nome'
         }

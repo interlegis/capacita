@@ -9,6 +9,9 @@ class Area_Conhecimento(models.Model):
     class Meta:
         db_table = 'Area_Conhecimento'
 
+    def __str__(self):
+        return self.txt_descricao
+
 class Prioridade(models.Model):
     cod_prioridade = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200)
@@ -72,6 +75,9 @@ class Iniciativa(models.Model):
     class Meta:
         db_table = 'Iniciativa'
 
+    def __str__(self):
+        return self.nome
+
 class Necessidade(models.Model):
     cod_necessidade = models.AutoField(primary_key=True)
     txt_descricao = models.CharField(max_length=200)
@@ -85,7 +91,6 @@ class Necessidade(models.Model):
     cod_turno = models.ForeignKey('Turno', on_delete=models.CASCADE)
     cod_mes = models.ForeignKey('Mes', on_delete=models.CASCADE)
     ind_excluido = models.DecimalField(default=0,decimal_places=0, max_digits=2)
-
 
     class Meta:
         db_table = 'Necessidade'    
