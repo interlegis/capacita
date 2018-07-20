@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect,get_object_or_404
+import xlsxwriter
 from .models import *
 from .forms import *
 from .filters import *
+from django.http import HttpResponse
 
 def home(request):
     necessidades = Necessidade.objects.all()
@@ -113,3 +115,85 @@ def orgao_delete(request, id):
     orgao = get_object_or_404(Orgao, pk=id)
     orgao.delete()
     return redirect("orgao")
+
+def tipo(request):
+    tipos = Tipo_Plano_Capacitacao.objects.all()
+    return render(request, 'novo_capacita/tipo_plano.html', {'tipos' : tipos})
+
+def tipo_edit(request,id):
+    tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=id)
+    if request.method == 'POST':
+        form = TipoForm(request.POST, instance=tipo)
+        if form.is_valid():
+            tipo = form.save(commit=False)
+            tipo.save()
+            return redirect("tipo")
+    else:
+        form = TipoForm(instance=tipo)
+    return render(request, 'novo_capacita/tipo_edit.html', {'form' : form})
+
+def tipo_new(request):
+    if request.method == 'POST':
+        form = TipoForm(request.POST)
+        if form.is_valid():
+            tipo = form.save(commit=False)
+            tipo.save()
+            return redirect("tipo")
+    else:
+        form = TipoForm()
+    return render(request, 'novo_capacita/tipo_edit.html', {'form' : form})
+
+def relatorio(request):
+    # Create a workbook and add a worksheet.
+    workbook = xlsxwriter.Workbook('Necessidades.xlsx')
+    worksheet = workbook.add_worksheet()
+
+    worksheet.set_column(0, 9, 20)
+    worksheet.set_column(4, 4, 40)
+        
+    bold = workbook.add_format({'bold': True, 'center_across' : True})
+    center = workbook.add_format({'center_across' : True})
+
+    necessidades = Necessidade.objects.all()
+
+    row = 0
+    col = 0
+
+    worksheet.write(row, col,         "Descricao", bold)
+    worksheet.write(row, col + 1,     "Plano", bold)
+    worksheet.write(row, col + 2,     "Iniciativa", bold)
+    worksheet.write(row, col + 3,     "Prioridade", bold)
+    worksheet.write(row, col + 4,     "Quantidade de Servidores", bold)
+    worksheet.write(row, col + 5,     "Area Conhecimento", bold)
+    worksheet.write(row, col + 6,     "Nivel", bold)
+    worksheet.write(row, col + 7,     "Hora de Duração", bold)
+    worksheet.write(row, col + 8,     "Turno", bold)
+    worksheet.write(row, col + 9,     "Mês", bold)
+
+    row += 1
+
+    for necessidade in necessidades:
+        worksheet.write(row, col,     necessidade.txt_descricao, center)
+        worksheet.write(row, col + 1, necessidade.cod_plano_capacitacao.situacao, center)
+        worksheet.write(row, col + 2, necessidade.cod_iniciativa.nome, center)
+        worksheet.write(row, col + 3, necessidade.cod_prioridade.nome, center)
+        worksheet.write(row, col + 4, necessidade.qtd_servidor, center)
+        worksheet.write(row, col + 5, necessidade.cod_area_conhecimento.txt_descricao, center)
+        worksheet.write(row, col + 6, necessidade.cod_nivel.nome, center)
+        worksheet.write(row, col + 7, necessidade.hor_duracao, center)
+        worksheet.write(row, col + 8, necessidade.cod_turno.nome, center)
+        worksheet.write(row, col + 9, necessidade.cod_mes.nome, center)
+        row += 1
+
+    worksheet.set_default_row(20)
+
+    workbook.close()
+
+    fh = open("Necessidades.xlsx", 'rb')
+
+    response = HttpResponse(fh) # mimetype is replaced by content_type for django 1.7
+    response['Content-Disposition'] = 'attachment; filename=%s' % "Necessidades.xlsx"
+    response['X-Sendfile'] = fh
+
+    return response
+

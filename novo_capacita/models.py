@@ -127,7 +127,7 @@ class Plano_Capacitacao(models.Model):
 class Tipo_Plano_Capacitacao(models.Model):
     cod_tipo_plano_capacitacao = models.AutoField(primary_key=True)
     sgl_tipo_plano_capacitacao = models.CharField(max_length = 6, null=False)
-    nome_tipo_plano_capacitacao = models.CharField(max_length= 6, null=False)
+    nome_tipo_plano_capacitacao = models.CharField(max_length= 200, null=False)
     ind_excluido = models.DecimalField(default=0,decimal_places=0, max_digits=2)
 
     def __str__(self):

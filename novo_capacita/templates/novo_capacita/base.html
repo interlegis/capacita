@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Plano de Capacitação</title>
+    <title>Capacita</title>
     <link rel="stylesheet" href="{% static 'css/semantic.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/table.css' %}">
     <script src="{% static 'js/jquery.min.js' %}"></script>
@@ -23,9 +23,11 @@
             <div class="menu">
                 <a class="item" href="/necessidade/">Necessidade</a>
                 <a class="item" href="/orgao/">Órgão</a>
-                <div class="item">Área de Interesse</div>
+                <a class="item"  href="/tipo/">Tipo Plano Capacitação</a>
+                <a class="item">Área de Interesse</a>
             </div>
         </div>
+        {% if user.is_authenticated %}
         <div class="right menu">
             <div class="ui item">
                 {{ user.username }}
@@ -34,6 +36,7 @@
                 Sair
             </a>
         </div>
+        {% endif %}
     </div>
     
         {% if user.is_authenticated %}
@@ -48,10 +51,6 @@
     
 </body>
 <script>
-    
-    $("#id_cod_orgao").on('change', function() {
-        $("form").submit();
-    });
 
     $('.ui.dropdown').dropdown();
         

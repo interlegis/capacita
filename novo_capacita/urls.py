@@ -3,8 +3,8 @@ from . import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    url(r'^$', views.home, name='home'),
-    url(r'^login/$', auth_views.login, name='login'),
+    url(r'^$', auth_views.login, name='home', kwargs={'redirect_authenticated_user': True}),
+    url(r'^login/$', auth_views.login, name='login', kwargs={'redirect_authenticated_user': True}),
     url(r'^logout/$', auth_views.logout, {'next_page': '/login/'} ,name='logout'),
     url(r'^necessidade/$', views.necessidade, name='necessidade'),
     url(r'^necessidade/(?P<pk>\d+)/edit/$', views.necessidade_edit, name='necessidade_edit'),
@@ -20,4 +20,7 @@ urlpatterns = [
     url(r'^orgao/(?P<pk>\d+)/edit/$', views.orgao_edit, name='orgao_edit'),
     url(r'^orgao/(?P<id>\d+)/$', views.orgao_delete, name='orgao_delete'),
     url(r'^orgao/new/$', views.orgao_new, name='orgao_new'),
+    url(r'^tipo/$', views.tipo, name='tipo'),
+    url(r'^tipo/(?P<id>\d+)/edit$', views.tipo_edit, name='tipo_edit'),
+    url(r'^relatorio/$', views.relatorio, name='relatorio')
 ]

@@ -1,0 +1,26 @@
+
+    {% extends 'novo_capacita/base.html' %}
+
+    {% block content %}
+
+    <div class="ui container">
+        <form class="ui form" method="post">{% csrf_token %}
+            
+            <h4 class="ui dividing header">Tipo</h4>
+ 
+            <div class="field">
+                {{ form.sgl_tipo_plano_capacitacao.errors }}
+                <label>Sigla</label>
+                {{ form.sgl_tipo_plano_capacitacao }}
+            </div>
+            <div class="field">
+                {{ form.nome_tipo_plano_capacitacao.errors }}
+                <label>Nome</label>
+                {{ form.nome_tipo_plano_capacitacao }}
+            </div>
+            
+            <button class="ui primary button" type="submit">Salvar</button>
+        </form>
+    </div>
+
+    {% endblock %}

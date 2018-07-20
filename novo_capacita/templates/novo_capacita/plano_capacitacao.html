@@ -66,4 +66,10 @@
         <a href="/plano/new/"><button class="ui button basic secondary">Novo</button></a>
     </div>
 
+    <script>
+        $("#id_cod_orgao").on('change', function() {
+            $("form").submit();
+        });
+    </script>
+
     {% endblock %}
