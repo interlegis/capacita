@@ -12,6 +12,18 @@ class Area_Conhecimento(models.Model):
     def __str__(self):
         return self.txt_descricao
 
+class Sub_Area_Conhecimento(models.Model):
+    cod_sub_area_conhecimento = models.AutoField(primary_key=True)
+    cod_area_conhecimento = models.ForeignKey('Area_Conhecimento', on_delete=models.CASCADE)
+    txt_descricao = models.CharField(max_length=200)
+    ind_excluido = models.DecimalField(default=0, decimal_places=0, max_digits=2)
+
+    class Meta:
+        db_table = 'Sub_Area_Conhecimento'
+
+    def __str__(self):
+        return self.txt_descricao
+
 class Prioridade(models.Model):
     cod_prioridade = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200)
@@ -85,7 +97,7 @@ class Necessidade(models.Model):
     cod_iniciativa = models.ForeignKey('Iniciativa', on_delete=models.CASCADE)
     cod_prioridade =models.ForeignKey('Prioridade', on_delete=models.CASCADE)
     qtd_servidor = models.DecimalField(decimal_places=0, max_digits=6)
-    cod_area_conhecimento = models.ForeignKey('Area_Conhecimento', on_delete=models.CASCADE)
+    cod_sub_area_conhecimento = models.ForeignKey('Sub_Area_Conhecimento', on_delete=models.CASCADE)
     cod_nivel = models.ForeignKey('Nivel', on_delete=models.CASCADE)
     hor_duracao = models.DecimalField(decimal_places=0, max_digits=2)
     cod_turno = models.ForeignKey('Turno', on_delete=models.CASCADE)

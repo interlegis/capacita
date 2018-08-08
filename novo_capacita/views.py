@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+
 from django.shortcuts import render, redirect,get_object_or_404
 import xlsxwriter
 from .models import *
 from .forms import *
 from .filters import *
 from django.http import HttpResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def home(request):
     necessidades = Necessidade.objects.all()
@@ -57,6 +60,7 @@ def necessidade_show(request, pk):
     return render(request, 'novo_capacita/necessidade_show.html', {'necessidade' : necessidade})
 
 def necessidade_new(request):
+    areas = Area_Conhecimento.objects.all()
     if request.method == "POST":
         form = NecessidadeForm(request.POST)
         if form.is_valid():
@@ -65,10 +69,11 @@ def necessidade_new(request):
             return redirect('necessidade')
     else:
         form = NecessidadeForm()
-    return render(request, 'novo_capacita/necessidade_edit.html', {'form': form})
+    return render(request, 'novo_capacita/necessidade_edit.html', {'form': form, 'areas' : areas})
 
 def necessidade_edit(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
+    areas = Area_Conhecimento.objects.all()
     if request.method == "POST":
         form = NecessidadeForm(request.POST, instance=necessidade)
         if form.is_valid():
@@ -77,7 +82,7 @@ def necessidade_edit(request, pk):
             return redirect('necessidade')
     else:
         form = NecessidadeForm(instance=necessidade)
-    return render(request, 'novo_capacita/necessidade_edit.html', {'form': form})
+    return render(request, 'novo_capacita/necessidade_edit.html', {'form': form, 'areas' : areas})
 
 def necessidade_delete(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
@@ -196,4 +201,30 @@ def relatorio(request):
     response['X-Sendfile'] = fh
 
     return response
+
+def areas(request):
+    sub_areas = Sub_Area_Conhecimento.objects.all()
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(sub_areas, 10)
+    try:
+        subs = paginator.page(page)
+    except PageNotAnInteger:
+        subs = paginator.page(1)
+    except EmptyPage:
+        subs = paginator.page(paginator.num_pages)
+
+    return render(request, 'novo_capacita/areas.html', { 'subs': subs })
+
+def sub_area_edit(request, pk):
+    sub_area = get_object_or_404(Sub_Area_Conhecimento, pk=pk)
+    if request.method == "POST":
+        form = SubAreaForm(request.POST, instance=sub_area)
+        if form.is_valid():
+            sub_area = form.save(commit=False)
+            sub_area.save()
+            return redirect('sub_area')
+    else:
+        form = SubAreaForm(instance=sub_area)
+    return render(request, 'novo_capacita/area_edit.html', {'form': form})
 

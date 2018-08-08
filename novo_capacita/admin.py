@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import *
 
 admin.site.register(Area_Conhecimento)
+admin.site.register(Sub_Area_Conhecimento)
 admin.site.register(Avaliacao)
 admin.site.register(Iniciativa)
 admin.site.register(Mes)

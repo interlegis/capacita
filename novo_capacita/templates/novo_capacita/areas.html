@@ -1,0 +1,58 @@
+{% extends 'novo_capacita/base.html' %}
+
+{% block content %}
+
+    <div class="table_div">
+
+        <h3 class="ui dividing header">Áreas de Conhecimento</h3>
+
+        <table class="ui celled padded table">
+            <thead>
+                <tr class="center aligned">
+                <th class="one wide">Nome</th>
+                <th class="two wide">Sub-Área</th>
+                <th class="one wide">Editar</th>
+                <th class="one wide">Excluir</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub_area in subs %}
+                    <tr class="center aligned">
+                        <td>{{sub_area.cod_area_conhecimento}}</td>
+                        <td>{{sub_area.txt_descricao}}</td>
+                        <td><a class="links" href="{% url 'sub_area_edit' sub_area.cod_sub_area_conhecimento %}"><i class="pencil icon"></i></a></td>
+                        <td><a class="links" href=""><i class="delete icon"></i></a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            {% if subs.has_other_pages %}
+            <tfoot>
+                <tr><th colspan="7">
+                    <div class="ui right floated pagination menu">
+                    {% if subs.has_previous %}
+                    <a class="item" href="?page={{ subs.previous_page_number }}">&laquo;</a>
+                    {% endif %}
+                    {% for i in subs.paginator.page_range %}
+                    {% if subs.number == i %}
+                        <a class="item" href="?page={{ i }}"><strong>{{ i }}</strong></a>
+                    {% else %}
+                        <a class="item" href="?page={{ i }}">{{ i }}</a>
+                    {% endif %}
+                    {% endfor %}
+                    {% if subs.has_next %}
+                    <a class="item" href="?page={{ subs.next_page_number }}">&raquo;</a>
+                    {% else %}
+                    <span class="item">&raquo;</span>
+                    {% endif %}
+                    </div>
+                </th>
+            </tr></tfoot>
+        </table>
+        {% endif %}
+        <br>
+        <a href="/orgao/new/"><button class="ui button basic secondary">Novo</button></a>
+        <br>
+        <br>
+    </div>
+
+    {% endblock %}

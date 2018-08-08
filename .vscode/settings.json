@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/home/bruno/.local/share/virtualenvs/hello--c8jENai/bin/python"
+    "python.pythonPath": "/home/bruno/.local/share/virtualenvs/hello--c8jENai/bin/python",
+    "git.ignoreLimitWarning": true
 }

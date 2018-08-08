@@ -1,11 +1,14 @@
 from django.conf.urls import url
 from . import views
 from django.contrib.auth import views as auth_views
+import django_cas_ng.views
 
 urlpatterns = [
-    url(r'^$', auth_views.login, name='home', kwargs={'redirect_authenticated_user': True}),
-    url(r'^login/$', auth_views.login, name='login', kwargs={'redirect_authenticated_user': True}),
-    url(r'^logout/$', auth_views.logout, {'next_page': '/login/'} ,name='logout'),
+    # url(r'^$', auth_views.login, name='home', kwargs={'redirect_authenticated_user': True}),
+    # url(r'^$', auth_views.logout, name='logout'),
+    url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
+    url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),
+    # url(r'^accounts/callback$', django_cas_ng.views.views.callback, name='cas_ng_proxy_callback'),
     url(r'^necessidade/$', views.necessidade, name='necessidade'),
     url(r'^necessidade/(?P<pk>\d+)/edit/$', views.necessidade_edit, name='necessidade_edit'),
     url(r'^necessidade/(?P<pk>\d+)/show/$', views.necessidade_show, name='necessidade_show'),
@@ -21,6 +24,8 @@ urlpatterns = [
     url(r'^orgao/(?P<id>\d+)/$', views.orgao_delete, name='orgao_delete'),
     url(r'^orgao/new/$', views.orgao_new, name='orgao_new'),
     url(r'^tipo/$', views.tipo, name='tipo'),
-    url(r'^tipo/(?P<id>\d+)/edit$', views.tipo_edit, name='tipo_edit'),
+    url(r'^tipo/(?P<id>\d+)/edit/$', views.tipo_edit, name='tipo_edit'),
+    url(r'^areas/$', views.areas, name='areas'),
+    url(r'^subarea/(?P<pk>\d+)/edit/$', views.sub_area_edit, name='sub_area_edit'),
     url(r'^relatorio/$', views.relatorio, name='relatorio')
 ]

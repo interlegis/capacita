@@ -1,0 +1,25 @@
+    {% extends 'novo_capacita/base.html' %}
+
+    {% block content %}
+
+    <div class="ui container">
+        <form class="ui form" method="post">{% csrf_token %}
+            
+            <h3 class="ui dividing header">Sub-Área Edição</h3>
+            
+            <div class="field">
+                {{ form.cod_area_conhecimento.errors }}
+                <label>Área de Conhecimento</label>
+                {{ form.cod_area_conhecimento }}
+            </div>
+            <div class="field">
+                {{ form.txt_descricao.errors }}
+                <label>Nome</label>
+                {{ form.txt_descricao  }}
+            </div>
+            <button class="ui primary button" type="submit">Salvar</button>
+            </div>
+        </form>
+    </div>
+
+    {% endblock %}

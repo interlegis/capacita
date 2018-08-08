@@ -7,12 +7,12 @@ class NecessidadeForm(forms.ModelForm):
 
     class Meta:
         model = Necessidade
-        fields = ('txt_descricao','qtd_servidor','hor_duracao','cod_iniciativa','cod_mes','cod_nivel','cod_plano_capacitacao','cod_area_conhecimento','cod_prioridade','cod_turno')
+        fields = ('txt_descricao','qtd_servidor','hor_duracao','cod_iniciativa','cod_mes','cod_nivel','cod_plano_capacitacao','cod_sub_area_conhecimento','cod_prioridade','cod_turno')
         labels = {
             'txt_descricao': 'Descrição',
             'qtd_servidor' : 'Quantidade de Servidores Efetivos',
             'hor_duracao'  : 'Hora de duração',
-            'cod_area_conhecimento' : 'Área de Conhecimento',
+            'cod_sub_area_conhecimento' : 'Sub-Área de Conhecimento',
             'cod_iniciativa' : "Iniciativa",
             'cod_mes' : 'Mês',
             'cod_nivel' : 'Nível',
@@ -44,3 +44,9 @@ class TipoForm(forms.ModelForm):
     class Meta:
         model = Tipo_Plano_Capacitacao
         fields = ('sgl_tipo_plano_capacitacao', 'nome_tipo_plano_capacitacao', )
+
+class SubAreaForm(forms.ModelForm):
+
+    class Meta:
+        model = Sub_Area_Conhecimento
+        fields = ('cod_sub_area_conhecimento', 'cod_area_conhecimento', 'txt_descricao')

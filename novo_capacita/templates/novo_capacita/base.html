@@ -22,9 +22,9 @@
             <i class="dropdown icon"></i>
             <div class="menu">
                 <a class="item" href="/necessidade/">Necessidade</a>
-                <a class="item" href="/orgao/">Órgão</a>
-                <a class="item"  href="/tipo/">Tipo Plano Capacitação</a>
-                <a class="item">Área de Interesse</a>
+                <a class="item" href="/orgao/">Órgãos</a>
+                <a class="item"  href="/tipo/">Tipos Plano Capacitação</a>
+                <a class="item" href="/areas/">Áreas de Interesse</a>
             </div>
         </div>
         {% if user.is_authenticated %}
@@ -45,7 +45,7 @@
         {% else %}
             <div class="ui container">
                 <h4 class="ui dividing header">Você não está logado, por favor realize o login</h4>
-                <a href="{% url 'login' %}">login</a>
+                <a href="{% url 'cas_ng_login' %}">login</a>
             </div>
         {% endif %}
     
@@ -53,6 +53,21 @@
 <script>
 
     $('.ui.dropdown').dropdown();
+
+    function selectSub(select){
+        
+        var search = $("#id_cod_sub_area_conhecimento").val();
+        
+        for (var i = 0; i < select.length; i++) {
+            var txt = select.options[i];
+            if (txt.value != ) {
+                select.options[i].style.display = 'none';
+            } else {
+                select.options[i].style.display = 'list-item';
+            }
+        }
+        }
+    }
         
 </script>
 </html>
