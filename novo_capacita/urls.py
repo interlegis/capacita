@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 import django_cas_ng.views
 
 urlpatterns = [
-    url(r'^$', django_cas_ng.views.login, name='home'),
+    url(r'^$', views.home, name='home'),
     # url(r'^$', auth_views.logout, name='logout'),
     url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
     url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),

@@ -9,8 +9,7 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def home(request):
-    necessidades = Necessidade.objects.all()
-    return render(request, 'novo_capacita/home.html', {'necessidades' : necessidades})
+    return render(request, 'novo_capacita/home.html')
 
 def plano(request):
     planos = Plano_Capacitacao.objects.all()

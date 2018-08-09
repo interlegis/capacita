@@ -6,9 +6,9 @@
     <title>Capacita</title>
     <link rel="stylesheet" href="{% static 'css/semantic.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/table.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/semantic.min.js' %}"></script>
-    <script src="{% static 'js/dropdown.js' %}"></script>
+    <!-- <script src="{% static 'js/dropdown.js' %}"></script> -->
 </head>
 <body>
     <div class="ui inverted menu">
@@ -50,6 +50,7 @@
         {% endif %}
     
 </body>
+<script src="{% static 'js/semantic.min.js' %}"></script>
 <script>
 
     $('.ui.dropdown').dropdown();
@@ -60,14 +61,14 @@
         
         for (var i = 0; i < select.length; i++) {
             var txt = select.options[i];
-            if (txt.value != ) {
+            if (txt.value != '') {
                 select.options[i].style.display = 'none';
             } else {
                 select.options[i].style.display = 'list-item';
             }
         }
-        }
     }
+    
         
 </script>
 </html>
