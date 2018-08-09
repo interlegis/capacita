@@ -4,11 +4,11 @@ from django.contrib.auth import views as auth_views
 import django_cas_ng.views
 
 urlpatterns = [
-    # url(r'^$', auth_views.login, name='home', kwargs={'redirect_authenticated_user': True}),
+    url(r'^$', django_cas_ng.views.login, name='home'),
     # url(r'^$', auth_views.logout, name='logout'),
     url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
     url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),
-    # url(r'^accounts/callback$', django_cas_ng.views.views.callback, name='cas_ng_proxy_callback'),
+    url(r'^callback/$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'),
     url(r'^necessidade/$', views.necessidade, name='necessidade'),
     url(r'^necessidade/(?P<pk>\d+)/edit/$', views.necessidade_edit, name='necessidade_edit'),
     url(r'^necessidade/(?P<pk>\d+)/show/$', views.necessidade_show, name='necessidade_show'),
