@@ -8,6 +8,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from decouple import config
+from dj_database_url import parse as db_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -90,6 +92,28 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'speedinfo.backends.proxy_cache',
+        'CACHE_BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/var/tmp/django_cache',
+    }
+}
+
+# troque no caso de reimplementação da classe User conforme
+# https://docs.djangoproject.com/en/1.9/topics/auth/customizing/#substituting-a-custom-user-model
+AUTH_USER_MODEL = 'auth.User'
+
+X_FRAME_OPTIONS = 'ALLOWALL'
+
+EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+EMAIL_PORT = config('EMAIL_PORT', cast=int, default=587)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool, default=True)
+EMAIL_SEND_USER = config('EMAIL_SEND_USER', cast=str, default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', cast=str, default='')
+SERVER_EMAIL = config('SERVER_EMAIL', cast=str, default='')
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
