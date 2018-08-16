@@ -6,6 +6,7 @@ from .models import *
 from .forms import *
 from .filters import *
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def home(request):
@@ -60,6 +61,7 @@ def necessidade_show(request, pk):
 
 def necessidade_new(request):
     areas = Area_Conhecimento.objects.all()
+    form2 = SubAreaForm()
     if request.method == "POST":
         form = NecessidadeForm(request.POST)
         if form.is_valid():
@@ -68,7 +70,7 @@ def necessidade_new(request):
             return redirect('necessidade')
     else:
         form = NecessidadeForm()
-    return render(request, 'novo_capacita/necessidade_edit.html', {'form': form, 'areas' : areas})
+    return render(request, 'novo_capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'form2' : form2})
 
 def necessidade_edit(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
@@ -202,7 +204,17 @@ def relatorio(request):
     return response
 
 def areas(request):
-    sub_areas = Sub_Area_Conhecimento.objects.all()
+
+    area_filtrada = request.GET.get('cod_area_conhecimento_id', '')
+    
+    if area_filtrada != '':
+        sub_areas = Sub_Area_Conhecimento.objects.filter(cod_area_conhecimento_id = area_filtrada)
+    else:
+        sub_areas = Sub_Area_Conhecimento.objects.all()  
+
+    subarea_filter = SubAreaFilter(request.GET, queryset=sub_areas)
+
+    form = SubAreaForm()
     page = request.GET.get('page', 1)
 
     paginator = Paginator(sub_areas, 10)
@@ -213,7 +225,7 @@ def areas(request):
     except EmptyPage:
         subs = paginator.page(paginator.num_pages)
 
-    return render(request, 'novo_capacita/areas.html', { 'subs': subs })
+    return render(request, 'novo_capacita/areas.html', { 'subs': subs, 'filter' : subarea_filter, 'area_filtrada' : area_filtrada})
 
 def sub_area_edit(request, pk):
     sub_area = get_object_or_404(Sub_Area_Conhecimento, pk=pk)
@@ -222,8 +234,40 @@ def sub_area_edit(request, pk):
         if form.is_valid():
             sub_area = form.save(commit=False)
             sub_area.save()
-            return redirect('sub_area')
+            return redirect('areas')
     else:
         form = SubAreaForm(instance=sub_area)
     return render(request, 'novo_capacita/area_edit.html', {'form': form})
+
+def subarea_delete(request, id):
+    subarea = get_object_or_404(Sub_Area_Conhecimento, pk=id)
+    subarea.delete()
+    return redirect("areas")
+
+def subareas_new(request):
+    if request.method == 'POST':
+        form = SubAreaForm(request.POST)
+        if form.is_valid():
+            subarea = form.save(commit=False)
+            subarea.save()
+            return redirect("areas")
+    else:
+        form = SubAreaForm()
+    return render(request, 'novo_capacita/area_edit.html', {'form' : form})
+
+def api_areas(request):
+    areas = Area_Conhecimento.objects.all().values()
+    sub_areas = Sub_Area_Conhecimento.objects.all()
+
+    areas = list(areas)
+
+    return JsonResponse(areas, safe=False)
+
+def api_subareas(request):
+
+    subareas = Sub_Area_Conhecimento.objects.all().values()
+
+    subareas = list(subareas)
+
+    return JsonResponse(subareas, safe=False)
 

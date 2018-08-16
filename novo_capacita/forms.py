@@ -20,6 +20,8 @@ class NecessidadeForm(forms.ModelForm):
             'cod_plano_capacitacao' : 'Plano de Capacitação',
             'cod_prioridade' : 'Prioridade'
         }
+        
+   
 
 class PlanoForm(forms.ModelForm):
 

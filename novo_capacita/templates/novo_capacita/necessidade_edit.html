@@ -39,18 +39,17 @@
             <div class="three fields">
                 <div class="field">
                     <label>Área de Conhecimento</label>
-                    <!-- <select onchange="selectSub(this)">
+                    <select id="areas" onchange="selectSub(this)">
                         <option></option>
                         {% for area in areas %}
-                        <option value="{{area.cod_area_conhecimento}}">{{area.txt_descricao}}</option>
+                            <option value="{{area.cod_area_conhecimento}}">{{area.txt_descricao}}</option>
                         {% endfor %}
-                    </select> -->
-                    {{ form.cod_sub_area_conhecimento.cod_area_conhecimento }}
+                    </select>
                 </div>
                 <div class="field">
                     {{ form.cod_sub_area_conhecimento.errors }}
                     <label>Sub-Área</label>
-                    {{ form.cod_sub_area_conhecimento}}
+                    {{ form.cod_sub_area_conhecimento }}
                 </div>
                 <div class="field">
                     {{ form.cod_nivel.errors  }}

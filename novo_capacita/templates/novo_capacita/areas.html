@@ -2,11 +2,25 @@
 
 {% block content %}
 
-    <div class="table_div">
+    <div style="padding-bottom: 150px;" class="table_div">
 
         <h3 class="ui dividing header">Áreas de Conhecimento</h3>
+        <br>
+        <form class="ui form" method="get" action="/areas" onchange="this.submit();">
+            <div class="two fields">
+                <div class="select_area field">
+                    <label>Busca</label>
+                    {{ filter.form.cod_area_conhecimento_id }}
+                </div>
+                <!-- <div class="field">
+                    <label>asdlfk</label>
+                    <button class="ui button" type="submit">Search</button>
+                </div> -->
+            </div>
+        </form>
+        <br>
 
-        <table class="ui celled padded table">
+        <table  id="subareas" class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
                 <th class="one wide">Nome</th>
@@ -21,7 +35,7 @@
                         <td>{{sub_area.cod_area_conhecimento}}</td>
                         <td>{{sub_area.txt_descricao}}</td>
                         <td><a class="links" href="{% url 'sub_area_edit' sub_area.cod_sub_area_conhecimento %}"><i class="pencil icon"></i></a></td>
-                        <td><a class="links" href=""><i class="delete icon"></i></a></td>
+                        <td><a class="links" href="{% url 'subarea_delete' sub_area.cod_sub_area_conhecimento %}"><i class="delete icon"></i></a></td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -30,17 +44,17 @@
                 <tr><th colspan="7">
                     <div class="ui right floated pagination menu">
                     {% if subs.has_previous %}
-                    <a class="item" href="?page={{ subs.previous_page_number }}">&laquo;</a>
+                    <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ subs.previous_page_number }}">&laquo;</a>
                     {% endif %}
                     {% for i in subs.paginator.page_range %}
                     {% if subs.number == i %}
-                        <a class="item" href="?page={{ i }}"><strong>{{ i }}</strong></a>
+                        <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ i }}"><strong>{{ i }}</strong></a>
                     {% else %}
-                        <a class="item" href="?page={{ i }}">{{ i }}</a>
+                        <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ i }}">{{ i }}</a>
                     {% endif %}
                     {% endfor %}
                     {% if subs.has_next %}
-                    <a class="item" href="?page={{ subs.next_page_number }}">&raquo;</a>
+                    <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ subs.next_page_number }}">&raquo;</a>
                     {% else %}
                     <span class="item">&raquo;</span>
                     {% endif %}
@@ -50,9 +64,10 @@
         </table>
         {% endif %}
         <br>
-        <a href="/orgao/new/"><button class="ui button basic secondary">Novo</button></a>
+        <a href="/subareas/new/"><button class="ui button basic secondary">Novo</button></a>
         <br>
         <br>
     </div>
-
+    
     {% endblock %}
+    

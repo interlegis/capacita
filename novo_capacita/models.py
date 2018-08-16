@@ -31,6 +31,9 @@ class Prioridade(models.Model):
     class Meta:
         db_table = 'Prioridade'
 
+    def __str__(self):
+        return self.nome
+
 class Orgao(models.Model):
     cod_orgao = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200)

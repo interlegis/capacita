@@ -5,6 +5,7 @@ import django_cas_ng.views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
+    # url(r'^$', auth_views.login, name='login'),
     # url(r'^$', auth_views.logout, name='logout'),
     url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
     url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),
@@ -25,7 +26,12 @@ urlpatterns = [
     url(r'^orgao/new/$', views.orgao_new, name='orgao_new'),
     url(r'^tipo/$', views.tipo, name='tipo'),
     url(r'^tipo/(?P<id>\d+)/edit/$', views.tipo_edit, name='tipo_edit'),
+    url(r'^tipo/new/$', views.tipo_new, name='tipo_new'),
     url(r'^areas/$', views.areas, name='areas'),
+    url(r'^api/areas/$', views.api_areas, name='api_areas'),
+    url(r'^api/subareas/$', views.api_subareas, name='api_subareas'),
+    url(r'^subareas/new/$', views.subareas_new, name='subareas_new'),
+    url(r'^subareas/(?P<id>\d+)/$', views.subarea_delete, name='subarea_delete'),
     url(r'^subarea/(?P<pk>\d+)/edit/$', views.sub_area_edit, name='sub_area_edit'),
     url(r'^relatorio/$', views.relatorio, name='relatorio')
 ]

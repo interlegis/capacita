@@ -52,23 +52,47 @@
 </body>
 <script src="{% static 'js/semantic.min.js' %}"></script>
 <script>
-
+    
     $('.ui.dropdown').dropdown();
-
+    
     function selectSub(select){
         
+        $("#id_cod_sub_area_conhecimento option").each(function(){
+            $(this).hide();
+        });
+
         var search = $("#id_cod_sub_area_conhecimento").val();
-        
-        for (var i = 0; i < select.length; i++) {
-            var txt = select.options[i];
-            if (txt.value != '') {
-                select.options[i].style.display = 'none';
-            } else {
-                select.options[i].style.display = 'list-item';
+        select = $("#areas").options;
+
+        var areas;
+
+        $.getJSON("/api/subareas/", function(data){
+            var subarea = null;
+            areas = data;
+            for(var i = 0; i < data.length; i++){
+                if(data[i].cod_area_conhecimento_id == $("#areas").val() ){
+                    subarea = data[i].cod_sub_area_conhecimento;
+                    $("#id_cod_sub_area_conhecimento option").each(function(){
+                        if($(this).val() == subarea){
+                            $(this).show();
+                        }
+                    });
+                }
             }
-        }
+
+        });
     }
-    
-        
+
+
+    $(document).ready(function(){
+        $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#subareas tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+
 </script>
 </html>
