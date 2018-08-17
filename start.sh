@@ -72,6 +72,3 @@ if [ $lack_pwd -eq 0 ]; then
    # return -1
 fi
 
-
-/bin/sh gunicorn_start.sh no-venv &
-/usr/sbin/nginx -g "daemon off;"
