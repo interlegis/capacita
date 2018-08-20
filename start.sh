@@ -72,3 +72,6 @@ if [ $lack_pwd -eq 0 ]; then
    # return -1
 fi
 
+start_server=$(python3 manage.py runserver 0.0.0.0:8000 2>&1)
+
+echo $start_server
