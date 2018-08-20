@@ -85,8 +85,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'capacita',
-        'USER': 'capacita',
-        'PASSWORD': 'capacita',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
         'HOST': 'capacitadb',
         'PORT': '5432',
     }
