@@ -1,0 +1,44 @@
+{% extends 'capacita/base.html' %}
+
+{% block content %}
+
+    <div class="table_div">
+        <div>
+            <h4 style="float: left;" class="ui dividing header">Necessidades</h4>
+            <a style="float: right;" href="/relatorio/">Gerar Relatorio</a>
+        </div>
+        <table class="ui celled padded table">
+            <thead>
+                <tr class="center aligned">
+                <th>Plano Capacitação</th>
+                <th>Iniciativa</th>
+                <th>Quantidade de Servidores</th>
+                <th>Área Conhecimento</th>
+                <th>Turno</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Excluir</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for necessidade in necessidades %}
+                    <tr class="center aligned">
+                        <td>{{necessidade.cod_plano_capacitacao}}</td>
+                        <td>{{necessidade.cod_iniciativa}}</td>
+                        <td>{{necessidade.qtd_servidor}}</td>
+                        <td>{{necessidade.cod_sub_area_conhecimento}}</td>
+                        <td>{{necessidade.cod_turno }}</td>
+                        <td><a class="links" href="{% url 'necessidade_show' necessidade.cod_necessidade %}"><i class="search icon"></i></a></td>
+                        <td><a class="links" href="{% url 'necessidade_edit' necessidade.cod_necessidade %}"><i class="pencil icon"></i></a></td>
+                        <td><a class="links" href="{% url 'necessidade_delete' necessidade.cod_necessidade %}"><i class="delete icon"></i></a></td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        <br>
+        <a href="/necessidade/new/"><button class="ui button basic secondary">Novo</button></a>
+    </div>
+
+    {% endblock %}

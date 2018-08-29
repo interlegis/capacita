@@ -37,7 +37,7 @@ INSTALLED_APPS = [ #components
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_cas_ng',
-    'novo_capacita',
+    'capacita',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -56,7 +56,7 @@ AUTHENTICATION_BACKENDS = (
     'django_cas_ng.backends.CASBackend',
 )
 
-ROOT_URLCONF = 'capacita.urls'
+ROOT_URLCONF = 'urls'
 
 LOGIN_REDIRECT_URL = 'plano'
 
@@ -75,21 +75,17 @@ TEMPLATES = [
         },
     },
 ]
-WSGI_APPLICATION = 'capacita.wsgi.application'
+#WSGI_APPLICATION = 'capacita.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'capacita',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'capacitadb',
-        'PORT': '5432',
-    }
+    'default': config(
+        'DATABASE_URL', default='sqlite://:memory:',
+        cast=db_url,
+    )
 }
 
 CACHES = {

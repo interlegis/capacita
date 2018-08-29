@@ -1,0 +1,45 @@
+{% extends 'capacita/base.html' %}
+
+{% block content %}
+    
+    <div class="table_div">
+
+        <br>
+        <h4 class="ui dividing header">Necessidade {{ necessidade.cod_necessidade }}</h4>
+        <div class="ui raised segments">
+            <div class="ui segment">
+                <p><b>Descrição</b>:</b> {{ necessidade.txt_descricao }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Plano Capacitação:</b> {{ necessidade.cod_plano_capacitacao }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Iniciativa:</b> {{ necessidade.cod_iniciativa }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Prioridade:</b> {{ necessidade.cod_prioridade }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Quantidade de servidores:</b> {{ necessidade.qtd_servidores }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Área de Conhecimento:</b> {{ necessidade.cod_area_conhecimento }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Nível:</b> {{ necessidade.cod_nivel }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Horas de duração:</b> {{ necessidade.hor_duracao }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Turno:</b> {{ necessidade.cod_turno }}</p>
+            </div>
+            <div class="ui segment">
+                <p><b>Mês:</b> {{ necessidade.cod_mes }}</p>
+            </div>
+        </div>
+        <br>
+        
+    </div>
+
+    {% endblock %}
