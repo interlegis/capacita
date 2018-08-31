@@ -19,5 +19,8 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^accounts/login$', django_cas_ng.views.login, name='cas_ng_login'),
+    url(r'^accounts/logout$', django_cas_ng.views.logout, name='cas_ng_logout'),
+    url(r'^accounts/callback$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'),
     url(r'', include('capacita.urls'))
 ]

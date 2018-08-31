@@ -130,5 +130,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-CAS_SERVER_URL = 'https://www6ghml.senado.gov.br/cas-server/login'
+CAS_SERVER_URL = 'https://adm.senado.gov.br/cas-server/login'
 CAS_VERSION = '3'
