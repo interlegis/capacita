@@ -88,6 +88,17 @@ DATABASES = {
     )
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'capacita',
+#         'USER': 'postgres',
+#         'PASSWORD': 'postgres',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
 CACHES = {
     'default': {
         'BACKEND': 'speedinfo.backends.proxy_cache',

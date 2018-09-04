@@ -5,8 +5,8 @@ import django_cas_ng.views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    # url(r'^$', auth_views.login, name='login'),
-    # url(r'^$', auth_views.logout, name='logout'),
+    # url(r'^login/$', auth_views.login, name='login'),
+    # url(r'^logout/$', auth_views.logout, name='logout'),
     url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
     url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),
     url(r'^callback/$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'),
