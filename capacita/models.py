@@ -83,6 +83,9 @@ class Nivel(models.Model):
     class Meta:
         db_table = 'Nivel'
 
+    def __str__(self):
+        return self.nome
+
 class Iniciativa(models.Model):
     cod_iniciativa = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200)

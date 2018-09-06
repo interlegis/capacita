@@ -10,7 +10,10 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def home(request):
-    return render(request, 'capacita/home.html')
+    if not request.user.is_authenticated():
+        return redirect("/login")
+    else:
+        return render(request, 'capacita/home.html')
 
 def plano(request):
     planos = Plano_Capacitacao.objects.all()
@@ -52,8 +55,38 @@ def plano_edit(request, id):
     return render(request, 'capacita/plano_edit.html', {'form' : form})
 
 def necessidade(request):
-    necessidades = Necessidade.objects.all()
-    return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades})
+    areas = Area_Conhecimento.objects.all()
+    niveis = Nivel.objects.all()
+    planos = Plano_Capacitacao.objects.all()
+    area = False;
+    plano = False;
+    nivel = False;
+
+    if  request.GET.get('area'):
+        area = request.GET.get('area')
+    if  request.GET.get('nivel'):
+        nivel = request.GET.get('nivel')
+    if  request.GET.get('plano'):
+        plano = request.GET.get('plano')
+
+    if (area and nivel and plano):
+        necessidades = Necessidade.objects.filter(cod_sub_area_conhecimento_id__cod_area_conhecimento = area, cod_nivel = nivel, cod_plano_capacitacao = plano)
+    if (area and nivel and (not plano)):
+        necessidades = Necessidade.objects.filter(cod_sub_area_conhecimento_id__cod_area_conhecimento = area, cod_nivel = nivel)
+    if (area and (not nivel) and plano): 
+        necessidades = Necessidade.objects.filter(cod_sub_area_conhecimento_id__cod_area_conhecimento = area, cod_plano_capacitacao = plano)
+    if ((not area) and nivel and plano):
+        necessidades = Necessidade.objects.filter(cod_plano_capacitacao = plano, cod_nivel = nivel)
+    if (area and (not nivel) and (not plano)):
+        necessidades = Necessidade.objects.filter(cod_sub_area_conhecimento_id__cod_area_conhecimento = area)
+    if ((not area) and nivel and (not plano)):
+         necessidades = Necessidade.objects.filter(cod_nivel = nivel)
+    if ((not area) and (not nivel) and plano):
+         necessidades = Necessidade.objects.filter(cod_plano_capacitacao = plano)
+    if ((not area) and (not nivel) and (not plano)):
+         necessidades = Necessidade.objects.all()
+
+    return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos})
 
 def necessidade_show(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
@@ -184,7 +217,7 @@ def relatorio(request):
         worksheet.write(row, col + 2, necessidade.cod_iniciativa.nome, center)
         worksheet.write(row, col + 3, necessidade.cod_prioridade.nome, center)
         worksheet.write(row, col + 4, necessidade.qtd_servidor, center)
-        worksheet.write(row, col + 5, necessidade.cod_area_conhecimento.txt_descricao, center)
+        worksheet.write(row, col + 5, necessidade.cod_sub_area_conhecimento.txt_descricao, center)
         worksheet.write(row, col + 6, necessidade.cod_nivel.nome, center)
         worksheet.write(row, col + 7, necessidade.hor_duracao, center)
         worksheet.write(row, col + 8, necessidade.cod_turno.nome, center)

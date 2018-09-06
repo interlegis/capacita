@@ -58,7 +58,7 @@ AUTHENTICATION_BACKENDS = (
 
 ROOT_URLCONF = 'urls'
 
-LOGIN_REDIRECT_URL = 'plano'
+LOGIN_REDIRECT_URL = 'home'
 
 TEMPLATES = [
     {
@@ -81,23 +81,23 @@ TEMPLATES = [
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': config(
-        'DATABASE_URL', default='sqlite://:memory:',
-        cast=db_url,
-    )
-}
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'capacita',
-#         'USER': 'postgres',
-#         'PASSWORD': 'postgres',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
+#     'default': config(
+#         'DATABASE_URL', default='sqlite://:memory:',
+#         cast=db_url,
+#     )
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'capacita',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 
 CACHES = {
     'default': {

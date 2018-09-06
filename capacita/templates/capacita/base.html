@@ -45,7 +45,7 @@
         {% else %}
             <div class="ui container">
                 <h4 class="ui dividing header">Você não está logado, por favor realize o login</h4>
-                
+                <a href="{% url 'cas_ng_login' %}">login</a>
             </div>
         {% endif %}
     
