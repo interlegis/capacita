@@ -39,15 +39,15 @@
         {% endif %}
     </div>
     
-        {% if user.is_authenticated %}
-            {% block content %}
-            {% endblock %}
-        {% else %}
-            <div class="ui container">
-                <h4 class="ui dividing header">Você não está logado, por favor realize o login</h4>
-                <a href="{% url 'cas_ng_login' %}">login</a>
-            </div>
-        {% endif %}
+    {% if user.is_authenticated %}
+        {% block content %}
+        {% endblock %}
+    {% else %}
+        <div class="ui container">
+            <h4 class="ui dividing header">Você não está logado, por favor realize o login</h4>
+            <a href="{% url 'cas_ng_login' %}">login</a>
+        </div>
+    {% endif %}
     
 </body>
 <script src="{% static 'js/semantic.min.js' %}"></script>

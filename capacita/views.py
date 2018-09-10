@@ -64,6 +64,7 @@ def necessidade(request):
     plano = False;
     nivel = False;
     turno = False;
+    qtd_servidor = False;
 
     if  request.GET.get('area'):
         area = request.GET.get('area')
@@ -73,8 +74,10 @@ def necessidade(request):
         plano = request.GET.get('plano')
     if  request.GET.get('turno'):
         turno = request.GET.get('turno')
+    if  request.GET.get('qtd_servidor'):
+        qtd_servidor = request.GET.get('qtd_servidor')
 
-    necessidades = necessidade_query(area,nivel,plano,turno)
+    necessidades = necessidade_query(area,nivel,plano,turno, int(qtd_servidor))
 
     return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 'turnos' : turnos})
 
