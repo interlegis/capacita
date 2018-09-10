@@ -2,6 +2,7 @@
 
 from django.shortcuts import render, redirect,get_object_or_404
 import xlsxwriter
+from .filtro_necessidade import *
 from .models import *
 from .forms import *
 from .filters import *
@@ -57,10 +58,12 @@ def plano_edit(request, id):
 def necessidade(request):
     areas = Area_Conhecimento.objects.all()
     niveis = Nivel.objects.all()
+    turnos = Turno.objects.all()
     planos = Plano_Capacitacao.objects.all()
     area = False;
     plano = False;
     nivel = False;
+    turno = False;
 
     if  request.GET.get('area'):
         area = request.GET.get('area')
@@ -68,25 +71,12 @@ def necessidade(request):
         nivel = request.GET.get('nivel')
     if  request.GET.get('plano'):
         plano = request.GET.get('plano')
+    if  request.GET.get('turno'):
+        turno = request.GET.get('turno')
 
-    if (area and nivel and plano):
-        necessidades = Necessidade.objects.filter(cod_sub_area_conhecimento_id__cod_area_conhecimento = area, cod_nivel = nivel, cod_plano_capacitacao = plano)
-    if (area and nivel and (not plano)):
-        necessidades = Necessidade.objects.filter(cod_sub_area_conhecimento_id__cod_area_conhecimento = area, cod_nivel = nivel)
-    if (area and (not nivel) and plano): 
-        necessidades = Necessidade.objects.filter(cod_sub_area_conhecimento_id__cod_area_conhecimento = area, cod_plano_capacitacao = plano)
-    if ((not area) and nivel and plano):
-        necessidades = Necessidade.objects.filter(cod_plano_capacitacao = plano, cod_nivel = nivel)
-    if (area and (not nivel) and (not plano)):
-        necessidades = Necessidade.objects.filter(cod_sub_area_conhecimento_id__cod_area_conhecimento = area)
-    if ((not area) and nivel and (not plano)):
-         necessidades = Necessidade.objects.filter(cod_nivel = nivel)
-    if ((not area) and (not nivel) and plano):
-         necessidades = Necessidade.objects.filter(cod_plano_capacitacao = plano)
-    if ((not area) and (not nivel) and (not plano)):
-         necessidades = Necessidade.objects.all()
+    necessidades = necessidade_query(area,nivel,plano,turno)
 
-    return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos})
+    return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 'turnos' : turnos})
 
 def necessidade_show(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)

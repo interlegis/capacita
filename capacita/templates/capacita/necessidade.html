@@ -3,46 +3,64 @@
 {% block content %}
 
     <div class="table_div">
-        <h3>Filtros</h4>
-        <form class="ui form" method="get">
-            <div class="three fields">
-                <div class="select_area field">
-                    <label>Área de Interesse</label>
-                    <select name="area" id="">
-                        <option value="">-------------</option>
-                        {% for area in areas %}
-                        <option value="{{area.cod_area_conhecimento}}">{{area.txt_descricao}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="field">
-                    <label>Nível</label>
-                    <select name="nivel" id="">
-                        <option value="">-------------</option>
-                        {% for nivel in niveis %}
-                        <option value="{{nivel.cod_nivel}}">{{nivel.nome}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="field">
-                    <label>Plano de Capacitação</label>
-                    <select name="plano" id="">
-                        <option value="">-------------</option>
-                        {% for plano in planos %}
-                        <option value="{{plano.cod_plano_capacitacao}}">{{plano}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+        <div class="ui accordion field">
+            <div class="title">
+                <i class="dropdown icon"></i>
+                Filtros
             </div>
-            <div class="field">
-                <button class="ui button basic secondary" type="submit">Filtrar</button>
+            <div class="content">
+                <form class="ui form" method="get">
+                    <div class="three fields">
+                        <div class="select_area field">
+                            <label>Área de Interesse</label>
+                            <select name="area" id="">
+                                <option value="">-------------</option>
+                                {% for area in areas %}
+                                <option value="{{area.cod_area_conhecimento}}">{{area.txt_descricao}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Nível</label>
+                            <select name="nivel" id="">
+                                <option value="">-------------</option>
+                                {% for nivel in niveis %}
+                                <option value="{{nivel.cod_nivel}}">{{nivel.nome}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Plano de Capacitação</label>
+                            <select name="plano" id="">
+                                <option value="">-------------</option>
+                                {% for plano in planos %}
+                                <option value="{{plano.cod_plano_capacitacao}}">{{plano}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="three fields">
+                        <div class="field">
+                            <label>Turno</label>
+                            <select name="turno" id="">
+                                <option value="">-------------</option>
+                                {% for turno in turnos %}
+                                <option value="{{turno.cod_turno}}">{{turno.nome}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <button class="ui button basic secondary" type="submit">Filtrar</button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
         <br>
 
         <div>
             <h3 style="float: left;" class="ui dividing header">Necessidades</h3>
-            <a style="float: right;" href="/relatorio/">Gerar Relatorio</a>
+            <a style="float: right;" href="/relatorio/">Gerar Planilha</a>
         </div>
         <table class="ui celled padded table">
             <thead>
@@ -76,6 +94,7 @@
         </table>
         <br>
         <a href="/necessidade/new/"><button class="ui button basic secondary">Novo</button></a>
+    
     </div>
 
     {% endblock %}
