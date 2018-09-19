@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils import timezone
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User
 
 class Area_Conhecimento(models.Model):
     cod_area_conhecimento = models.AutoField(primary_key=True)
@@ -153,6 +156,20 @@ class Tipo_Plano_Capacitacao(models.Model):
 
     class Meta:
         db_table = 'Tipo_Plano_Capacitacao' 
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    orgao = models.ForeignKey('Orgao', null=True, on_delete=models.CASCADE)
+    titular = models.BinaryField(null= True)
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
     
 

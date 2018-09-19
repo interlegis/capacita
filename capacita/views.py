@@ -3,6 +3,8 @@
 from django.shortcuts import render, redirect,get_object_or_404
 import xlsxwriter
 from .filtro_necessidade import *
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from .models import *
 from .forms import *
 from .filters import *
@@ -11,7 +13,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def home(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return redirect("/login")
     else:
         return render(request, 'capacita/home.html')
@@ -19,8 +21,13 @@ def home(request):
 def plano(request):
     planos = Plano_Capacitacao.objects.all()
     plano_filter = PlanoFilter(request.GET, queryset=planos)
+    group = Group.objects.get(name='admin')
     form = PlanoForm()
-    return render(request, 'capacita/plano_capacitacao.html', {'filter' : plano_filter, 'form' : form})
+
+    if (group in request.user.groups.all()):
+        return render(request, 'capacita/plano_capacitacao.html', {'filter' : plano_filter, 'form' : form})
+    else:
+        return JsonResponse({'message' : 'Voce nao tem permissao para acessar essa pagina'}, safe=False)
 
 def plano_delete(request, id):
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
@@ -281,6 +288,10 @@ def subareas_new(request):
         form = SubAreaForm()
     return render(request, 'capacita/area_edit.html', {'form' : form})
 
+def usuarios(request):
+    users = User.objects.all()
+    return render(request, 'capacita/usuarios.html', {'users' : users})
+
 def api_areas(request):
     areas = Area_Conhecimento.objects.all().values()
     sub_areas = Sub_Area_Conhecimento.objects.all()
@@ -290,10 +301,7 @@ def api_areas(request):
     return JsonResponse(areas, safe=False)
 
 def api_subareas(request):
-
     subareas = Sub_Area_Conhecimento.objects.all().values()
-
     subareas = list(subareas)
-
     return JsonResponse(subareas, safe=False)
 

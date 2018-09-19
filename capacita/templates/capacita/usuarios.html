@@ -1,0 +1,31 @@
+{% extends 'capacita/base.html' %}
+
+{% block content %}
+
+    <div class="table_div">
+
+        <h4 class="ui dividing header">Usuários</h4>
+        <table class="ui celled padded table">
+            <thead>
+                <tr class="center aligned">
+                <th>Nome</th>
+                <th>Email</th>
+                <!-- <th>Excluir</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for user in users %}
+                    <tr class="center aligned">
+                        <td>{{user.username}}</td>
+                        <td>{{user.email}}</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        <br>
+        <a href="/orgao/new/"><button class="ui button basic secondary">Novo</button></a>
+    </div>
+
+    {% endblock %}

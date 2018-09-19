@@ -40,7 +40,7 @@ INSTALLED_APPS = [ #components
     'capacita',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -107,7 +107,7 @@ CACHES = {
     }
 }
 
-# troque no caso de reimplementação da classe User conforme
+# troque no caso de reimplementacao da classe User conforme
 # https://docs.djangoproject.com/en/1.9/topics/auth/customizing/#substituting-a-custom-user-model
 AUTH_USER_MODEL = 'auth.User'
 
