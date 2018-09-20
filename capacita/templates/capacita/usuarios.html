@@ -4,21 +4,32 @@
 
     <div class="table_div">
 
-        <h4 class="ui dividing header">Usuários</h4>
+        <h2 class="ui dividing header">Usuários da {{orgao}}</h2>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
                 <th>Nome</th>
                 <th>Email</th>
-                <!-- <th>Excluir</th> -->
+                <th>Permissão</th>
                 </tr>
             </thead>
             <tbody>
                 
                 {% for user in users %}
+                 
                     <tr class="center aligned">
                         <td>{{user.username}}</td>
                         <td>{{user.email}}</td>
+                        {% if user.profile.permissao_necessidade == True %}
+                            <td><div class="ui toggle checkbox checked permitido">
+                                <input value="{{user.id}}" class="permitido" type="checkbox" name="public">
+                            </div></td>
+                        {% endif %}
+                        {% if user.profile.permissao_necessidade == False %}
+                            <td><div class="ui toggle checkbox checked sem_permissao">
+                                <input value="{{user.id}}" class="sem_permissao" type="checkbox" name="public">
+                            </div></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
 

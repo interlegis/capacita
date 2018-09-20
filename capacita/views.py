@@ -9,8 +9,10 @@ from .models import *
 from .forms import *
 from .filters import *
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
     if not request.user.is_authenticated:
@@ -67,6 +69,17 @@ def necessidade(request):
     niveis = Nivel.objects.all()
     turnos = Turno.objects.all()
     planos = Plano_Capacitacao.objects.all()
+    group = Group.objects.get(name='admin')
+    
+    profile_usuario = Profile.objects.get(user_id = request.user.id)
+    orgao_usuario = Orgao.objects.get(cod_orgao=profile_usuario.orgao_id)
+
+    if(group in request.user.groups.all()):
+        is_admin = True
+    else:
+        is_admin = False
+    
+    
     area = False;
     plano = False;
     nivel = False;
@@ -86,7 +99,7 @@ def necessidade(request):
 
     necessidades = necessidade_query(area,nivel,plano,turno, int(qtd_servidor))
 
-    return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 'turnos' : turnos})
+    return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 'turnos' : turnos, 'orgao_usuario' : orgao_usuario, 'is_admin' : is_admin})
 
 def necessidade_show(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
@@ -94,6 +107,9 @@ def necessidade_show(request, pk):
 
 def necessidade_new(request):
     areas = Area_Conhecimento.objects.all()
+    usuario = User.objects.get(id = request.user.id)
+    group = Group.objects.get(name='gestor')
+    group2 = Group.objects.get(name='admin')
     form2 = SubAreaForm()
     if request.method == "POST":
         form = NecessidadeForm(request.POST)
@@ -103,7 +119,11 @@ def necessidade_new(request):
             return redirect('necessidade')
     else:
         form = NecessidadeForm()
-    return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'form2' : form2})
+    
+    if (group in request.user.groups.all() or group2 in request.user.groups.all() or usuario.profile.permissao_necessidade):
+        return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'form2' : form2})
+    else: 
+        return redirect('necessidade')
 
 def necessidade_edit(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
@@ -162,7 +182,7 @@ def tipo(request):
 def tipo_edit(request,id):
     tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=id)
     if request.method == 'POST':
-        form = TipoForm(request.POST, instance=tipo)
+        form = TipoForm(request.POST, instance=tipo, initial={'ind_excluido' : 0})
         if form.is_valid():
             tipo = form.save(commit=False)
             tipo.save()
@@ -289,8 +309,33 @@ def subareas_new(request):
     return render(request, 'capacita/area_edit.html', {'form' : form})
 
 def usuarios(request):
-    users = User.objects.all()
-    return render(request, 'capacita/usuarios.html', {'users' : users})
+    orgao_id = request.user.profile.orgao_id
+    orgao = Orgao.objects.get(cod_orgao = orgao_id)
+    profiles = Profile.objects.filter(orgao_id = orgao_id)
+    users = []
+
+    for profile in profiles:
+        users.append(User.objects.get(id = profile.user_id))
+    
+    group = Group.objects.get(name='gestor')
+    group2 = Group.objects.get(name='admin')
+
+    if ((group in request.user.groups.all()) or (group2 in request.user.groups.all())):
+        return render(request, 'capacita/usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao.nome})
+    else: 
+        return render(request, 'capacita/error.html')
+
+@csrf_exempt
+def usuarios_permissao(request):
+    if request.method == "POST":
+        profile = Profile.objects.filter(user_id=request.POST.get("usuario_id", "")).update(permissao_necessidade=request.POST.get("data", ""))
+        if (request.POST.get("data", "") == 'True'):
+            profile = Profile.objects.filter(user_id=request.POST.get("usuario_id", "")).update(permissao_necessidade=True)
+        if (request.POST.get("data", "") == 'False'):
+            profile = Profile.objects.filter(user_id=request.POST.get("usuario_id", "")).update(permissao_necessidade=False)
+    else:
+        return redirect("/")
+    return HttpResponseRedirect('/usuarios/')
 
 def api_areas(request):
     areas = Area_Conhecimento.objects.all().values()

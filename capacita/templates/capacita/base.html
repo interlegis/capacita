@@ -25,6 +25,7 @@
                 <a class="item" href="/orgao/">Órgãos</a>
                 <a class="item"  href="/tipo/">Tipos Plano Capacitação</a>
                 <a class="item" href="/areas/">Áreas de Interesse</a>
+                <a class="item" href="/usuarios/">Usuários</a>
             </div>
         </div>
         {% if user.is_authenticated %}
@@ -55,7 +56,63 @@
     
     $('.ui.dropdown').dropdown();
     $('.ui.accordion').accordion();
-    
+    $('.ui.checkbox.permitido').checkbox('set checked');
+    $('.ui.checkbox.sem_permissao').checkbox('set unchecked');
+
+    // $('ui.checkbox.permitido').change(function(){
+    //     $.ajax({
+    //     type: "POST",
+    //     url: "/usuarios/permissao",
+    //     data: {data : 'False'},
+    //     success : function(data) {
+    //       location.reload();
+    //     },
+    //     error : function(){
+    //       alert("Erro ao alterar permissão");
+    //       location.reload();
+    //     }
+    //   });
+    // })
+
+    // $('ui.checkbox.sem_permissao').change(function(){
+    //     $.ajax({
+    //     type: "POST",
+    //     url: "/usuarios/permissao",
+    //     data: {data : 'True'},
+    //     success : function(data) {
+    //       location.reload();
+    //     },
+    //     error : function(){
+    //       alert("Erro ao alterar permissão");
+    //       location.reload();
+    //     }
+    //   });
+    // })
+
+     $('input.sem_permissao').on('change', function(){
+        // alert(this.value);
+        $.ajax({
+        type: "POST",
+        url: "/usuarios/permissao/",
+        data: {data : 'True', usuario_id : this.value},
+        success : function(data) {
+          location.reload();
+        }
+      });
+    })
+
+    $('input.permitido').on('change', function(){
+        // alert(this.value);
+        $.ajax({
+        type: "POST",
+        url: "/usuarios/permissao/",
+        data: {data : 'False', usuario_id : this.value},
+        success : function(data) {
+          location.reload();
+        }
+      });
+    })
+
     function selectSub(select){
         
         $("#id_cod_sub_area_conhecimento option").each(function(){

@@ -1,12 +1,14 @@
 from django.conf.urls import url
 from . import views
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LogoutView
 import django_cas_ng.views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    url(r'^login/$', auth_views.LoginView, name='login'),
-    url(r'^logout/$', auth_views.LogoutView, {'next_page': '/'}, name='logout'),
+    url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
     # url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
     # url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),
     url(r'^callback/$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'), 
@@ -34,5 +36,6 @@ urlpatterns = [
     url(r'^subareas/(?P<id>\d+)/$', views.subarea_delete, name='subarea_delete'),
     url(r'^subarea/(?P<pk>\d+)/edit/$', views.sub_area_edit, name='sub_area_edit'),
     url(r'^relatorio/$', views.relatorio, name='relatorio'),
-    url(r'^usuarios/$', views.usuarios, name='usuarios')
+    url(r'^usuarios/$', views.usuarios, name='usuarios'),
+    url(r'^usuarios/permissao/$', views.usuarios_permissao, name='usuarios_permissao')
 ]
