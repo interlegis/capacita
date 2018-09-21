@@ -33,7 +33,7 @@
             <div class="ui item">
                 {{ user.username }}
             </div>
-            <a class="ui item" href="{% url 'logout' %}">
+            <a class="ui item" href="/logout/">
                 Sair
             </a>
         </div>
@@ -58,36 +58,6 @@
     $('.ui.accordion').accordion();
     $('.ui.checkbox.permitido').checkbox('set checked');
     $('.ui.checkbox.sem_permissao').checkbox('set unchecked');
-
-    // $('ui.checkbox.permitido').change(function(){
-    //     $.ajax({
-    //     type: "POST",
-    //     url: "/usuarios/permissao",
-    //     data: {data : 'False'},
-    //     success : function(data) {
-    //       location.reload();
-    //     },
-    //     error : function(){
-    //       alert("Erro ao alterar permissão");
-    //       location.reload();
-    //     }
-    //   });
-    // })
-
-    // $('ui.checkbox.sem_permissao').change(function(){
-    //     $.ajax({
-    //     type: "POST",
-    //     url: "/usuarios/permissao",
-    //     data: {data : 'True'},
-    //     success : function(data) {
-    //       location.reload();
-    //     },
-    //     error : function(){
-    //       alert("Erro ao alterar permissão");
-    //       location.reload();
-    //     }
-    //   });
-    // })
 
      $('input.sem_permissao').on('change', function(){
         // alert(this.value);
