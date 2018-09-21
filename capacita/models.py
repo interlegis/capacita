@@ -319,8 +319,8 @@ class DjangoSession(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE)
-    titular = models.BooleanField(null= True)
-    permissao_necessidade = models.BooleanField(null = True)
+    titular = models.NullBooleanField(null= True)
+    permissao_necessidade = models.NullBooleanField(null = True)
 
 
 
