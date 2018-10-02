@@ -1,0 +1,52 @@
+
+    {% extends 'capacita/base.html' %}
+
+    {% block content %}
+
+    <div class="ui container">
+        <form class="ui form" method="post">{% csrf_token %}
+        
+            <h4 class="ui dividing header">Novo Usuário</h4>
+            <div class="field">
+                {{ form.username.errors }}
+                <label>Login</label>
+                {{ form.username }}
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    {{ form.first_name.errors}}
+                    <label>Primeiro Nome</label>
+                    {{ form.first_name}}
+                </div>
+                <div class="field">
+                    {{ form.last_name.errors }}
+                    <label>Último Nome</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>Órgão</label>
+                    <select name="orgao" >
+                        <option></option>
+                        {% for orgao in orgaos %}
+                            <option value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Grupo</label>
+                    <select name="group" >
+                        <option>Sem grupo</option>
+                        {% for group in groups %}
+                            <option value="{{group.id}}">{{group.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button class="ui primary button" type="submit">Salvar</button>
+
+        </form>
+    </div>
+
+    {% endblock %}

@@ -63,20 +63,47 @@ class Mes(models.Model):
         managed = False
         db_table = 'Mes'
 
+class Sub_Area_Conhecimento(models.Model):
+    cod_sub_area_conhecimento = models.AutoField(primary_key=True)
+    txt_descricao = models.CharField(max_length=200)
+    ind_excluido = models.DecimalField(default=0,max_digits=2, decimal_places=0)
+    cod_area_conhecimento = models.ForeignKey(Area_Conhecimento, models.DO_NOTHING)
+
+    def __str__(self):
+        return self.txt_descricao
+
+    class Meta:
+        managed = False
+        db_table = 'Sub_Area_Conhecimento'
+
+class Curso(models.Model):
+    cod_curso = models.AutoField(primary_key=True)
+    sub_area = models.ForeignKey(Sub_Area_Conhecimento, models.DO_NOTHING)
+    nome = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.nome
+
+    class Meta:
+        managed = False
+        db_table = 'Curso'
 
 class Necessidade(models.Model):
     cod_necessidade = models.AutoField(primary_key=True)
-    txt_descricao = models.CharField(max_length=200)
+    curso = models.ForeignKey(Curso, models.DO_NOTHING, null=True)
+    txt_descricao = models.CharField(max_length=200, null=True)
     qtd_servidor = models.DecimalField(max_digits=6, decimal_places=0)
     hor_duracao = models.DecimalField(max_digits=2, decimal_places=0)
     ind_excluido = models.DecimalField(default=0,max_digits=2, decimal_places=0)
     cod_iniciativa = models.ForeignKey(Iniciativa, models.DO_NOTHING)
+    custo = models.DecimalField(max_digits=6, decimal_places=2)
     cod_mes = models.ForeignKey(Mes, models.DO_NOTHING)
     cod_nivel = models.ForeignKey('Nivel', models.DO_NOTHING)
     cod_plano_capacitacao = models.ForeignKey('Plano_Capacitacao', models.DO_NOTHING)
     cod_prioridade = models.ForeignKey('Prioridade', models.DO_NOTHING)
     cod_sub_area_conhecimento = models.ForeignKey('Sub_Area_Conhecimento', models.DO_NOTHING)
     cod_turno = models.ForeignKey('Turno', models.DO_NOTHING)
+    aprovado = models.NullBooleanField(null = False, default=False) 
 
     def __str__(self):
         return self.txt_descricao
@@ -118,6 +145,10 @@ class Plano_Capacitacao(models.Model):
     ind_excluido = models.DecimalField(default=0,max_digits=2, decimal_places=0)
     cod_orgao = models.ForeignKey(Orgao, models.DO_NOTHING)
     cod_tipo_plano_capacitacao = models.ForeignKey('Tipo_Plano_Capacitacao', models.DO_NOTHING)
+    plano_habilitado = models.NullBooleanField(null = False)
+
+    def __str__(self):
+        return str(self.cod_tipo_plano_capacitacao) + '-' + str(self.ano_plano_capacitacao)
 
     class Meta:
         managed = False
@@ -143,20 +174,6 @@ class Secretaria(models.Model):
     class Meta:
         managed = False
         db_table = 'Secretaria'
-
-
-class Sub_Area_Conhecimento(models.Model):
-    cod_sub_area_conhecimento = models.AutoField(primary_key=True)
-    txt_descricao = models.CharField(max_length=200)
-    ind_excluido = models.DecimalField(default=0,max_digits=2, decimal_places=0)
-    cod_area_conhecimento = models.ForeignKey(Area_Conhecimento, models.DO_NOTHING)
-
-    def __str__(self):
-        return self.txt_descricao
-
-    class Meta:
-        managed = False
-        db_table = 'Sub_Area_Conhecimento'
 
 
 class Tipo_Plano_Capacitacao(models.Model):
@@ -320,7 +337,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE)
     titular = models.NullBooleanField(null= True)
-    permissao_necessidade = models.NullBooleanField(null = True)
+    permissao_necessidade = models.NullBooleanField(null = True, default=False)
 
 
 

@@ -3,13 +3,14 @@
 {% block content %}
 
     <div class="table_div">
-
+        {% if orgao != '' %}
         <h2 class="ui dividing header">Usuários da {{orgao}}</h2>
+        {% endif %}
+        
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
                 <th>Nome</th>
-                <th>Email</th>
                 <th>Permissão</th>
                 </tr>
             </thead>
@@ -19,7 +20,6 @@
                  
                     <tr class="center aligned">
                         <td>{{user.username}}</td>
-                        <td>{{user.email}}</td>
                         {% if user.profile.permissao_necessidade == True %}
                             <td><div class="ui toggle checkbox checked permitido">
                                 <input value="{{user.id}}" class="permitido" type="checkbox" name="public">
@@ -36,7 +36,7 @@
             </tbody>
         </table>
         <br>
-        <a href="/orgao/new/"><button class="ui button basic secondary">Novo</button></a>
+        <a href="/usuarios/new/"><button class="ui button basic secondary">Novo</button></a>
     </div>
 
     {% endblock %}

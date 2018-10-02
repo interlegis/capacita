@@ -59,6 +59,8 @@
     $('.ui.checkbox.permitido').checkbox('set checked');
     $('.ui.checkbox.sem_permissao').checkbox('set unchecked');
 
+    
+
      $('input.sem_permissao').on('change', function(){
         // alert(this.value);
         $.ajax({
@@ -111,8 +113,41 @@
         });
     }
 
+    $("#id_cod_sub_area_conhecimento").on('change', function(){
+        $("#nome_curso_form option").each(function(){
+            if($(this).val() != ''){
+                $(this).hide();
+            }
+        });
+
+        var search = $("#nome_curso_form").val();
+        select = $("#id_cod_sub_area_conhecimento").options;
+
+        var sub_areas;
+
+        $.getJSON("/api/cursos/", function(data){
+            var curso = null;
+            sub_areas = data;
+            for(var i = 0; i < data.length; i++){
+                if(data[i].sub_area_id == $("#id_cod_sub_area_conhecimento").val() ){
+                    curso = data[i].cod_curso;
+                    $("#nome_curso_form option").each(function(){
+                        if($(this).val() == curso){
+                            $(this).show();
+                        }
+                    });
+                }
+            }
+
+        });
+
+    })
+
 
     $(document).ready(function(){
+
+        $("#descricao_necessidade").prop('disabled', true);
+        
         $("#myInput").on("keyup", function() {
             var value = $(this).val().toLowerCase();
             $("#subareas tr").filter(function() {
@@ -120,6 +155,15 @@
             });
         });
     });
+
+    $("#nome_curso_form").on('change', function(){
+        console.log($("#nome_curso_form option:selected").val())
+        if($("#nome_curso_form option:selected").val() == ''){
+            $("#descricao_necessidade").prop('disabled', false);
+        }else{
+            $("#descricao_necessidade").prop('disabled', true);
+        }
+    })
 
 
 </script>

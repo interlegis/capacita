@@ -25,6 +25,7 @@
                 <th>Tipo de Plano</th>
                 <th>Período</th>
                 <th>Situação</th>
+                <th>Habilitada</th>
                 <th>Ver</th>
                 <th>Editar</th>
                 <th>Excluir</th>
@@ -38,6 +39,7 @@
                         <td>{{plano.cod_tipo_plano_capacitacao}}</td>
                         <td>{{plano.ano_plano_capacitacao}}</td>
                         <td>{{plano.situacao}}</td>
+                        <td>{{plano.plano_habilitado}}</td>
                         <td><a class="links" href="{% url 'plano_show' plano.cod_plano_capacitacao %}"><i class="search icon"></i></a></td>
                         <td><a class="links" href="{% url 'plano_edit' plano.cod_plano_capacitacao %}"><i class="pencil icon"></i></a></td>
                         <td><a class="links" href="{% url 'plano_delete' plano.cod_plano_capacitacao %}"><i class="delete icon"></i></a></td>

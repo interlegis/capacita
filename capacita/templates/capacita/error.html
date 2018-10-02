@@ -1,9 +1,17 @@
 {% extends 'capacita/base.html' %}
 
 {% block content %}
-
+    {% if eh_necessidade %}
+    <div class="table_div">
+        <h1 class="ui header">Não existem Planos de Capacitação abertos</h1>
+    </div>
+    {% endif %}
+    {% if eh_necessidade == None %} 
     <div class="table_div">
         <h1 class="ui header">Sem permissão para visualizar essa página</h1>
     </div>
-
+    {% endif %}
 {% endblock %}
+
+
+

@@ -9,8 +9,10 @@
             <thead>
                 <tr class="center aligned">
                 <th>Nome</th>
+                {% if permissao == True %}
                 <th>Editar</th>
                 <th>Excluir</th>
+                {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -18,15 +20,41 @@
                 {% for orgao in orgaos %}
                     <tr class="center aligned">
                         <td>{{orgao.nome}}</td>
+                        {% if permissao == True %}
                         <td><a class="links" href="{% url 'orgao_edit' orgao.cod_orgao %}"><i class="pencil icon"></i></a></td>
                         <td><a class="links" href="{% url 'orgao_delete' orgao.cod_orgao %}"><i class="delete icon"></i></a></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
-
             </tbody>
+            {% if orgaos.has_other_pages %}
+            <tfoot>
+                <tr><th colspan="7">
+                    <div class="ui right floated pagination menu">
+                    {% if orgaos.has_previous %}
+                    <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ orgaos.previous_page_number }}">&laquo;</a>
+                    {% endif %}
+                    {% for i in orgaos.paginator.page_range %}
+                    {% if orgaos.number == i %}
+                        <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ i }}"><strong>{{ i }}</strong></a>
+                    {% else %}
+                        <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ i }}">{{ i }}</a>
+                    {% endif %}
+                    {% endfor %}
+                    {% if orgaos.has_next %}
+                    <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ orgaos.next_page_number }}">&raquo;</a>
+                    {% else %}
+                    <span class="item">&raquo;</span>
+                    {% endif %}
+                    </div>
+                </th>
+            </tr></tfoot>
         </table>
+        {% endif %}
         <br>
+        {% if permissao == True %}
         <a href="/orgao/new/"><button class="ui button basic secondary">Novo</button></a>
+        {% endif %}
     </div>
 
     {% endblock %}

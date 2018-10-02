@@ -1,8 +1,8 @@
 from django.conf.urls import url
 from . import views
 from django.contrib.auth import views as auth_views
-# from django.contrib.auth.views import LoginView
-# from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LogoutView
 import django_cas_ng.views
 
 urlpatterns = [
@@ -32,10 +32,13 @@ urlpatterns = [
     url(r'^areas/$', views.areas, name='areas'),
     url(r'^api/areas/$', views.api_areas, name='api_areas'),
     url(r'^api/subareas/$', views.api_subareas, name='api_subareas'),
+    url(r'^api/cursos/$', views.api_cursos, name='api_cursos'),
     url(r'^subareas/new/$', views.subareas_new, name='subareas_new'),
     url(r'^subareas/(?P<id>\d+)/$', views.subarea_delete, name='subarea_delete'),
     url(r'^subarea/(?P<pk>\d+)/edit/$', views.sub_area_edit, name='sub_area_edit'),
     url(r'^relatorio/$', views.relatorio, name='relatorio'),
     url(r'^usuarios/$', views.usuarios, name='usuarios'),
-    url(r'^usuarios/permissao/$', views.usuarios_permissao, name='usuarios_permissao')
+    url(r'^usuarios/permissao/$', views.usuarios_permissao, name='usuarios_permissao'),
+    url(r'^usuarios/new/$', views.usuario_new, name='usuario_new'),
+    url(r'^error/$', views.error, name='error')
 ]

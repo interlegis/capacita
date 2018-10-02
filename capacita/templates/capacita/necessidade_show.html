@@ -4,7 +4,13 @@
     
     <div class="table_div">
 
+        {% if necessidade.curso == None %}
         <h2 class="ui dividing header">{{ necessidade.txt_descricao }}</h2>
+        {% endif %}
+        {% if necessidade.curso %}
+        <h2 class="ui dividing header">{{ necessidade.curso }}</h2>
+        {% endif %}
+        
         <br>
         <div class="ui three column very relaxed grid">
             <div class="column">
@@ -32,11 +38,27 @@
                 <p>{{ necessidade.cod_mes }}</p>
             </div>
             <div class="column">
+                <strong>Custo:</strong>
+                <p>R$ {{ necessidade.custo }}</p>
                 <strong>Hora de duração:</strong>
                 <p>{{ necessidade.hor_duracao }}</p>
                 <strong>Turno:</strong>
                 <p>{{ necessidade.cod_turno }}</p>
-                
+                {% if is_admin %}
+                <strong>Aprovado</strong>
+                <form action="" method="POST">{% csrf_token %}
+                    <select onchange="this.form.submit();" class="ui field" name="aprovado">
+                        {% if necessidade.aprovado == True %}
+                            <option value="True" selected>Sim</option>
+                            <option value="False">Não</option>
+                        {% endif %}
+                        {% if necessidade.aprovado == False %}
+                            <option value="True">Sim</option>
+                            <option value="False" selected>Não</option>
+                        {% endif %}
+                    </select>
+                </form>
+                {% endif %}
             </div>
         </div>
         

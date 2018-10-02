@@ -91,7 +91,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'capacita2',
+#         'NAME': 'capacita3',
 #         'USER': 'postgres',
 #         'PASSWORD': 'postgres',
 #         'HOST': 'localhost',
