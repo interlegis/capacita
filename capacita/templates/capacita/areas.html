@@ -25,8 +25,10 @@
                 <tr class="center aligned">
                 <th class="one wide">Nome</th>
                 <th class="two wide">Sub-Área</th>
+                {% if permissao == True %}
                 <th class="one wide">Editar</th>
                 <th class="one wide">Excluir</th>
+                {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -34,8 +36,10 @@
                     <tr class="center aligned">
                         <td>{{sub_area.cod_area_conhecimento}}</td>
                         <td>{{sub_area.txt_descricao}}</td>
+                        {% if permissao == True %}
                         <td><a class="links" href="{% url 'sub_area_edit' sub_area.cod_sub_area_conhecimento %}"><i class="pencil icon"></i></a></td>
                         <td><a class="links" href="{% url 'subarea_delete' sub_area.cod_sub_area_conhecimento %}"><i class="delete icon"></i></a></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>

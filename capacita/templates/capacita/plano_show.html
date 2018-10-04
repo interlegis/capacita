@@ -6,26 +6,21 @@
 
         <br>
         <h4 class="ui dividing header">Plano {{ plano.cod_plano_capacitacao }}</h4>
-        <div class="ui raised segments">
-            <div class="ui segment">
-                <p><b>Órgão:</b> {{ plano.cod_orgao }}</p>
-            </div>
-            <div class="ui segment">
-                <p><b>Tipo de plano:</b> {{ plano.cod_tipo_plano_capacitacao }}</p>
-            </div>
-            <div class="ui segment">
-                <p><b>Situação:</b> {{ plano.situacao }}</p>
-            </div>
-            <div class="ui segment">
-                <p><b>Quantidade de servidores efetivos:</b> {{ plano.qtd_servidores_efetivos }}</p>
-            </div>
-            <div class="ui segment">
-                <p><b>Quantidade de servidores comissionados:</b> {{ plano.qtd_servidores_comissionados }}</p>
-            </div>
-            <div class="ui segment">
-                <p><b>Período:</b> {{ plano.ano_plano_capacitacao }}</p>
-            </div>
+        <div class="column">
+            <strong>Órgão:</strong>
+            <p>{{ plano.cod_orgao }}</p>
+            <strong>Tipo de plano:</strong>
+            <p>{{ plano.cod_tipo_plano_capacitacao }}</p>
+            <strong>Situação:</strong>
+            <p>{{ plano.situacao }}</p>
+            <strong>Quantidade de servidores efetivos:</strong>
+            <p>{{ plano.qtd_servidores_efetivos }}</p>
+            <strong>Quantidade de servidores comissionados:</strong>
+            <p>{{ plano.qtd_servidores_comissionados }}</p>
+            <strong>Período:</strong>
+            <p>{{ plano.ano_plano_capacitacao }}</p>
         </div>
+        
         <br>
         
     </div>

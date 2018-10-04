@@ -43,7 +43,7 @@
             </div>
             <div class="field">
 
-                <label>Descrição</label>
+                <label>Sugestão de curso</label>
                 {% if necessidade == None %}
                     <input type="text" name="txt_descricao" id="descricao_necessidade">
                 {% else %}
@@ -110,6 +110,11 @@
                     <label>Mês</label>
                     {{ form.cod_mes  }}
                 </div>
+            </div>
+            <div class="field">
+                {{ form.justificativa.errors }}
+                <label>Justificativa</label>
+                {{ form.justificativa }}
             </div>
             <button class="ui primary button" type="submit">Salvar</button>
         </form>

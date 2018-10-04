@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
+from django import forms
 
 class Area_Conhecimento(models.Model):
     cod_area_conhecimento = models.AutoField(primary_key=True)
@@ -104,6 +105,7 @@ class Necessidade(models.Model):
     cod_sub_area_conhecimento = models.ForeignKey('Sub_Area_Conhecimento', models.DO_NOTHING)
     cod_turno = models.ForeignKey('Turno', models.DO_NOTHING)
     aprovado = models.NullBooleanField(null = False, default=False) 
+    justificativa = models.CharField(max_length=300)
 
     def __str__(self):
         return self.txt_descricao
@@ -336,7 +338,6 @@ class DjangoSession(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE)
-    titular = models.NullBooleanField(null= True)
     permissao_necessidade = models.NullBooleanField(null = True, default=False)
 
 

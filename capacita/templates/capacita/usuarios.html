@@ -5,8 +5,25 @@
     <div class="table_div">
         {% if orgao != '' %}
         <h2 class="ui dividing header">Usuários da {{orgao}}</h2>
+        {% else %}
+        <h2 class="ui dividing header">Usuários do Sistema</h2>
         {% endif %}
-        
+        <br>
+        <form class="ui form" method="get">
+            <div class="two fields">
+                <div class="select_orgao field">
+                    <label>Órgão</label>
+                    <select name="orgao" id="" onchange="this.form.submit()">
+                        <option value="">----------</option>
+                        <option value="">Todos</option>
+                        {% for orgao in orgaos %}
+                            <option value="{{orgao.cod_orgao}}">{{orgao}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+        <br>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">

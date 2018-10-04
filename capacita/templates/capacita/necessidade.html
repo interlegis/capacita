@@ -6,7 +6,7 @@
         <div class="ui accordion field">
             <div class="title">
                 <i class="dropdown icon"></i>
-                Filtros
+                Filtro
             </div>
             <div class="content">
                 <form class="ui form" method="get">
@@ -76,8 +76,10 @@
                 <th>Área Conhecimento</th>
                 <th>Aprovado</th>
                 <th>Ver</th>
+                {% if is_admin %}
                 <th>Editar</th>
                 <th>Excluir</th>
+                {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -101,7 +103,7 @@
                         <td>Sim</td>
                         {% endif %}
                         <td><a class="links" href="{% url 'necessidade_show' necessidade.cod_necessidade %}"><i class="search icon"></i></a></td>
-                        {% if necessidade.cod_plano_capacitacao.cod_orgao == orgao_usuario or is_admin%}
+                        {% if is_admin %}
                         <td><a class="links" href="{% url 'necessidade_edit' necessidade.cod_necessidade %}"><i class="pencil icon"></i></a></td>
                         <td><a class="links" href="{% url 'necessidade_delete' necessidade.cod_necessidade %}"><i class="delete icon"></i></a></td>
                         {% endif %}

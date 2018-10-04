@@ -16,7 +16,6 @@
             <img src="{% static 'images/senado.png' %}">
         </div>
         <a href="/plano/" class="item">Plano de Capacitação</a>
-        <a class="item">Avaliação</a>
         <div class="ui dropdown item">
             Administração
             <i class="dropdown icon"></i>
@@ -146,7 +145,7 @@
 
     $(document).ready(function(){
 
-        $("#descricao_necessidade").prop('disabled', true);
+        $("#descricao_necessidade").prop('disabled', false);
         
         $("#myInput").on("keyup", function() {
             var value = $(this).val().toLowerCase();

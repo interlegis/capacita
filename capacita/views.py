@@ -21,6 +21,11 @@ def home(request):
         return render(request, 'capacita/home.html')
 
 def plano(request):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+    else:
+        permissao = False
     planos = Plano_Capacitacao.objects.all()
     plano_filter = PlanoFilter(request.GET, queryset=planos)
     group = Group.objects.get(name='admin')
@@ -28,14 +33,17 @@ def plano(request):
     form = PlanoForm()
 
     if (group in request.user.groups.all() or group2 in request.user.groups.all()):
-        return render(request, 'capacita/plano_capacitacao.html', {'filter' : plano_filter, 'form' : form})
+        return render(request, 'capacita/plano_capacitacao.html', {'filter' : plano_filter, 'form' : form, 'permissao' : permissao})
     else:
         return render(request, 'capacita/error.html')
 
 def plano_delete(request, id):
-    plano = get_object_or_404(Plano_Capacitacao, pk=id)
-    plano.delete()
-    return redirect("plano")
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        plano = get_object_or_404(Plano_Capacitacao, pk=id)
+        plano.delete()
+        return redirect("plano")
+    
 
 def plano_show(request, id):
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
@@ -43,6 +51,11 @@ def plano_show(request, id):
     
 
 def plano_new(request):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+    else:
+        permissao = False
     if request.method == "POST":
         form = PlanoForm(request.POST)
         if form.is_valid():
@@ -51,9 +64,17 @@ def plano_new(request):
             return redirect('plano')
     else:
         form = PlanoForm()
-    return render(request, 'capacita/plano_edit.html', {'form': form})
+    if(permissao):
+        return render(request, 'capacita/plano_edit.html', {'form': form})
+    else:
+        return redirect('error')
 
 def plano_edit(request, id):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+    else:
+        permissao = False
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
     if request.method == "POST":
         form = PlanoForm(request.POST, instance=plano)
@@ -63,49 +84,56 @@ def plano_edit(request, id):
             return redirect("plano")
     else:
         form = PlanoForm(instance=plano)
-    return render(request, 'capacita/plano_edit.html', {'form' : form})
+    if(permissao):
+
+        return render(request, 'capacita/plano_edit.html', {'form' : form})
+    else:
+        return redirect('error')
 
 def necessidade(request):
-    areas = Area_Conhecimento.objects.all()
-    niveis = Nivel.objects.all()
-    turnos = Turno.objects.all()
-    planos = Plano_Capacitacao.objects.all()
-    group = Group.objects.get(name='admin')
-    group2 = Group.objects.get(name='gestor')
-    group3 = Group.objects.get(name='solicitante')
-    
-    profile_usuario = Profile.objects.get(user_id = request.user.id)
-    orgao_usuario = Orgao.objects.get(cod_orgao=profile_usuario.orgao_id)
+    if (hasattr(request.user, 'profile')):
+        areas = Area_Conhecimento.objects.all()
+        niveis = Nivel.objects.all()
+        turnos = Turno.objects.all()
+        planos = Plano_Capacitacao.objects.all()
+        group = Group.objects.get(name='admin')
+        group2 = Group.objects.get(name='gestor')
+        group3 = Group.objects.get(name='solicitante')
+        
+        profile_usuario = Profile.objects.get(user_id = request.user.id)
+        orgao_usuario = Orgao.objects.get(cod_orgao=profile_usuario.orgao_id)
 
-    if(group in request.user.groups.all()):
-        is_admin = True
+        if(group in request.user.groups.all()):
+            is_admin = True
+        else:
+            is_admin = False
+        
+        area = False;
+        plano = False;
+        nivel = False;
+        turno = False;
+        qtd_servidor = False;
+
+        if  request.GET.get('area'):
+            area = request.GET.get('area')
+        if  request.GET.get('nivel'):
+            nivel = request.GET.get('nivel')
+        if  request.GET.get('plano'):
+            plano = request.GET.get('plano')
+        if  request.GET.get('turno'):
+            turno = request.GET.get('turno')
+        if  request.GET.get('qtd_servidor'):
+            qtd_servidor = request.GET.get('qtd_servidor')
+
+        necessidades = necessidade_query(area,nivel,plano,turno, int(qtd_servidor))
+        necessidades = necessidades.order_by('custo')
+
+        if(group in request.user.groups.all() or group2 in request.user.groups.all() or group3 in request.user.groups.all() or request.user.profile.permissao_necessidade == True):
+            return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 'turnos' : turnos, 'orgao_usuario' : orgao_usuario, 'is_admin' : is_admin})
+        else:
+            return render(request, 'capacita/error.html')
     else:
-        is_admin = False
-    
-    area = False;
-    plano = False;
-    nivel = False;
-    turno = False;
-    qtd_servidor = False;
-
-    if  request.GET.get('area'):
-        area = request.GET.get('area')
-    if  request.GET.get('nivel'):
-        nivel = request.GET.get('nivel')
-    if  request.GET.get('plano'):
-        plano = request.GET.get('plano')
-    if  request.GET.get('turno'):
-        turno = request.GET.get('turno')
-    if  request.GET.get('qtd_servidor'):
-        qtd_servidor = request.GET.get('qtd_servidor')
-
-    necessidades = necessidade_query(area,nivel,plano,turno, int(qtd_servidor))
-    necessidades = necessidades.order_by('custo')
-
-    if(group in request.user.groups.all() or group2 in request.user.groups.all() or group3 in request.user.groups.all()):
-        return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 'turnos' : turnos, 'orgao_usuario' : orgao_usuario, 'is_admin' : is_admin})
-    else:
-        return render(request, 'capacita/error.html')
+        return redirect('error')
 
 def necessidade_show(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
@@ -118,7 +146,7 @@ def necessidade_show(request, pk):
         else:
             is_admin = False 
         
-        if (group in request.user.groups.all() or group2 in request.user.groups.all()):
+        if ((group in request.user.groups.all() or group2 in request.user.groups.all()) or request.user.profile.permissao_necessidade == True):
             return render(request, 'capacita/necessidade_show.html', {'necessidade' : necessidade, 'is_admin' : is_admin})
         else:
             return redirect("/error")
@@ -135,38 +163,41 @@ def necessidade_show(request, pk):
             
 
 def necessidade_new(request):
-    areas = Area_Conhecimento.objects.all()
-    cursos = Curso.objects.all()
-    usuario = User.objects.get(id = request.user.id)
-    group = Group.objects.get(name='gestor')
-    group2 = Group.objects.get(name='admin')
-    form2 = SubAreaForm()
+    if (hasattr(request.user, 'profile')):
+        areas = Area_Conhecimento.objects.all()
+        cursos = Curso.objects.all()
+        usuario = User.objects.get(id = request.user.id)
+        group = Group.objects.get(name='gestor')
+        group2 = Group.objects.get(name='admin')
+        form2 = SubAreaForm()
 
-    planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True);
+        planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True);
 
-    if(planos_habilitados.count() > 0):
-        if request.method == "POST":
-            data = request.POST.copy()
-            form = NecessidadeForm(request.POST)
-            if form.is_valid():
-                necessidade = form.save(commit=False) 
-                necessidade.cod_plano_capacitacao = Plano_Capacitacao.objects.get(cod_plano_capacitacao = request.POST['plano'])
-                if (request.POST.get('curso_id', None)):
-                    necessidade.curso = Curso.objects.get(cod_curso = request.POST.get('curso_id', None))
-                necessidade.txt_descricao = request.POST.get('txt_descricao', None)
-                necessidade.save()
-                return redirect('necessidade')
+        if(planos_habilitados.count() > 0):
+            if request.method == "POST":
+                data = request.POST.copy()
+                form = NecessidadeForm(request.POST)
+                if form.is_valid():
+                    necessidade = form.save(commit=False) 
+                    necessidade.cod_plano_capacitacao = Plano_Capacitacao.objects.get(cod_plano_capacitacao = request.POST['plano'])
+                    if (request.POST.get('curso_id', None)):
+                        necessidade.curso = Curso.objects.get(cod_curso = request.POST.get('curso_id', None))
+                    necessidade.txt_descricao = request.POST.get('txt_descricao', None)
+                    necessidade.save()
+                    return redirect('necessidade')
+                else:
+                    return redirect("/error")
             else:
-                return redirect("/error")
+                form = NecessidadeForm()
+            
+                if (group in request.user.groups.all() or group2 in request.user.groups.all() or usuario.profile.permissao_necessidade == True ):
+                    return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'form2' : form2, 'eh_necessidade' : False, 'planos_habilitados' : planos_habilitados, 'cursos' : cursos})
+                else: 
+                    return render(request, 'capacita/error.html')
         else:
-            form = NecessidadeForm()
-        
-            if (group in request.user.groups.all() or group2 in request.user.groups.all() or usuario.profile.permissao_necessidade == True ):
-                return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'form2' : form2, 'eh_necessidade' : False, 'planos_habilitados' : planos_habilitados, 'cursos' : cursos})
-            else: 
-                return render(request, 'capacita/error.html')
+            return render(request, 'capacita/error.html', {'eh_necessidade' : True})
     else:
-        return render(request, 'capacita/error.html', {'eh_necessidade' : True})
+        return redirect('error')
 
 def necessidade_edit(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
@@ -201,25 +232,28 @@ def necessidade_delete(request, pk):
     return redirect("necessidade")
 
 def orgao(request):
-    orgaos_list = Orgao.objects.all()
-    page = request.GET.get('page', 1)
-    group = Group.objects.get(name='admin')
-    group2 = Group.objects.get(name='gestor')
-    paginator = Paginator(orgaos_list, 10)
-    permissao = False
+    if (hasattr(request.user, 'profile')):
+        orgaos_list = Orgao.objects.all()
+        page = request.GET.get('page', 1)
+        group = Group.objects.get(name='admin')
+        group2 = Group.objects.get(name='gestor')
+        paginator = Paginator(orgaos_list, 10)
+        permissao = False
 
-    if(group in request.user.groups.all() or group2 in request.user.groups.all()):
-        permissao = True
+        if(group in request.user.groups.all()):
+            permissao = True
 
-    paginator = Paginator(orgaos_list, 6)
-    try:
-        orgaos = paginator.page(page)
-    except PageNotAnInteger:
-        orgaos = paginator.page(1)
-    except EmptyPage:
-        orgaos = paginator.page(paginator.num_pages)
+        paginator = Paginator(orgaos_list, 6)
+        try:
+            orgaos = paginator.page(page)
+        except PageNotAnInteger:
+            orgaos = paginator.page(1)
+        except EmptyPage:
+            orgaos = paginator.page(paginator.num_pages)
 
-    return render(request, 'capacita/orgao.html', {'orgaos' : orgaos, 'permissao' : permissao})
+        return render(request, 'capacita/orgao.html', {'orgaos' : orgaos, 'permissao' : permissao})
+    else:
+        return redirect('error')
 
 def orgao_edit(request, pk):
     orgao = get_object_or_404(Orgao, pk=pk)
@@ -250,8 +284,16 @@ def orgao_delete(request, id):
     return redirect("orgao")
 
 def tipo(request):
-    tipos = Tipo_Plano_Capacitacao.objects.all()
-    return render(request, 'capacita/tipo_plano.html', {'tipos' : tipos})
+    if (hasattr(request.user, 'profile')):
+        group = Group.objects.get(name='admin')
+        if (group in request.user.groups.all()):
+            permissao = True
+        else:
+            permissao = False
+        tipos = Tipo_Plano_Capacitacao.objects.all()
+        return render(request, 'capacita/tipo_plano.html', {'tipos' : tipos, 'permissao' : permissao})
+    else:
+        return redirect('error')
 
 def tipo_edit(request,id):
     tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=id)
@@ -266,6 +308,11 @@ def tipo_edit(request,id):
     return render(request, 'capacita/tipo_edit.html', {'form' : form})
 
 def tipo_new(request):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+    else:
+        permissao = False
     if request.method == 'POST':
         form = TipoForm(request.POST)
         if form.is_valid():
@@ -274,7 +321,11 @@ def tipo_new(request):
             return redirect("tipo")
     else:
         form = TipoForm()
-    return render(request, 'capacita/tipo_edit.html', {'form' : form})
+
+    if (permissao == True):
+        return render(request, 'capacita/tipo_edit.html', {'form' : form, 'permissao' : permissao})
+    else:
+        return redirect('error')
 
 def relatorio(request):
     # Create a workbook and add a worksheet.
@@ -331,30 +382,42 @@ def relatorio(request):
     return response
 
 def areas(request):
+    if (hasattr(request.user, 'profile')):
+        area_filtrada = request.GET.get('cod_area_conhecimento_id', '')
+        group = Group.objects.get(name='admin')
+        if (group in request.user.groups.all()):
+            permissao = True
+        else:
+            permissao = False
+        
+        if area_filtrada != '':
+            sub_areas = Sub_Area_Conhecimento.objects.filter(cod_area_conhecimento_id = area_filtrada)
+        else:
+            sub_areas = Sub_Area_Conhecimento.objects.all()  
 
-    area_filtrada = request.GET.get('cod_area_conhecimento_id', '')
-    
-    if area_filtrada != '':
-        sub_areas = Sub_Area_Conhecimento.objects.filter(cod_area_conhecimento_id = area_filtrada)
+        subarea_filter = SubAreaFilter(request.GET, queryset=sub_areas)
+
+        form = SubAreaForm()
+        page = request.GET.get('page', 1)
+
+        paginator = Paginator(sub_areas, 10)
+        try:
+            subs = paginator.page(page)
+        except PageNotAnInteger:
+            subs = paginator.page(1)
+        except EmptyPage:
+            subs = paginator.page(paginator.num_pages)
+
+        return render(request, 'capacita/areas.html', { 'subs': subs, 'filter' : subarea_filter, 'area_filtrada' : area_filtrada, 'permissao' : permissao})
     else:
-        sub_areas = Sub_Area_Conhecimento.objects.all()  
-
-    subarea_filter = SubAreaFilter(request.GET, queryset=sub_areas)
-
-    form = SubAreaForm()
-    page = request.GET.get('page', 1)
-
-    paginator = Paginator(sub_areas, 10)
-    try:
-        subs = paginator.page(page)
-    except PageNotAnInteger:
-        subs = paginator.page(1)
-    except EmptyPage:
-        subs = paginator.page(paginator.num_pages)
-
-    return render(request, 'capacita/areas.html', { 'subs': subs, 'filter' : subarea_filter, 'area_filtrada' : area_filtrada})
-
+        return redirect('error')
+        
 def sub_area_edit(request, pk):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+    else:
+        permissao = False
     sub_area = get_object_or_404(Sub_Area_Conhecimento, pk=pk)
     if request.method == "POST":
         form = SubAreaForm(request.POST, instance=sub_area)
@@ -364,14 +427,27 @@ def sub_area_edit(request, pk):
             return redirect('areas')
     else:
         form = SubAreaForm(instance=sub_area)
-    return render(request, 'capacita/area_edit.html', {'form': form})
+    
+    if(permissao == True):
+        return render(request, 'capacita/area_edit.html', {'form': form})
+    else:
+        return redirect('error')
 
 def subarea_delete(request, id):
-    subarea = get_object_or_404(Sub_Area_Conhecimento, pk=id)
-    subarea.delete()
-    return redirect("areas")
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        subarea = get_object_or_404(Sub_Area_Conhecimento, pk=id)
+        subarea.delete()
+        return redirect("areas")
+    else:
+        return redirect('error') 
 
 def subareas_new(request):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+    else:
+        permissao = False
     if request.method == 'POST':
         form = SubAreaForm(request.POST)
         if form.is_valid():
@@ -380,7 +456,10 @@ def subareas_new(request):
             return redirect("areas")
     else:
         form = SubAreaForm()
-    return render(request, 'capacita/area_edit.html', {'form' : form})
+    if(permissao == True):
+        return render(request, 'capacita/area_edit.html', {'form' : form})
+    else:
+        return redirect('error')
 
 def usuarios(request):
     if (hasattr(request.user, 'profile')):
@@ -390,7 +469,8 @@ def usuarios(request):
         users = []
 
         for profile in profiles:
-            users.append(User.objects.get(id = profile.user_id))
+            if (User.objects.get(id = profile.user_id) != request.user):
+                users.append(User.objects.get(id = profile.user_id))
         
         group = Group.objects.get(name='gestor')
         group2 = Group.objects.get(name='admin')
@@ -400,13 +480,31 @@ def usuarios(request):
         orgao = ""
         group2 = group = None
 
-        if ((group2 in request.user.groups.all()) or request.user.is_superuser == True):
-            users = User.objects.all().order_by('name')
+        if ((group2 in request.user.groups.all())):
+            users = User.objects.exclude(id = request.user.id)
+    
+    if (group2 in request.user.groups.all()):
+        users = User.objects.exclude(id = request.user.id)
+        orgaos = Orgao.objects.all()
+        orgao = ''
+        
+        if request.GET.get('orgao', ''):
 
-    if ((group in request.user.groups.all()) or (group2 in request.user.groups.all()) or request.user.is_superuser == True):
-        return render(request, 'capacita/usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao})
-    else: 
-        return render(request, 'capacita/error.html')
+            user_orgao = request.GET.get('orgao', '')
+
+            profiles = Profile.objects.filter(orgao_id = user_orgao)
+            users = []
+
+            for profile in profiles:
+                if (User.objects.get(id = profile.user_id) != request.user):
+                    users.append(User.objects.get(id = profile.user_id))
+
+        return render(request, 'capacita/usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'orgaos' : orgaos})
+    else:
+        if ((group in request.user.groups.all())):
+            return render(request, 'capacita/usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao})
+        else: 
+            return render(request, 'capacita/error.html')
 
 @csrf_exempt
 def usuarios_permissao(request):
@@ -421,6 +519,12 @@ def usuarios_permissao(request):
     return HttpResponseRedirect('/usuarios/')
 
 def usuario_new(request):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+    else:
+        permissao = False
+    
     if request.method == 'POST':
         form = UserForm(request.POST)
         id_group = request.POST['group']
@@ -440,8 +544,11 @@ def usuario_new(request):
         form = UserForm()
         orgaos = Orgao.objects.all()
         groups = Group.objects.all()
-        
-        return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups})
+
+        if(permissao):
+            return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups})
+        else:
+            return redirect('error')
 
 def api_areas(request):
     areas = Area_Conhecimento.objects.all().values()

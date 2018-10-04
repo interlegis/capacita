@@ -7,16 +7,18 @@ from .models import *
 class NecessidadeForm(forms.ModelForm):
 
     curso = forms.ChoiceField(required=False)
+    justificativa = forms.CharField(widget=forms.Textarea)
 
     class Meta:
         model = Necessidade
-        fields = ('qtd_servidor','hor_duracao','cod_iniciativa','cod_mes','cod_nivel','cod_sub_area_conhecimento','cod_prioridade','cod_turno', 'custo')
+        fields = ('qtd_servidor','hor_duracao','cod_iniciativa','cod_mes','cod_nivel','cod_sub_area_conhecimento','cod_prioridade','cod_turno', 'justificativa', 'custo')
         labels = {
             'qtd_servidor' : 'Quantidade de Servidores Efetivos',
             'hor_duracao'  : 'Hora de duração',
             'cod_sub_area_conhecimento' : 'Sub-Área de Conhecimento',
             'cod_iniciativa' : "Iniciativa",
             'cod_mes' : 'Mês',
+            'justificativa' : 'Justificativa',
             'custo' : 'Custo',
             'cod_nivel' : 'Nível',
             'cod_turno' : 'Turnos',

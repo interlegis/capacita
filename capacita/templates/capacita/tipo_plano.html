@@ -10,8 +10,10 @@
                 <tr class="center aligned">
                     <th>Sigla</th>
                     <th>Nome</th>
-                    <th>Editar</th>
-                    <th>Excluir</th>
+                    {% if permissao == True %}
+                        <th>Editar</th>
+                        <th>Excluir</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -20,8 +22,10 @@
                     <tr class="center aligned">
                         <td>{{tipo.sgl_tipo_plano_capacitacao}}</td>
                         <td>{{tipo.nome_tipo_plano_capacitacao}}</td>
+                        {% if permissao == True %}
                         <td><a class="links" href="{% url 'tipo_edit' tipo.cod_tipo_plano_capacitacao %}"><i class="pencil icon"></i></a></td>
                         <td></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
 
