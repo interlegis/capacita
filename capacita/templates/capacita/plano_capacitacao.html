@@ -4,27 +4,12 @@
 
     <div class="table_div">
 
-        <form class="ui form" method="get">
-            <div class="two fields">
-                <div class="select_orgao field">
-                    <label>Órgão</label>
-                    {{ filter.form.cod_orgao }}
-                </div>
-                <!-- <div class="field">
-                    <label>asdlfk</label>
-                    <button class="ui button" type="submit">Search</button>
-                </div> -->
-            </div>
-        </form>
-        <br>
         <h4 class="ui dividing header">Planos de Capacitação</h4>
+        <p>Só pode existir um plano de capacitação habilitado</p>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
-                <th>Órgão</th>
-                <th>Tipo de Plano</th>
                 <th>Período</th>
-                <th>Situação</th>
                 <th>Habilitada</th>
                 <th>Ver</th>
                 {% if permissao == True %}
@@ -35,12 +20,9 @@
             </thead>
             <tbody>
                 
-                {% for plano in filter.qs %}
+                {% for plano in planos %}
                     <tr class="center aligned">
-                        <td>{{plano.cod_orgao}}</td>
-                        <td>{{plano.cod_tipo_plano_capacitacao}}</td>
                         <td>{{plano.ano_plano_capacitacao}}</td>
-                        <td>{{plano.situacao}}</td>
                         <td>{{plano.plano_habilitado}}</td>
                         <td><a class="links" href="{% url 'plano_show' plano.cod_plano_capacitacao %}"><i class="search icon"></i></a></td>
                         {% if permissao == True %}

@@ -4,11 +4,10 @@
 
     <div class="table_div">
 
-        <h4 class="ui dividing header">Pesquisa de Tipo de Plano de Capacitação</h4>
+        <h4 class="ui dividing header">Pesquisa de Evento</h4>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
-                    <th>Sigla</th>
                     <th>Nome</th>
                     {% if permissao == True %}
                         <th>Editar</th>
@@ -18,13 +17,12 @@
             </thead>
             <tbody>
                 
-                {% for tipo in tipos %}
+                {% for evento in eventos %}
                     <tr class="center aligned">
-                        <td>{{tipo.sgl_tipo_plano_capacitacao}}</td>
-                        <td>{{tipo.nome_tipo_plano_capacitacao}}</td>
+                        <td>{{evento.nome}}</td>
                         {% if permissao == True %}
-                        <td><a class="links" href="{% url 'tipo_edit' tipo.cod_tipo_plano_capacitacao %}"><i class="pencil icon"></i></a></td>
-                        <td><a class="links" href="{% url 'tipo_delete' tipo.cod_tipo_plano_capacitacao %}"><i class="delete icon"></i></a></td>
+                        <td><a class="links" href="{% url 'evento_edit' evento.cod_evento %}"><i class="pencil icon"></i></a></td>
+                        <td><a class="links" href="{% url 'evento_delete' evento.cod_evento %}"><i class="delete icon"></i></a></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -32,7 +30,7 @@
             </tbody>
         </table>
         <br>
-        <a href="/tipo/new/"><button class="ui button basic secondary">Novo</button></a>
+        <a href="/evento/new/"><button class="ui button basic secondary">Novo</button></a>
     </div>
 
     {% endblock %}

@@ -15,14 +15,16 @@
         <div class="item">
             <img src="{% static 'images/senado.png' %}">
         </div>
-        <a href="/plano/" class="item">Plano de Capacitação</a>
+        <a href="/plano/" class="item">Plano Capacitação</a>
+        <a class="item" href="/necessidade/">Necessidade</a>
         <div class="ui dropdown item">
             Administração
             <i class="dropdown icon"></i>
             <div class="menu">
-                <a class="item" href="/necessidade/">Necessidade</a>
+                <a class="item" href="/eventos/">Eventos</a>
                 <a class="item" href="/orgao/">Órgãos</a>
                 <a class="item"  href="/tipo/">Tipos Plano Capacitação</a>
+                <a class="item"  href="/modalidade/">Modalidade de Treinamento</a>
                 <a class="item" href="/areas/">Áreas de Interesse</a>
                 <a class="item" href="/usuarios/">Usuários</a>
             </div>
@@ -142,8 +144,50 @@
 
     })
 
+    // if($("#planos option").val() == 'Treinamentos Presenciais - Externo'){
+
+    // }
+
+    // $("#planos").on('change',function(){
+    //     if($(this).val() == )
+    // })
+
+    var tipo;
+
+    $.getJSON("/api/tipos/", function(data){        
+        for(var i = 0; i < data.length; i++){
+            if(data[i].nome_tipo_plano_capacitacao == 'Treinamentos Externos'){
+                tipo = data[i].cod_tipo_plano_capacitacao;
+            }
+        }
+        console.log(tipo);
+    });
+
+    var planos_externos = [];
+    var plano;
+
+    $.getJSON("/api/planos/", function(data){
+
+        for(var i = 0; i < data.length; i++){
+            if(data[i].cod_tipo_plano_capacitacao_id == $("#planos").val()){
+                plano = data[i];
+            }
+            if(data[i].cod_tipo_plano_capacitacao_id == tipo){
+                planos_externos.push(data[i].cod_plano_capacitacao);
+            }
+        }
+
+        console.log(planos_externos);
+
+    }); 
 
     $(document).ready(function(){
+
+        if(tipo == (parseInt($("#id_cod_tipo").val()))){
+            $("#id_custoo").prop('disabled', false);
+        }else{
+            $("#id_custoo").prop('disabled', true);
+        }
 
         $("#descricao_necessidade").prop('disabled', false);
         
@@ -156,7 +200,7 @@
     });
 
     $("#nome_curso_form").on('change', function(){
-        console.log($("#nome_curso_form option:selected").val())
+        // console.log($("#nome_curso_form option:selected").val())
         if($("#nome_curso_form option:selected").val() == ''){
             $("#descricao_necessidade").prop('disabled', false);
         }else{
@@ -164,6 +208,14 @@
         }
     })
 
+    $("#id_cod_tipo").on('change', function(){
+        // console.log(planos_externos);
+        if(tipo == (parseInt($("#id_cod_tipo").val()))){
+            $("#id_custoo").prop('disabled', false);
+        }else{
+            $("#id_custoo").prop('disabled', true);
+        }
+    })
 
 </script>
 </html>

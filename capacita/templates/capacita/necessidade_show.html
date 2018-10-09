@@ -28,26 +28,26 @@
             <div class="column">
                 <strong>Plano de Capacitação:</strong>
                 <p>{{ necessidade.cod_plano_capacitacao }}</p>
-                <strong>Iniciativa:</strong>
-                <p>{{ necessidade.cod_iniciativa }}</p>
                 <strong>Prioridade:</strong>
                 <p>{{ necessidade.cod_prioridade }}</p>
                 <strong>Nível:</strong>
                 <p>{{ necessidade.cod_nivel }}</p>
-                <strong>Mês:</strong>
-                <p>{{ necessidade.cod_mes }}</p>
-            </div>
-            <div class="column">
                 <strong>Custo:</strong>
                 <p>R$ {{ necessidade.custo }}</p>
+                <strong>Modalidade de Treinamento</strong>
+                <p>{{ necessidade.cod_modalidade }}</p>
+            </div>
+            <div class="column">
+                <strong>Usuário</strong>
+                <p>{{ necessidade.cod_usuario.username }}</p>
                 <strong>Hora de duração:</strong>
                 <p>{{ necessidade.hor_duracao }}</p>
-                <strong>Turno:</strong>
-                <p>{{ necessidade.cod_turno }}</p>
+                <strong>Evento:</strong>
+                <p>{{ necessidade.cod_evento }}</p>
                 {% if is_admin %}
                 <strong>Aprovado</strong>
-                <form action="" method="POST">{% csrf_token %}
-                    <select onchange="this.form.submit();" class="ui field" name="aprovado">
+                <form class="ui form" action="" method="POST">{% csrf_token %}
+                    <select style="width: 100px;" onchange="this.form.submit();" class="ui field" name="aprovado">
                         {% if necessidade.aprovado == True %}
                             <option value="True" selected>Sim</option>
                             <option value="False">Não</option>

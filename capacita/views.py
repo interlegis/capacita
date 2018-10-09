@@ -27,13 +27,12 @@ def plano(request):
     else:
         permissao = False
     planos = Plano_Capacitacao.objects.all()
-    plano_filter = PlanoFilter(request.GET, queryset=planos)
     group = Group.objects.get(name='admin')
     group2 = Group.objects.get(name='gestor')
     form = PlanoForm()
 
     if (group in request.user.groups.all() or group2 in request.user.groups.all()):
-        return render(request, 'capacita/plano_capacitacao.html', {'filter' : plano_filter, 'form' : form, 'permissao' : permissao})
+        return render(request, 'capacita/plano_capacitacao.html', {'planos' : planos, 'form' : form, 'permissao' : permissao})
     else:
         return render(request, 'capacita/error.html')
 
@@ -94,7 +93,6 @@ def necessidade(request):
     if (hasattr(request.user, 'profile')):
         areas = Area_Conhecimento.objects.all()
         niveis = Nivel.objects.all()
-        turnos = Turno.objects.all()
         planos = Plano_Capacitacao.objects.all()
         group = Group.objects.get(name='admin')
         group2 = Group.objects.get(name='gestor')
@@ -129,7 +127,7 @@ def necessidade(request):
         necessidades = necessidades.order_by('custo')
 
         if(group in request.user.groups.all() or group2 in request.user.groups.all() or group3 in request.user.groups.all() or request.user.profile.permissao_necessidade == True):
-            return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 'turnos' : turnos, 'orgao_usuario' : orgao_usuario, 'is_admin' : is_admin})
+            return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 'orgao_usuario' : orgao_usuario, 'is_admin' : is_admin})
         else:
             return render(request, 'capacita/error.html')
     else:
@@ -176,13 +174,19 @@ def necessidade_new(request):
         if(planos_habilitados.count() > 0):
             if request.method == "POST":
                 data = request.POST.copy()
+                tipo = Tipo_Plano_Capacitacao.objects.get(cod_tipo_plano_capacitacao = request.POST['cod_tipo'])
                 form = NecessidadeForm(request.POST)
                 if form.is_valid():
                     necessidade = form.save(commit=False) 
-                    necessidade.cod_plano_capacitacao = Plano_Capacitacao.objects.get(cod_plano_capacitacao = request.POST['plano'])
+                    necessidade.cod_plano_capacitacao = planos_habilitados[0]
                     if (request.POST.get('curso_id', None)):
                         necessidade.curso = Curso.objects.get(cod_curso = request.POST.get('curso_id', None))
+                    if(tipo.nome_tipo_plano_capacitacao != 'Treinamentos Externos'):
+                        necessidade.custo = 100
+                    else:
+                        necessidade.custo = request.POST.get('custo', None)
                     necessidade.txt_descricao = request.POST.get('txt_descricao', None)
+                    necessidade.cod_usuario = usuario
                     necessidade.save()
                     return redirect('necessidade')
                 else:
@@ -295,6 +299,11 @@ def tipo(request):
     else:
         return redirect('error')
 
+def tipo_delete(request, pk):
+    tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=pk)
+    tipo.delete()
+    return redirect("tipo")
+
 def tipo_edit(request,id):
     tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=id)
     if request.method == 'POST':
@@ -343,30 +352,32 @@ def relatorio(request):
     row = 0
     col = 0
 
-    worksheet.write(row, col,         "Descricao", bold)
-    worksheet.write(row, col + 1,     "Plano", bold)
-    worksheet.write(row, col + 2,     "Iniciativa", bold)
-    worksheet.write(row, col + 3,     "Prioridade", bold)
-    worksheet.write(row, col + 4,     "Quantidade de Servidores", bold)
-    worksheet.write(row, col + 5,     "Area Conhecimento", bold)
-    worksheet.write(row, col + 6,     "Nivel", bold)
-    worksheet.write(row, col + 7,     "Hora de Duração", bold)
-    worksheet.write(row, col + 8,     "Turno", bold)
-    worksheet.write(row, col + 9,     "Mês", bold)
+    worksheet.write(row, col,         "Sugestão de Curso", bold)
+    worksheet.write(row, col + 1,     "Prioridade", bold)
+    worksheet.write(row, col + 2,     "Quantidade de Servidores", bold)
+    worksheet.write(row, col + 3,     "Area Conhecimento", bold)
+    worksheet.write(row, col + 4,     "Nivel", bold)
+    worksheet.write(row, col + 5,     "Carga Horária", bold)
+    worksheet.write(row, col + 6,     "Evento", bold)
+    worksheet.write(row, col + 7,     "Demandante", bold)
+    worksheet.write(row, col + 8,     "Custo", bold)
 
     row += 1
 
     for necessidade in necessidades:
-        worksheet.write(row, col,     necessidade.txt_descricao, center)
-        worksheet.write(row, col + 1, necessidade.cod_plano_capacitacao.situacao, center)
-        worksheet.write(row, col + 2, necessidade.cod_iniciativa.nome, center)
-        worksheet.write(row, col + 3, necessidade.cod_prioridade.nome, center)
-        worksheet.write(row, col + 4, necessidade.qtd_servidor, center)
-        worksheet.write(row, col + 5, necessidade.cod_sub_area_conhecimento.txt_descricao, center)
-        worksheet.write(row, col + 6, necessidade.cod_nivel.nome, center)
-        worksheet.write(row, col + 7, necessidade.hor_duracao, center)
-        worksheet.write(row, col + 8, necessidade.cod_turno.nome, center)
-        worksheet.write(row, col + 9, necessidade.cod_mes.nome, center)
+        if (necessidade.curso == '' or necessidade.curso == None):
+            curso = necessidade.txt_descricao
+        else:
+            curso = necessidade.curso.nome
+        worksheet.write(row, col,     curso, center)
+        worksheet.write(row, col + 1, necessidade.cod_prioridade.nome, center)
+        worksheet.write(row, col + 2, necessidade.qtd_servidor, center)
+        worksheet.write(row, col + 3, necessidade.cod_sub_area_conhecimento.txt_descricao, center)
+        worksheet.write(row, col + 4, necessidade.cod_nivel.nome, center)
+        worksheet.write(row, col + 5, necessidade.hor_duracao, center)
+        worksheet.write(row, col + 6, necessidade.cod_evento.nome, center)
+        worksheet.write(row, col + 7, necessidade.cod_usuario.username, center)
+        worksheet.write(row, col + 8, necessidade.custo, center)
         row += 1
 
     worksheet.set_default_row(20)
@@ -411,7 +422,7 @@ def areas(request):
         return render(request, 'capacita/areas.html', { 'subs': subs, 'filter' : subarea_filter, 'area_filtrada' : area_filtrada, 'permissao' : permissao})
     else:
         return redirect('error')
-        
+
 def sub_area_edit(request, pk):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -531,7 +542,7 @@ def usuario_new(request):
         my_group = Group.objects.get(id=id_group) 
         if form.is_valid():
             usuario = form.save()
-            profile = Profile.objects.create(titular = False, permissao_necessidade = False, orgao_id = request.POST['orgao'], user_id = usuario.id)
+            profile = Profile.objects.create(permissao_necessidade = False, orgao_id = request.POST['orgao'], user_id = usuario.id)
             usuario.is_active = True
             usuario.groups.add(my_group)
             profile.save()
@@ -550,6 +561,114 @@ def usuario_new(request):
         else:
             return redirect('error')
 
+def modalidade(request):
+    if (hasattr(request.user, 'profile')):
+        group = Group.objects.get(name = 'admin')
+        permissao = False
+        if group in request.user.groups.all():
+            permissao = True
+
+        modalidades = Modalidade_Treinamento.objects.all()
+        return render(request, 'capacita/modalidades.html', {'modalidades' : modalidades, 'permissao' : permissao})
+    else:
+        return redirect('error')
+
+def eventos(request):
+    if (hasattr(request.user, 'profile')):
+        group = Group.objects.get(name = 'admin')
+        permissao = False
+        if group in request.user.groups.all():
+            permissao = True
+
+        eventos = Evento.objects.all()
+        return render(request, 'capacita/eventos.html', {'eventos' : eventos, 'permissao' : permissao})
+    else:
+        return redirect('error')
+
+def evento_edit(request, pk):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+    else:
+        permissao = False
+    evento = get_object_or_404(Evento, pk=pk)
+    if request.method == "POST":
+        form = EventoForm(request.POST, instance=evento)
+        if form.is_valid():
+            evento = form.save(commit=False)
+            evento.save()
+            return redirect('eventos')
+    else:
+        form = EventoForm(instance=evento)
+    
+    if(permissao == True):
+        return render(request, 'capacita/evento_edit.html', {'form': form})
+    else:
+        return redirect('error')
+
+def evento_new(request):
+    if request.method == "POST":
+        form = EventoForm(request.POST)
+        if form.is_valid():
+            evento = form.save(commit=False) 
+            evento.save()
+            return redirect('eventos')
+    else:
+        form = EventoForm()
+    return render(request, 'capacita/evento_edit.html', {'form': form})
+
+def evento_delete(request, pk):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+        evento = get_object_or_404(Evento, pk=pk)
+        evento.delete()
+        return redirect("eventos")
+    else:
+        return redirect('error')
+
+def modalidade_edit(request, pk):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+    else:
+        permissao = False
+    modalidade = get_object_or_404(Modalidade_Treinamento, pk=pk)
+    if request.method == "POST":
+        form = ModalidadeForm(request.POST, instance=modalidade)
+        if form.is_valid():
+            modalidade = form.save(commit=False)
+            modalidade.save()
+            return redirect('modalidade')
+    else:
+        form = ModalidadeForm(instance=modalidade)
+    
+    if(permissao == True):
+        return render(request, 'capacita/modalidade_edit.html', {'form': form})
+    else:
+        return redirect('error')
+
+def modalidade_new(request):
+    if request.method == "POST":
+        form = ModalidadeForm(request.POST)
+        if form.is_valid():
+            modalidade = form.save(commit=False) 
+            modalidade.save()
+            return redirect('modalidade')
+    else:
+        form = ModalidadeForm()
+    return render(request, 'capacita/modalidade_edit.html', {'form': form})
+
+def modalidade_delete(request, pk):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+        modalidade = get_object_or_404(Modalidade_Treinamento, pk=pk)
+        modalidade.delete()
+        return redirect("modalidade")
+    else:
+        return redirect('error')
+
 def api_areas(request):
     areas = Area_Conhecimento.objects.all().values()
     sub_areas = Sub_Area_Conhecimento.objects.all()
@@ -567,6 +686,16 @@ def api_cursos(request):
     cursos = Curso.objects.all().values()
     cursos = list(cursos)
     return JsonResponse(cursos, safe=False)
+
+def api_tipos(request):
+    tipos = Tipo_Plano_Capacitacao.objects.all().values()
+    tipos = list(tipos)
+    return JsonResponse(tipos, safe=False)
+
+def api_planos(request):
+    planos = Plano_Capacitacao.objects.all().values()
+    planos = list(planos)
+    return JsonResponse(planos, safe=False)
 
 def error(request):
     return render(request, 'capacita/error.html')

@@ -6,25 +6,8 @@
     <div class="ui container">
         <form class="ui form" method="post">{% csrf_token %}
             
-            <h4 class="ui dividing header">Novo Plano</h4>
+            <h4 class="ui dividing header">Plano</h4>
             <div class="two fields">
-                <div class="field">
-                    {{ form.cod_orgao.errors }}
-                    <label>Órgão</label>
-                    {{ form.cod_orgao }}
-                </div>
-                <div class="field">
-                    {{ form.situacao.errors }}
-                    <label>Situação</label>
-                    {{ form.situacao }}
-                </div>
-            </div>
-            <div class="two fields">
-                <div class="field">
-                    {{ form.cod_tipo_plano_capacitacao.errors}}
-                    <label>Tipo Plano de Capacitação</label>
-                    {{ form.cod_tipo_plano_capacitacao}}
-                </div>
                 <div class="field">
                     {{ form.ano_plano_capacitacao.errors }}
                     <label>Período</label>

@@ -41,15 +41,6 @@
                     </div>
                     <div class="three fields">
                         <div class="field">
-                            <label>Turno</label>
-                            <select name="turno" id="">
-                                <option value="">-------------</option>
-                                {% for turno in turnos %}
-                                <option value="{{turno.cod_turno}}">{{turno.nome}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="field">
                             <label>Quantidade aproximada de servidores</label>
                             <input type="text" name="qtd_servidor">
                         </div>
@@ -71,7 +62,6 @@
                 <tr class="center aligned">
                 <th>Curso</th>
                 <th>Plano Capacitação</th>
-                <th>Iniciativa</th>
                 <th>Quantidade de Servidores</th>
                 <th>Área Conhecimento</th>
                 <th>Aprovado</th>
@@ -93,7 +83,6 @@
                         <td>{{necessidade.curso}}</td>
                         {% endif %}
                         <td>{{necessidade.cod_plano_capacitacao}}</td>
-                        <td>{{necessidade.cod_iniciativa}}</td>
                         <td>{{necessidade.qtd_servidor}}</td>
                         <td>{{necessidade.cod_sub_area_conhecimento}}</td> 
                         {% if necessidade.aprovado == False %}

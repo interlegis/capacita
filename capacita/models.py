@@ -89,21 +89,44 @@ class Curso(models.Model):
         managed = False
         db_table = 'Curso'
 
+class Modalidade_Treinamento(models.Model):
+    cod_modalidade = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nome
+    
+    class Meta:
+        managed = False
+        db_table = 'Modalidade_Treinamento'
+
+class Evento(models.Model):
+    cod_evento = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=60)
+
+    def __str__(self):
+        return self.nome
+    
+    class Meta:
+        managed = False
+        db_table = 'Evento'
+
 class Necessidade(models.Model):
     cod_necessidade = models.AutoField(primary_key=True)
     curso = models.ForeignKey(Curso, models.DO_NOTHING, null=True)
     txt_descricao = models.CharField(max_length=200, null=True)
     qtd_servidor = models.DecimalField(max_digits=6, decimal_places=0)
     hor_duracao = models.DecimalField(max_digits=2, decimal_places=0)
+    cod_evento = models.ForeignKey('Evento', models.DO_NOTHING, null=True)
     ind_excluido = models.DecimalField(default=0,max_digits=2, decimal_places=0)
-    cod_iniciativa = models.ForeignKey(Iniciativa, models.DO_NOTHING)
-    custo = models.DecimalField(max_digits=6, decimal_places=2)
-    cod_mes = models.ForeignKey(Mes, models.DO_NOTHING)
+    custo = models.DecimalField(max_digits=6, decimal_places=2, default=100)
+    cod_modalidade = models.ForeignKey('Modalidade_Treinamento', models.DO_NOTHING)
+    cod_tipo = models.ForeignKey('Tipo_Plano_Capacitacao', models.DO_NOTHING)
     cod_nivel = models.ForeignKey('Nivel', models.DO_NOTHING)
+    cod_usuario = models.ForeignKey(User,models.DO_NOTHING)
     cod_plano_capacitacao = models.ForeignKey('Plano_Capacitacao', models.DO_NOTHING)
     cod_prioridade = models.ForeignKey('Prioridade', models.DO_NOTHING)
     cod_sub_area_conhecimento = models.ForeignKey('Sub_Area_Conhecimento', models.DO_NOTHING)
-    cod_turno = models.ForeignKey('Turno', models.DO_NOTHING)
     aprovado = models.NullBooleanField(null = False, default=False) 
     justificativa = models.CharField(max_length=300)
 
@@ -140,17 +163,16 @@ class Permissao(models.Model):
 
 class Plano_Capacitacao(models.Model):
     cod_plano_capacitacao = models.AutoField(primary_key=True)
-    situacao = models.CharField(max_length=200)
     qtd_servidores_efetivos = models.IntegerField()
     qtd_servidores_comissionados = models.IntegerField()
+    data_inicio = models.DateField(null=True)
+    data_fim = models.DateField(null=True)
     ano_plano_capacitacao = models.DecimalField(max_digits=4, decimal_places=0)
     ind_excluido = models.DecimalField(default=0,max_digits=2, decimal_places=0)
-    cod_orgao = models.ForeignKey(Orgao, models.DO_NOTHING)
-    cod_tipo_plano_capacitacao = models.ForeignKey('Tipo_Plano_Capacitacao', models.DO_NOTHING)
     plano_habilitado = models.NullBooleanField(null = False)
 
     def __str__(self):
-        return str(self.cod_tipo_plano_capacitacao) + '-' + str(self.ano_plano_capacitacao)
+        return str(str(self.ano_plano_capacitacao))
 
     class Meta:
         managed = False
@@ -190,19 +212,6 @@ class Tipo_Plano_Capacitacao(models.Model):
     class Meta:
         managed = False
         db_table = 'Tipo_Plano_Capacitacao'
-
-
-class Turno(models.Model):
-    cod_turno = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        managed = False
-        db_table = 'Turno'
-
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)

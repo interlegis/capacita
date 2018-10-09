@@ -11,17 +11,16 @@ class NecessidadeForm(forms.ModelForm):
 
     class Meta:
         model = Necessidade
-        fields = ('qtd_servidor','hor_duracao','cod_iniciativa','cod_mes','cod_nivel','cod_sub_area_conhecimento','cod_prioridade','cod_turno', 'justificativa', 'custo')
+        fields = ('qtd_servidor','hor_duracao','cod_nivel', 'cod_tipo','cod_modalidade','cod_sub_area_conhecimento','cod_prioridade', 'justificativa', 'cod_evento')
         labels = {
             'qtd_servidor' : 'Quantidade de Servidores Efetivos',
             'hor_duracao'  : 'Hora de duração',
+            'cod_evento' : 'Evento',
+            'cod_tipo' : 'Tipo de Modalidade',
             'cod_sub_area_conhecimento' : 'Sub-Área de Conhecimento',
-            'cod_iniciativa' : "Iniciativa",
-            'cod_mes' : 'Mês',
             'justificativa' : 'Justificativa',
-            'custo' : 'Custo',
+            'cod_modalidade' : 'Modalidade de Treinamento',
             'cod_nivel' : 'Nível',
-            'cod_turno' : 'Turnos',
             'cod_prioridade' : 'Prioridade'
         }
     
@@ -36,15 +35,21 @@ class PlanoForm(forms.ModelForm):
 
     class Meta:
         model = Plano_Capacitacao
-        fields = ('cod_orgao', 'cod_tipo_plano_capacitacao', 'ano_plano_capacitacao','situacao', 'qtd_servidores_efetivos', 'qtd_servidores_comissionados', 'plano_habilitado')
-        labels = {
-            'cod_orgao' : 'Órgão'
-        }
+        fields = ('ano_plano_capacitacao','qtd_servidores_efetivos', 'qtd_servidores_comissionados', 'plano_habilitado')
 
 class OrgaoForm(forms.ModelForm):
 
     class Meta:
         model = Orgao
+        fields = ('nome', )
+        labels = {
+            'nome' : 'Nome'
+        }
+
+class EventoForm(forms.ModelForm):
+
+    class Meta:
+        model = Evento
         fields = ('nome', )
         labels = {
             'nome' : 'Nome'
@@ -89,3 +94,9 @@ class SubAreaForm(forms.ModelForm):
     class Meta:
         model = Sub_Area_Conhecimento
         fields = ('cod_sub_area_conhecimento', 'cod_area_conhecimento', 'txt_descricao')
+
+class ModalidadeForm(forms.ModelForm):
+
+    class Meta:
+        model = Modalidade_Treinamento
+        fields = ('cod_modalidade', 'nome')
