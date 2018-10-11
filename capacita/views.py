@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render, redirect,get_object_or_404
+from django.db.models import Avg, Max, Count, Sum
 import xlsxwriter
 from .filtro_necessidade import *
 from django.contrib.auth.models import User
@@ -347,7 +348,8 @@ def relatorio(request):
     bold = workbook.add_format({'bold': True, 'center_across' : True})
     center = workbook.add_format({'center_across' : True})
 
-    necessidades = Necessidade.objects.all()
+    necessidades = Necessidade.objects.values('curso', 'txt_descricao').annotate(cod_necessidade=Max('cod_necessidade'),custo=Sum('custo') ,qtd_servidor=Sum('qtd_servidor'), hor_duracao= Avg('hor_duracao'),cod_sub_area_conhecimento=Max('cod_sub_area_conhecimento_id'),cod_prioridade=Avg('cod_prioridade_id'),cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'),cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id'))
+
 
     row = 0
     col = 0
@@ -365,19 +367,20 @@ def relatorio(request):
     row += 1
 
     for necessidade in necessidades:
-        if (necessidade.curso == '' or necessidade.curso == None):
-            curso = necessidade.txt_descricao
+        if (necessidade['curso'] == '' or necessidade['curso'] == None):
+            curso = necessidade['txt_descricao']
         else:
-            curso = necessidade.curso.nome
+            curso = Curso.objects.get(cod_curso=necessidade['curso']).nome
+        
         worksheet.write(row, col,     curso, center)
-        worksheet.write(row, col + 1, necessidade.cod_prioridade.nome, center)
-        worksheet.write(row, col + 2, necessidade.qtd_servidor, center)
-        worksheet.write(row, col + 3, necessidade.cod_sub_area_conhecimento.txt_descricao, center)
-        worksheet.write(row, col + 4, necessidade.cod_nivel.nome, center)
-        worksheet.write(row, col + 5, necessidade.hor_duracao, center)
-        worksheet.write(row, col + 6, necessidade.cod_evento.nome, center)
-        worksheet.write(row, col + 7, necessidade.cod_usuario.username, center)
-        worksheet.write(row, col + 8, necessidade.custo, center)
+        worksheet.write(row, col + 1, Prioridade.objects.get(cod_prioridade=necessidade['cod_prioridade']).nome, center)
+        worksheet.write(row, col + 2, necessidade['qtd_servidor'], center)
+        worksheet.write(row, col + 3, Sub_Area_Conhecimento.objects.get(cod_sub_area_conhecimento=necessidade['cod_sub_area_conhecimento']).txt_descricao, center)
+        worksheet.write(row, col + 4, Nivel.objects.get(cod_nivel=necessidade['cod_nivel']).nome, center)
+        worksheet.write(row, col + 5, necessidade['hor_duracao'], center)
+        worksheet.write(row, col + 6, Evento.objects.get(cod_evento=necessidade['cod_evento']).nome, center)
+        worksheet.write(row, col + 7, User.objects.get(id=necessidade['cod_usuario']).username, center)
+        worksheet.write(row, col + 8, necessidade['custo'], center)
         row += 1
 
     worksheet.set_default_row(20)
@@ -560,6 +563,41 @@ def usuario_new(request):
             return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups})
         else:
             return redirect('error')
+
+def usuario_edit(request, pk):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        permissao = True
+    else:
+        permissao = False
+    usuario = get_object_or_404(User, pk=pk)
+    if request.method == "POST":
+        form = UserForm(request.POST, instance=usuario)
+        id_group = request.POST['group']
+        my_group = Group.objects.get(id=id_group) 
+        if form.is_valid():
+            usuario = form.save(commit=False)
+            usuario.groups.clear()
+            profile = Profile.objects.get(user_id = usuario.id)
+            profile.orgao_id = request.POST['orgao']
+            profile.save()
+            my_group = Group.objects.get(id=id_group)
+            usuario.groups.add(my_group)
+            usuario.is_active = True
+            usuario.save()
+
+            return redirect("usuarios")
+    else:
+        form = UserForm(instance=usuario)
+        orgaos = Orgao.objects.all()
+        groups = Group.objects.all()
+
+    groups = Group.objects.all()
+    orgaos = Orgao.objects.all()
+    if(permissao == True):
+        return render(request, 'capacita/usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario})
+    else:
+        return redirect('error')
 
 def modalidade(request):
     if (hasattr(request.user, 'profile')):

@@ -30,7 +30,13 @@
                     <select name="orgao" >
                         <option></option>
                         {% for orgao in orgaos %}
-                            <option value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
+                            {% if usuario %}
+                                {% if usuario.profile.orgao == orgao %}
+                                    <option selected value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
+                                {% else %}
+                                    <option value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
+                                {% endif %}
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -39,7 +45,14 @@
                     <select name="group" >
                         <option>Sem grupo</option>
                         {% for group in groups %}
-                            <option value="{{group.id}}">{{group.name}}</option>
+                            {% if usuario %}
+                                {% if group in usuario.groups.all %}
+                                    <option selected value="{{group.id}}">{{group.name}}</option>
+                                {% else %}
+                                    <option value="{{group.id}}">{{group.name}}</option>
+                                {% endif %}
+                            {% endif %}
+                            
                         {% endfor %}
                     </select>
                 </div>
