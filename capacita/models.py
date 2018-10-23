@@ -80,7 +80,7 @@ class Sub_Area_Conhecimento(models.Model):
 class Curso(models.Model):
     cod_curso = models.AutoField(primary_key=True)
     sub_area = models.ForeignKey(Sub_Area_Conhecimento, models.DO_NOTHING)
-    nome = models.CharField(max_length=200)
+    nome = models.CharField(max_length=900)
 
     def __str__(self):
         return self.nome
@@ -92,6 +92,7 @@ class Curso(models.Model):
 class Modalidade_Treinamento(models.Model):
     cod_modalidade = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=50)
+    ind_excluido = models.NullBooleanField(null = False, default=False) 
 
     def __str__(self):
         return self.nome
@@ -103,6 +104,7 @@ class Modalidade_Treinamento(models.Model):
 class Evento(models.Model):
     cod_evento = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=60)
+    ind_excluido = models.NullBooleanField(null = False, default=False) 
 
     def __str__(self):
         return self.nome

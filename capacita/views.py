@@ -126,6 +126,10 @@ def necessidade(request):
 
         necessidades = necessidade_query(area,nivel,plano,turno, int(qtd_servidor))
         necessidades = necessidades.order_by('custo')
+        necessidades = necessidades.filter(ind_excluido = 0)
+    
+        if(is_admin == False):
+            necessidades = necessidades.filter(cod_usuario__profile__orgao_id = request.user.profile.orgao_id)
 
         if(group in request.user.groups.all() or group2 in request.user.groups.all() or group3 in request.user.groups.all() or request.user.profile.permissao_necessidade == True):
             return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 'orgao_usuario' : orgao_usuario, 'is_admin' : is_admin})
@@ -170,7 +174,7 @@ def necessidade_new(request):
         group2 = Group.objects.get(name='admin')
         form2 = SubAreaForm()
 
-        planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True);
+        planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
 
         if(planos_habilitados.count() > 0):
             if request.method == "POST":
@@ -233,7 +237,8 @@ def necessidade_edit(request, pk):
 
 def necessidade_delete(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
-    necessidade.delete()
+    necessidade.ind_excluido = 1
+    necessidade.save()
     return redirect("necessidade")
 
 def orgao(request):
@@ -295,14 +300,15 @@ def tipo(request):
             permissao = True
         else:
             permissao = False
-        tipos = Tipo_Plano_Capacitacao.objects.all()
+        tipos = Tipo_Plano_Capacitacao.objects.filter(ind_excluido = 0)
         return render(request, 'capacita/tipo_plano.html', {'tipos' : tipos, 'permissao' : permissao})
     else:
         return redirect('error')
 
 def tipo_delete(request, pk):
     tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=pk)
-    tipo.delete()
+    tipo.ind_excluido = 1
+    tipo.save()
     return redirect("tipo")
 
 def tipo_edit(request,id):
@@ -349,6 +355,8 @@ def relatorio(request):
     center = workbook.add_format({'center_across' : True})
 
     necessidades = Necessidade.objects.values('curso', 'txt_descricao').annotate(cod_necessidade=Max('cod_necessidade'),custo=Sum('custo') ,qtd_servidor=Sum('qtd_servidor'), hor_duracao= Avg('hor_duracao'),cod_sub_area_conhecimento=Max('cod_sub_area_conhecimento_id'),cod_prioridade=Avg('cod_prioridade_id'),cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'),cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id'))
+
+    necessidades = necessidades.filter(ind_excluido = 0)
 
 
     row = 0
@@ -405,9 +413,9 @@ def areas(request):
             permissao = False
         
         if area_filtrada != '':
-            sub_areas = Sub_Area_Conhecimento.objects.filter(cod_area_conhecimento_id = area_filtrada)
+            sub_areas = Sub_Area_Conhecimento.objects.filter(cod_area_conhecimento_id = area_filtrada, ind_excluido = 0).order_by('cod_area_conhecimento_id')
         else:
-            sub_areas = Sub_Area_Conhecimento.objects.all()  
+            sub_areas = Sub_Area_Conhecimento.objects.filter(ind_excluido = 0).order_by('cod_area_conhecimento_id')
 
         subarea_filter = SubAreaFilter(request.GET, queryset=sub_areas)
 
@@ -451,7 +459,8 @@ def subarea_delete(request, id):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
         subarea = get_object_or_404(Sub_Area_Conhecimento, pk=id)
-        subarea.delete()
+        subarea.ind_excluido = 1
+        subarea.save()
         return redirect("areas")
     else:
         return redirect('error') 
@@ -606,7 +615,7 @@ def modalidade(request):
         if group in request.user.groups.all():
             permissao = True
 
-        modalidades = Modalidade_Treinamento.objects.all()
+        modalidades = Modalidade_Treinamento.objects.filter(ind_excluido = False)
         return render(request, 'capacita/modalidades.html', {'modalidades' : modalidades, 'permissao' : permissao})
     else:
         return redirect('error')
@@ -618,7 +627,7 @@ def eventos(request):
         if group in request.user.groups.all():
             permissao = True
 
-        eventos = Evento.objects.all()
+        eventos = Evento.objects.filter(ind_excluido = False)
         return render(request, 'capacita/eventos.html', {'eventos' : eventos, 'permissao' : permissao})
     else:
         return redirect('error')
@@ -660,7 +669,8 @@ def evento_delete(request, pk):
     if (group in request.user.groups.all()):
         permissao = True
         evento = get_object_or_404(Evento, pk=pk)
-        evento.delete()
+        evento.ind_excluido = True
+        evento.save()
         return redirect("eventos")
     else:
         return redirect('error')
@@ -702,7 +712,8 @@ def modalidade_delete(request, pk):
     if (group in request.user.groups.all()):
         permissao = True
         modalidade = get_object_or_404(Modalidade_Treinamento, pk=pk)
-        modalidade.delete()
+        modalidade.ind_excluido = True
+        modalidade.save()
         return redirect("modalidade")
     else:
         return redirect('error')
@@ -737,3 +748,22 @@ def api_planos(request):
 
 def error(request):
     return render(request, 'capacita/error.html')
+
+def avaliacao_cursos(request):
+    group = Group.objects.get(name='admin')
+    if (group in request.user.groups.all()):
+        if request.method == "POST":
+            necessidade = Necessidade.objects.get(cod_necessidade = request.POST['cod_necessidade'])
+            necessidade.txt_descricao = None
+            sub_area = Sub_Area_Conhecimento.objects.get(cod_sub_area_conhecimento = request.POST['sub_id'])
+            curso = Curso.objects.create(nome = request.POST['txt'], sub_area_id = request.POST['sub_id'])
+            curso.save()
+            necessidade.curso = curso
+            necessidade.save() 
+
+            return redirect('avaliacao_cursos')
+        else:
+            cursos_necessidades = Necessidade.objects.exclude(txt_descricao = None)
+            return render(request, "capacita/avaliacao_cursos.html", {'cursos' : cursos_necessidades})
+    else:
+        return redirect('error') 

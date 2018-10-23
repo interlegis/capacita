@@ -1,0 +1,40 @@
+{% extends 'capacita/base.html' %}
+
+{% block content %}
+
+    <div class="table_div">
+        
+        <h3 class="ui dividing header">Cursos Sugeridos</h3>
+        
+        <table class="ui celled padded table">
+            <thead>
+                <tr class="center aligned">
+                <th>Sugestao de Curso</th>
+                <th>SubArea de Conhecimento</th>
+                <th>Usuário</th>
+                <th>Aprovar Curso</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for curso in cursos %}    
+                    <tr class="center aligned">
+                        <td>{{curso.txt_descricao}}</td>
+                        <td>{{ curso.cod_sub_area_conhecimento }}</td>
+                        <td>{{curso.cod_usuario}}</td>
+                        <form id="aprovar_curso" action="/avaliacao_cursos/" method="POST">{% csrf_token %}
+                            <input name="txt" style="display: none;" type="text" class="ui primary button" value="{{ curso.txt_descricao }}">
+                            <input name="sub_id" style="display: none;" type="number" class="ui primary button" value="{{ curso.cod_sub_area_conhecimento.cod_sub_area_conhecimento }}">
+                            <input name="cod_necessidade" style="display: none;" type="number" class="ui primary button" value="{{ curso.cod_necessidade }}">
+                            <td><input type="submit" class="avaliacao_submit ui primary button" value="Aprovar"></td>
+                        </form>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        <br>
+    
+    </div>
+
+    {% endblock %}

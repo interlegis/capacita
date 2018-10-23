@@ -52,5 +52,6 @@ urlpatterns = [
     url(r'^usuarios/permissao/$', views.usuarios_permissao, name='usuarios_permissao'),
     url(r'^usuarios/new/$', views.usuario_new, name='usuario_new'),
     url(r'^usuarios/(?P<pk>\d+)/edit/$', views.usuario_edit, name='usuario_edit'),
+    url(r'^avaliacao_cursos/$', views.avaliacao_cursos, name='avaliacao_cursos'),
     url(r'^error/$', views.error, name='error')
 ]
