@@ -354,7 +354,7 @@ def relatorio(request):
     bold = workbook.add_format({'bold': True, 'center_across' : True})
     center = workbook.add_format({'center_across' : True})
 
-    necessidades = Necessidade.objects.values('curso', 'txt_descricao').annotate(cod_necessidade=Max('cod_necessidade'),custo=Sum('custo') ,qtd_servidor=Sum('qtd_servidor'), hor_duracao= Avg('hor_duracao'),cod_sub_area_conhecimento=Max('cod_sub_area_conhecimento_id'),cod_prioridade=Avg('cod_prioridade_id'),cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'),cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id'))
+    necessidades = Necessidade.objects.values('curso', 'txt_descricao', 'aprovado').annotate(cod_necessidade=Max('cod_necessidade'),custo=Sum('custo') ,qtd_servidor=Sum('qtd_servidor'), hor_duracao= Avg('hor_duracao'),cod_sub_area_conhecimento=Max('cod_sub_area_conhecimento_id'),cod_prioridade=Avg('cod_prioridade_id'),cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'), cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id'))
 
     necessidades = necessidades.filter(ind_excluido = 0)
 
@@ -371,6 +371,7 @@ def relatorio(request):
     worksheet.write(row, col + 6,     "Evento", bold)
     worksheet.write(row, col + 7,     "Demandante", bold)
     worksheet.write(row, col + 8,     "Custo", bold)
+    worksheet.write(row, col + 9,     "Aprovado", bold)
 
     row += 1
 
@@ -389,6 +390,11 @@ def relatorio(request):
         worksheet.write(row, col + 6, Evento.objects.get(cod_evento=necessidade['cod_evento']).nome, center)
         worksheet.write(row, col + 7, User.objects.get(id=necessidade['cod_usuario']).username, center)
         worksheet.write(row, col + 8, necessidade['custo'], center)
+        if (necessidade['aprovado'] == 0):
+            worksheet.write(row, col + 9, 'Sim', center)
+        else:
+            worksheet.write(row, col + 9, 'Não', center)
+
         row += 1
 
     worksheet.set_default_row(20)
@@ -567,11 +573,14 @@ def usuario_new(request):
         form = UserForm()
         orgaos = Orgao.objects.all()
         groups = Group.objects.all()
+    
+    orgaos = Orgao.objects.all()
+    groups = Group.objects.all()
 
-        if(permissao):
-            return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups})
-        else:
-            return redirect('error')
+    if(permissao):
+        return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
+    else:
+        return redirect('error')
 
 def usuario_edit(request, pk):
     group = Group.objects.get(name='admin')
@@ -580,6 +589,7 @@ def usuario_edit(request, pk):
     else:
         permissao = False
     usuario = get_object_or_404(User, pk=pk)
+
     if request.method == "POST":
         form = UserForm(request.POST, instance=usuario)
         id_group = request.POST['group']
