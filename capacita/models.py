@@ -21,9 +21,10 @@ class Area_Conhecimento(models.Model):
 class Orgao(models.Model):
     cod_orgao = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200)
+    sigla = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.nome
+        return self.sigla
 
     class Meta:
         managed = False

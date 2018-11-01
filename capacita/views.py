@@ -559,16 +559,21 @@ def usuario_new(request):
         id_group = request.POST['group']
         my_group = Group.objects.get(id=id_group) 
         if form.is_valid():
-            usuario = form.save()
-            profile = Profile.objects.create(permissao_necessidade = False, orgao_id = request.POST['orgao'], user_id = usuario.id)
-            usuario.is_active = True
-            usuario.groups.add(my_group)
-            profile.save()
-            usuario.save()
+            user_check = User.objects.filter(username='zequinha').count()
+            if(user_check == 0):
+                usuario = form.save()
+                profile = Profile.objects.create(permissao_necessidade = False, orgao_id = request.POST['orgao'], user_id = usuario.id)
+                usuario.is_active = True
+                usuario.groups.add(my_group)
+                profile.save()
+                usuario.save()
+            else:
+                return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
             
             return redirect("usuarios")
         else:
-            return redirect('error')
+            print("Error: ", form.errors)
+            return render(request, 'capacita/usuario_edit.html', {'form' : form})
     else:
         form = UserForm()
         orgaos = Orgao.objects.all()

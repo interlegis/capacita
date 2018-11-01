@@ -32,9 +32,9 @@
                         {% for orgao in orgaos %}
                             {% if usuario %}
                                 {% if usuario.profile.orgao == orgao %}
-                                    <option selected value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
+                                    <option selected value="{{orgao.cod_orgao}}">{{orgao.sigla}}</option>
                                 {% else %}
-                                    <option value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
+                                    <option value="{{orgao.cod_orgao}}">{{orgao.sigla}}</option>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
