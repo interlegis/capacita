@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Capacita</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/semantic.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/table.css' %}">
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
@@ -18,7 +19,7 @@
         </div>
         <a href="/plano/" class="item">Plano Capacitação</a>
         <a class="item" href="/necessidade/">Necessidade</a>
-        <a class="item" href="/avaliacao_cursos">Cursos Sugeridos</a>
+        <a class="item" href="/avaliacao_cursos">Treinamentos Sugeridos</a>
         <div class="ui dropdown item">
             Administração
             <i class="dropdown icon"></i>
@@ -42,7 +43,7 @@
         </div>
         {% endif %}
     </div>
-    
+
     {% if user.is_authenticated %}
         {% block content %}
         {% endblock %}
@@ -52,205 +53,11 @@
             <a href="{% url 'cas_ng_login' %}">login</a>
         </div>
     {% endif %}
-    
+
 </body>
 <script src="{% static 'js/semantic.min.js' %}"></script>
-<script>
-    
-    $('.ui.dropdown').dropdown();
-    $('.ui.accordion').accordion();
-    $('.ui.checkbox.permitido').checkbox('set checked');
-    $('.ui.checkbox.sem_permissao').checkbox('set unchecked');
-
-    
-
-     $('input.sem_permissao').on('change', function(){
-        // alert(this.value);
-        $.ajax({
-        type: "POST",
-        url: "/usuarios/permissao/",
-        data: {data : 'True', usuario_id : this.value},
-        success : function(data) {
-          location.reload();
-        }
-      });
-    })
-
-    $('input.permitido').on('change', function(){
-        // alert(this.value);
-        $.ajax({
-        type: "POST",
-        url: "/usuarios/permissao/",
-        data: {data : 'False', usuario_id : this.value},
-        success : function(data) {
-          location.reload();
-        }
-      });
-    })
-
-    function selectSub(select){
-        
-        $("#id_cod_sub_area_conhecimento option").each(function(){
-            $(this).hide();
-        });
-
-        var search = $("#id_cod_sub_area_conhecimento").val();
-        select = $("#areas").options;
-
-        var areas;
-
-        $.getJSON("/api/subareas/", function(data){
-            var subarea = null;
-            areas = data;
-            for(var i = 0; i < data.length; i++){
-                if(data[i].cod_area_conhecimento_id == $("#areas").val() ){
-                    subarea = data[i].cod_sub_area_conhecimento;
-                    $("#id_cod_sub_area_conhecimento option").each(function(){
-                        if($(this).val() == subarea){
-                            $(this).show();
-                        }
-                    });
-                }
-            }
-
-        });
-    }
-
-    $("#id_cod_sub_area_conhecimento").on('change', function(){
-        $("#nome_curso_form option").each(function(){
-            if($(this).val() != ''){
-                $(this).hide();
-            }
-        });
-
-        var search = $("#nome_curso_form").val();
-        select = $("#id_cod_sub_area_conhecimento").options;
-
-        var sub_areas;
-
-        $.getJSON("/api/cursos/", function(data){
-            var curso = null;
-            sub_areas = data;
-            for(var i = 0; i < data.length; i++){
-                if(data[i].sub_area_id == $("#id_cod_sub_area_conhecimento").val() ){
-                    curso = data[i].cod_curso;
-                    $("#nome_curso_form option").each(function(){
-                        if($(this).val() == curso){
-                            $(this).show();
-                        }
-                    });
-                }
-            }
-
-        });
-
-    })
-
-    // if($("#planos option").val() == 'Treinamentos Presenciais - Externo'){
-
-    // }
-
-    // $("#planos").on('change',function(){
-    //     if($(this).val() == )
-    // })
-
-    var tipo;
-
-    $.getJSON("/api/tipos/", function(data){        
-        for(var i = 0; i < data.length; i++){
-            if(data[i].nome_tipo_plano_capacitacao == 'Treinamentos Externos'){
-                tipo = data[i].cod_tipo_plano_capacitacao;
-            }
-        }
-        console.log(tipo);
-    });
-
-    var planos_externos = [];
-    var plano;
-
-    $.getJSON("/api/planos/", function(data){
-
-        for(var i = 0; i < data.length; i++){
-            if(data[i].cod_tipo_plano_capacitacao_id == $("#planos").val()){
-                plano = data[i];
-            }
-            if(data[i].cod_tipo_plano_capacitacao_id == tipo){
-                planos_externos.push(data[i].cod_plano_capacitacao);
-            }
-        }
-
-        console.log(planos_externos);
-
-    }); 
-
-    $(document).ready(function(){
-
-        if(tipo == (parseInt($("#id_cod_tipo").val()))){
-            $("#id_custoo").prop('disabled', false);
-        }else{
-            $("#id_custoo").prop('disabled', true);
-        }
-
-        $("#descricao_necessidade").prop('disabled', false);
-        
-        $("#myInput").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#subareas tr").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-
-    $("#nome_curso_form").on('change', function(){
-        // console.log($("#nome_curso_form option:selected").val())
-        if($("#nome_curso_form option:selected").val() == ''){
-            $("#descricao_necessidade").prop('disabled', false);
-        }else{
-            $("#descricao_necessidade").prop('disabled', true);
-        }
-    })
-
-    $("#id_cod_tipo").on('change', function(){
-        // console.log(planos_externos);
-        if(tipo == (parseInt($("#id_cod_tipo").val()))){
-            $("#id_custoo").prop('disabled', false);
-        }else{
-            $("#id_custoo").prop('disabled', true);
-        }
-    })
-
-</script>
-
+<script src="{% static 'js/base.js' %}"></script>
 {% if request.path == '/avaliacao_cursos/' %}
-<script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
-<!-- <script>
-    function send_curso_cod(bla){
-        console.log("blaaaa " + bla);
-    }
-    $('.avaliacao_submit').on('click', function(e){
-        var form = $("#aprovar_curso");
-        e.preventDefault();
-        swal({
-            title: 'Tem certeza?',
-            text: "Ao confirmar, um novo tipo de curso será criado para a devida Sub Área",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar'
-        }).then((result) => {
-            if (result.value) {
-                swal(
-                'Salvo!',
-                'Novo curso salvo na lista de relações',
-                'success'
-                )
-                form.submit();
-            }else{
-                console.log("shit");
-            }
-        })
-    })
-</script> -->
+  <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
 {% endif %}
 </html>
