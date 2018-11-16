@@ -22,6 +22,7 @@ easy-thumbnails==2.3
 #django-image-cropping==1.1.0
 git+git://github.com/interlegis/trml2pdf.git
 psycopg2-binary==2.7.4
+psycopg2==2.7.3.2
 libsass==0.11.1
 python-decouple==3.0
 pytz==2016.4
