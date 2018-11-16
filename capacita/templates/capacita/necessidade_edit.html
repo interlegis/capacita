@@ -5,59 +5,39 @@
 
     <div class="section_container ui container">
         <form class="ui form" method="post" >{% csrf_token %}
-            
+
             <h4 class="ui dividing header">Nova Necessidade</h4>
-            <div class="three fields">
-                <div class="field">
-                    <label>Área de Conhecimento</label>
-                    <select id="areas" onchange="selectSub(this)">
-                        <option></option>
-                        {% for area in areas %}
-                            <option value="{{area.cod_area_conhecimento}}">{{area.txt_descricao}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="field">
-                    {{ form.cod_sub_area_conhecimento.errors }}
-                    <label>Sub-Área</label>
-                    {{ form.cod_sub_area_conhecimento }}
-                </div>
-                <div class="field">
-                    <label>Curso</label>
-                    
-                    <select name="curso_id" id="nome_curso_form">
-                        <option value="">-----------</option>
-                        {% for curso in cursos %}
-                            {% if necessidade %}
-                                {% if necessidade.curso.cod_curso == curso.cod_curso %}
-                                    <option value="{{curso.cod_curso}}" selected>{{curso.nome}}</option>
-                                {% else %}
-                                    <option value="{{curso.cod_curso}}">{{curso.nome}}</option>
-                                {% endif %}
-                            {% else %}
-                                <option value="{{curso.cod_curso}}">{{curso.nome}}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
             <div class="two fields">
                 <div class="field">
-                    <label>Sugestão de curso</label>
-                    {% if necessidade == None %}
-                        <input type="text" name="txt_descricao" id="descricao_necessidade">
-                    {% else %}
-                        {% if necessidade.txt_descricao != None %}
-                            <input type="text" name="txt_descricao" value="{{necessidade.txt_descricao}}" id="descricao_necessidade">
-                        {% else %}
-                            <input type="text" name="txt_descricao" id="descricao_necessidade">
-                        {% endif %}
-                    {% endif %}
+                  <label> {{ form.area_conhecimento.label }}</label>
+                  {{ form.area_conhecimento }}
                 </div>
                 <div class="field">
-                    <label>Evento</label>
-                    {{ form.cod_evento }}
+                  <label> {{ form.treinamento.label }}</label>
+                  {{ form.treinamento }}
+                  </select>
                 </div>
+            </div>
+            {% if erro_sugestao %}
+            <small class="text-danger">
+              {{ erro_sugestao }}
+            </small>
+            <div class="field" id="sugestao">
+            {% else %}
+            <div class="field" id="sugestao" style="display: none">
+            {% endif %}
+              <label>Sugestão de treinamento</label>
+              {% if necessidade == None %}
+              <input type="text" name="txt_descricao" id="descricao_necessidade">
+              {% elif necessidade.txt_descricao != None %}
+              <input type="text" name="txt_descricao" value="{{necessidade.txt_descricao}}" id="descricao_necessidade">
+              {% else %}
+              <input type="text" name="txt_descricao" id="descricao_necessidade">
+              {% endif %}
+            </div>
+            <div class="field">
+              <label>Evento</label>
+              {{ form.cod_evento }}
             </div>
             <div class="four fields">
                 <div class="field">
@@ -70,39 +50,49 @@
                     {{ form.cod_nivel  }}
                 </div>
                 <div class="field">
-                    {{ form.hor_duracao.errors }}
                     <label>Carga Horária</label>
                     {{ form.hor_duracao }}
+                    <small class="text-danger">
+                      {{ form.hor_duracao.errors }}
+                    </small>
                 </div>
                 <div class="field">
-                    {{ form.cod_tipo.errors }}
-                    <label>Tipo de Modalidade</label>
+                    <label>Tipo de Treinamento</label>
                     {{ form.cod_tipo }}
+                    <small class="text-danger">
+                      {{ form.cod_tipo.errors }}
+                    </small>
                 </div>
             </div>
             <div class="three fields">
                 <div class="field">
-                    {{ form.cod_prioridade.errors }}
                     <label>Prioridade</label>
                     {{ form.cod_prioridade }}
+                    <small class="text-danger">
+                      {{ form.cod_prioridade.errors }}
+                    </small>
                 </div>
                 <div class="field">
-                    {{ form.qtd_servidor.errors }}
-                    <label>Quantidade de Servidores Efetivos</label>
+                    <label>Quantidade de Servidores</label>
                     {{ form.qtd_servidor}}
+                    <small class="text-danger">
+                      {{ form.qtd_servidor.errors }}
+                    </small>
                 </div>
                 <div class="field">
-                    <label>Custo</label>
-                    <input type="number" required id="id_custoo" name="custo" step=".01">
+                  <label> {{ form.objetivo_treinamento.label }}</label>
+                  {{ form.objetivo_treinamento }}
                 </div>
             </div>
             <div class="field">
-                {{ form.justificativa.errors }}
                 <label>Justificativa</label>
                 {{ form.justificativa }}
+                <small class="text-danger">
+                  {{ form.justificativa.errors }}
+                </small>
             </div>
             <button class="ui primary button" type="submit">Salvar</button>
-            
+
         </form>
     </div>
 

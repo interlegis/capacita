@@ -60,7 +60,7 @@
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
-                <th>Curso</th>
+                <th>Treinamento</th>
                 <th>Plano Capacitação</th>
                 <th>Quantidade de Servidores</th>
                 <th>Área Conhecimento</th>
@@ -73,18 +73,17 @@
                 </tr>
             </thead>
             <tbody>
-                
-                {% for necessidade in necessidades %}    
+
+                {% for necessidade in necessidades %}
                     <tr class="center aligned">
-                        {% if necessidade.curso == None %}
+                        {% if necessidade.cod_treinamento == None %}
                         <td>{{necessidade.txt_descricao}}</td>
-                        {% endif %}
-                        {% if necessidade.curso %}
-                        <td>{{necessidade.curso}}</td>
+                        {% else %}
+                        <td>{{necessidade.cod_treinamento.nome}}</td>
                         {% endif %}
                         <td>{{necessidade.cod_plano_capacitacao}}</td>
                         <td>{{necessidade.qtd_servidor}}</td>
-                        <td>{{necessidade.cod_sub_area_conhecimento}}</td> 
+                        <td>{{necessidade.cod_area_conhecimento}}</td>
                         {% if necessidade.aprovado == False %}
                         <td>Não</td>
                         {% endif %}
@@ -103,7 +102,7 @@
         </table>
         <br>
         <a href="/necessidade/new/"><button class="ui button basic secondary">Novo</button></a>
-    
+
     </div>
 
     {% endblock %}
