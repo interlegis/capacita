@@ -38,6 +38,7 @@ INSTALLED_APPS = [ #components
     'django.contrib.staticfiles',
     'django_cas_ng',
     'capacita',
+    'capacitaApp',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +54,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'django_cas_ng.backends.CASBackend',
+    # 'django_cas_ng.backends.CASBackend',
 )
 
 ROOT_URLCONF = 'urls'
@@ -81,21 +82,32 @@ TEMPLATES = [
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+# DATABASES = {
+#     'default': config(
+#         'DATABASE_URL', default='sqlite://:memory:',
+#         cast=db_url,
+#     )
+# }
+
 DATABASES = {
-    'default': config(
-        'DATABASE_URL', default='sqlite://:memory:',
-        cast=db_url,
-    )
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+         'NAME': 'capacita',
+         'USER': 'capacita',
+         'PASSWORD': 'altereme',
+         'HOST': 'campeirohsabereslb.interlegis.leg.br',
+         'PORT': '5532',
+     }
 }
 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'capacita2',
-#         'USER': 'postgres',
-#         'PASSWORD': 'postgres',
+#         'NAME': 'teste2',
+#         'USER': 'teste2',
+#         'PASSWORD': 'teste2',
 #         'HOST': 'localhost',
-#         'PORT': '5432',
+#         'PORT': '',
 #     }
 # }
 

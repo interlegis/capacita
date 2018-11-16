@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from . import views
+from capacitaApp import views
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import LogoutView
@@ -7,11 +7,11 @@ import django_cas_ng.views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    # url(r'^login/$', LoginView.as_view(), name='login'),
-    # url(r'^logout/$', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
-    url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
-    url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),
-    url(r'^callback/$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'), 
+    url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
+    # url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
+    # url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),
+    # url(r'^callback/$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'),
     url(r'^necessidade/$', views.necessidade, name='necessidade'),
     url(r'^necessidade/(?P<pk>\d+)/edit/$', views.necessidade_edit, name='necessidade_edit'),
     url(r'^necessidade/(?P<pk>\d+)/show/$', views.necessidade_show, name='necessidade_show'),
@@ -32,13 +32,13 @@ urlpatterns = [
     url(r'^tipo/(?P<pk>\d+)/$', views.tipo_delete, name='tipo_delete'),
     url(r'^areas/$', views.areas, name='areas'),
     url(r'^api/areas/$', views.api_areas, name='api_areas'),
-    url(r'^api/subareas/$', views.api_subareas, name='api_subareas'),
+    # url(r'^api/subareas/$', views.api_subareas, name='api_subareas'),
     url(r'^api/planos/$', views.api_planos, name='api_planos'),
     url(r'^api/tipos/$', views.api_tipos, name='api_tipos'),
-    url(r'^api/cursos/$', views.api_cursos, name='api_cursos'),
-    url(r'^subareas/new/$', views.subareas_new, name='subareas_new'),
-    url(r'^subareas/(?P<id>\d+)/$', views.subarea_delete, name='subarea_delete'),
-    url(r'^subarea/(?P<pk>\d+)/edit/$', views.sub_area_edit, name='sub_area_edit'),
+    url(r'^api/treinamentos/$', views.api_cursos, name='api_cursos'),
+    # url(r'^subareas/new/$', views.subareas_new, name='subareas_new'),
+    # url(r'^subareas/(?P<id>\d+)/$', views.subarea_delete, name='subarea_delete'),
+    # url(r'^subarea/(?P<pk>\d+)/edit/$', views.sub_area_edit, name='sub_area_edit'),
     url(r'^relatorio/$', views.relatorio, name='relatorio'),
     url(r'^modalidade/$', views.modalidade, name='modalidade'),
     url(r'^modalidade/(?P<pk>\d+)/$', views.modalidade_delete, name='modalidade_delete'),

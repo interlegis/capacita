@@ -1,8 +1,7 @@
 from django.contrib import admin
-from .models import *
+from capacitaApp.models import *
 
 admin.site.register(Area_Conhecimento)
-admin.site.register(Sub_Area_Conhecimento)
 admin.site.register(Avaliacao)
 admin.site.register(Iniciativa)
 admin.site.register(Mes)
@@ -15,3 +14,4 @@ admin.site.register(Prioridade)
 admin.site.register(Secretaria)
 admin.site.register(Tipo_Plano_Capacitacao)
 admin.site.register(Profile)
+admin.site.register(Treinamento)
