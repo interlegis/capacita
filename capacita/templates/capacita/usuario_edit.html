@@ -5,7 +5,7 @@
 
     <div class="ui container">
         <form class="ui form" method="post">{% csrf_token %}
-        
+
             <h4 class="ui dividing header">Novo Usuário</h4>
             <div class="field">
                 {{ form.username.errors }}
@@ -32,9 +32,9 @@
                         {% for orgao in orgaos %}
                             {% if usuario %}
                                 {% if usuario.profile.orgao == orgao %}
-                                    <option selected value="{{orgao.cod_orgao}}">{{orgao.sigla}}</option>
+                                    <option selected value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
                                 {% else %}
-                                    <option value="{{orgao.cod_orgao}}">{{orgao.sigla}}</option>
+                                    <option value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
@@ -52,7 +52,7 @@
                                     <option value="{{group.id}}">{{group.name}}</option>
                                 {% endif %}
                             {% endif %}
-                            
+
                         {% endfor %}
                     </select>
                 </div>
