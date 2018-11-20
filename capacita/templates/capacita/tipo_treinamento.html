@@ -4,7 +4,7 @@
 
     <div class="table_div">
 
-        <h4 class="ui dividing header">Áreas de Conhecimento</h4>
+        <h4 class="ui dividing header">Tipos de Treinamento</h4>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
@@ -15,19 +15,18 @@
             </thead>
             <tbody>
                 
-                {% for area in areas %}
+                {% for tipo in tipos %}
                     <tr class="center aligned">
-                        <td>{{area.txt_descricao}}</td>
-                        <td><a class="links" href="{% url 'area_edit' area.cod_area_conhecimento %}"><i class="pencil icon"></i></a></td>
-                        <td><a class="links" href="{% url 'area_delete' area.cod_area_conhecimento %}"><i class="delete icon"></i></a></td>
+                        <td>{{tipo.nome}}</td>
+                        <td><a class="links" href="{% url 'tipo_treinamento_edit' tipo.cod_tipo_treinamento %}"><i class="pencil icon"></i></a></td>
+                        <td><a class="links" href="{% url 'tipo_treinamento_delete' tipo.cod_tipo_treinamento %}"><i class="delete icon"></i></a></td>
                     </tr>
                 {% endfor %}
 
             </tbody>
         </table>
         <br>
-        <a href="/areas/new/"><button class="ui button basic secondary">Novo</button></a>
+        <a href="/tipo_treinamento/new/"><button class="ui button basic secondary">Novo</button></a>
     </div>
 
     {% endblock %}
-    

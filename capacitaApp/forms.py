@@ -66,6 +66,33 @@ class EventoForm(forms.ModelForm):
             'nome' : 'Nome'
         }
 
+class ObjetivoTreinamentoForm(forms.ModelForm):
+
+    class Meta:
+        model = Objetivo_Treinamento
+        fields = ('nome', )
+        labels = {
+            'nome' : 'Nome'
+        }
+
+class TipoTreinamentoForm(forms.ModelForm):
+
+    class Meta:
+        model = Tipo_Treinamento
+        fields = ('nome', )
+        labels = {
+            'nome' : 'Nome'
+        }
+
+class TreinamentoForm(forms.ModelForm):
+
+    class Meta:
+        model = Treinamento
+        fields = ('nome', )
+        labels = {
+            'nome' : 'Nome'
+        }
+
 class UserForm(forms.ModelForm):
 
     username = forms.CharField(max_length=100)
@@ -104,3 +131,9 @@ class ModalidadeForm(forms.ModelForm):
     class Meta:
         model = Modalidade_Treinamento
         fields = ('cod_modalidade', 'nome')
+
+class AreaConhecimentoForm(forms.ModelForm):
+
+    class Meta:
+        model = Area_Conhecimento
+        fields = ('txt_descricao',) 

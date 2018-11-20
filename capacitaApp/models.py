@@ -29,6 +29,17 @@ class Area_Conhecimento(models.Model):
         db_table = 'area_conhecimento'
         ordering = ['txt_descricao']
 
+class Tipo_Treinamento(models.Model):
+    cod_tipo_treinamento = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=900)
+    ind_excluido = models.NullBooleanField(null = False, default=False)
+
+    def __str__(self):
+        return self.nome
+
+    class Meta:
+        db_table = 'tipo_treinamento'
+        ordering = ['nome']
 
 class Treinamento(models.Model):
     cod_treinamento = models.AutoField(primary_key=True)

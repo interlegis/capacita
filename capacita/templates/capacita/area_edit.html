@@ -5,19 +5,15 @@
     <div class="ui container">
         <form class="ui form" method="post">{% csrf_token %}
             
-            <h3 class="ui dividing header">Sub-Área Edição</h3>
+            <h3 class="ui dividing header">Área de Conhecimento</h3>
             
-            <div class="field">
-                {{ form.cod_area_conhecimento.errors }}
-                <label>Área de Conhecimento</label>
-                {{ form.cod_area_conhecimento }}
-            </div>
             <div class="field">
                 {{ form.txt_descricao.errors }}
                 <label>Nome</label>
                 {{ form.txt_descricao  }}
             </div>
             <button class="ui primary button" type="submit">Salvar</button>
+            <a href="/areas/"><button class="ui button basic secondary">Voltar</button></a>
             </div>
         </form>
     </div>

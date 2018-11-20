@@ -6,20 +6,17 @@
     <div class="ui container">
         <form class="ui form" method="post">{% csrf_token %}
             
-            <h4 class="ui dividing header">Tipo</h4>
+            <h4 class="ui dividing header">Objetivo de Treinamento</h4>
  
             <div class="field">
-                {{ form.sgl_tipo_plano_capacitacao.errors }}
-                <label>Sigla</label>
-                {{ form.sgl_tipo_plano_capacitacao }}
-            </div>
-            <div class="field">
-                {{ form.nome_tipo_plano_capacitacao.errors }}
+                {{ form.nome.errors }}
                 <label>Nome</label>
-                {{ form.nome_tipo_plano_capacitacao }}
+                {{ form.nome }}
             </div>
+         
             
             <button class="ui primary button" type="submit">Salvar</button>
+            <a href="/objetivos/"><button class="ui button basic secondary">Voltar</button></a>
         </form>
     </div>
 

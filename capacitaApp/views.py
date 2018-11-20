@@ -262,6 +262,81 @@ def necessidade_delete(request, pk):
     return redirect("necessidade")
 
 @login_required
+def treinamento(request):
+    treinamentos = Treinamento.objects.all()
+    return render(request, 'capacita/treinamento.html', {'treinamentos' : treinamentos})
+    
+@login_required
+def treinamento_edit(request, pk):
+    treinamento = get_object_or_404(Treinamento, pk=pk)
+    if request.method == "POST":
+        form = TreinamentoForm(request.POST, instance=treinamento)
+        if form.is_valid():
+            treinamento = form.save(commit=False)
+            treinamento.save()
+            return redirect('treinamentos')
+    else:
+        form = TreinamentoForm(instance=treinamento)
+
+    return render(request, 'capacita/treinamento_edit.html', {'form': form})
+    
+@login_required
+def treinamento_new(request):
+    if request.method == "POST":
+        form = TreinamentoForm(request.POST)
+        if form.is_valid():
+            treinamento = form.save(commit=False)
+            treinamento.save()
+            return redirect('treinamentos')
+    else:
+        form = TreinamentoForm()
+    return render(request, 'capacita/treinamento_edit.html', {'form': form})
+
+@login_required
+def treinamento_delete(request, pk):
+    treinamento = get_object_or_404(Treinamento, pk=pk)
+    treinamento.ind_excluido = True
+    treinamento.save()
+    return redirect("treinamentos")
+
+@login_required
+def objetivos(request):
+    objetivos = Objetivo_Treinamento.objects.all()
+    return render(request, 'capacita/objetivos.html', {'objetivos' : objetivos})
+    
+@login_required
+def objetivo_edit(request, pk):
+    objetivo = get_object_or_404(Objetivo_Treinamento, pk=pk)
+    if request.method == "POST":
+        form = ObjetivoTreinamentoForm(request.POST, instance=objetivo)
+        if form.is_valid():
+            objetivo = form.save(commit=False)
+            objetivo.save()
+            return redirect('objetivos')
+    else:
+        form = ObjetivoTreinamentoForm(instance=objetivo)
+
+    return render(request, 'capacita/objetivo_edit.html', {'form': form})
+    
+@login_required
+def objetivo_new(request):
+    if request.method == "POST":
+        form = ObjetivoTreinamentoForm(request.POST)
+        if form.is_valid():
+            objetivo = form.save(commit=False)
+            objetivo.save()
+            return redirect('objetivos')
+    else:
+        form = ObjetivoTreinamentoForm()
+    return render(request, 'capacita/objetivo_edit.html', {'form': form})
+
+@login_required
+def objetivo_delete(request, pk):
+    objetivo = get_object_or_404(Objetivo_Treinamento, pk=pk)
+    objetivo.delete()
+    return redirect("objetivos")
+
+@login_required
 def orgao(request):
     if (hasattr(request.user, 'profile')):
         orgaos_list = Orgao.objects.all()
@@ -318,58 +393,41 @@ def orgao_delete(request, id):
     return redirect("orgao")
 
 @login_required
-def tipo(request):
-    if (hasattr(request.user, 'profile')):
-        group = Group.objects.get(name='admin')
-        if (group in request.user.groups.all()):
-            permissao = True
-        else:
-            permissao = False
-        tipos = Tipo_Plano_Capacitacao.objects.filter(ind_excluido = 0)
-        return render(request, 'capacita/tipo_plano.html', {'tipos' : tipos, 'permissao' : permissao})
-    else:
-        return redirect('error')
+def tipos_treinamento(request):
+    tipos = Tipo_Treinamento.objects.filter()
+    return render(request, 'capacita/tipo_treinamento.html', {'tipos' : tipos})
 
 @login_required
-def tipo_delete(request, pk):
-    tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=pk)
-    tipo.ind_excluido = 1
-    tipo.save()
-    return redirect("tipo")
+def tipo_treinamento_delete(request, pk):
+    tipo = get_object_or_404(Tipo_Treinamento, pk=pk)
+    tipo.delete()
+    return redirect("tipos_treinamento")
 
 @login_required
-def tipo_edit(request,id):
-    tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=id)
+def tipo_treinamento_edit(request,id):
+    tipo = get_object_or_404(Tipo_Treinamento, pk=id)
     if request.method == 'POST':
-        form = TipoForm(request.POST, instance=tipo, initial={'ind_excluido' : 0})
+        form = TipoTreinamentoForm(request.POST, instance=tipo, initial={'ind_excluido' : 0})
         if form.is_valid():
             tipo = form.save(commit=False)
             tipo.save()
-            return redirect("tipo")
+            return redirect("tipos_treinamento")
     else:
-        form = TipoForm(instance=tipo)
-    return render(request, 'capacita/tipo_edit.html', {'form' : form})
+        form = TipoTreinamentoForm(instance=tipo)
+    return render(request, 'capacita/tipo_treinamento_edit.html', {'form' : form})
 
 @login_required
-def tipo_new(request):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
-    else:
-        permissao = False
+def tipo_treinamento_new(request):
     if request.method == 'POST':
-        form = TipoForm(request.POST)
+        form = TipoTreinamentoForm(request.POST)
         if form.is_valid():
             tipo = form.save(commit=False)
             tipo.save()
-            return redirect("tipo")
+            return redirect("tipos_treinamento")
     else:
-        form = TipoForm()
+        form = TipoTreinamentoForm()
 
-    if (permissao == True):
-        return render(request, 'capacita/tipo_edit.html', {'form' : form, 'permissao' : permissao})
-    else:
-        return redirect('error')
+    return render(request, 'capacita/tipo_treinamento_edit.html', {'form' : form})
 
 @login_required
 def relatorio(request):
@@ -459,16 +517,42 @@ def relatorio(request):
 
 @login_required
 def areas(request):
-    if (hasattr(request.user, 'profile')):
-        area_filtrada = request.GET.get('cod_area_conhecimento_id', '')
-        group = Group.objects.get(name='admin')
-        if (group in request.user.groups.all()):
-            permissao = True
-        else:
-            permissao = False
-        return render(request, 'capacita/areas.html', { 'area_filtrada' : area_filtrada, 'permissao' : permissao})
+    areas = Area_Conhecimento.objects.all();
+    return render(request, 'capacita/areas.html', { 'areas' : areas })
+
+@login_required
+def area_delete(request, pk):
+    area = get_object_or_404(Area_Conhecimento, pk=pk)
+    area.delete()
+    return redirect("areas")
+
+@login_required
+def area_edit(request,id):
+    area = get_object_or_404(Area_Conhecimento, pk=id)
+    if request.method == 'POST':
+        form = AreaConhecimentoForm(request.POST, instance=area, initial={'ind_excluido' : 0})
+        if form.is_valid():
+            area = form.save(commit=False)
+            area.save()
+            return redirect("areas")
     else:
-        return redirect('error')
+        form = AreaConhecimentoForm(instance=tipo)
+    return render(request, 'capacita/area_edit.html', {'form' : form})
+
+@login_required
+def area_new(request):
+    if request.method == 'POST':
+        form = AreaConhecimentoForm(request.POST)
+        if form.is_valid():
+            area = form.save(commit=False)
+            area.save()
+            return redirect("areas")
+    else:
+        form = AreaConhecimentoForm()
+
+    return render(request, 'capacita/area_edit.html', {'form' : form})
+
+
 
 @login_required
 def usuarios(request):
@@ -739,8 +823,8 @@ def api_cursos(request):
     return JsonResponse(treinamentos, safe=False)
 
 @login_required
-def api_tipos(request):
-    tipos = Tipo_Plano_Capacitacao.objects.all().values()
+def api_tipos_treinamento(request):
+    tipos = Tipo_Treinamento.objects.all().values()
     tipos = list(tipos)
     return JsonResponse(tipos, safe=False)
 
