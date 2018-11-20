@@ -32,13 +32,15 @@ urlpatterns = [
     url(r'^tipo/(?P<pk>\d+)/$', views.tipo_delete, name='tipo_delete'),
     url(r'^areas/$', views.areas, name='areas'),
     url(r'^api/areas/$', views.api_areas, name='api_areas'),
-    # url(r'^api/subareas/$', views.api_subareas, name='api_subareas'),
     url(r'^api/planos/$', views.api_planos, name='api_planos'),
     url(r'^api/tipos/$', views.api_tipos, name='api_tipos'),
     url(r'^api/treinamentos/$', views.api_cursos, name='api_cursos'),
+<<<<<<< HEAD
     url(r'^area/(?P<pk>\d+)/edit/$', views.area_edit, name='area_edit'),
     url(r'^area/(?P<id>\d+)/$', views.area_delete, name='area_delete'),
     url(r'^area/new/$', views.area_new, name='area_new'),
+=======
+>>>>>>> 3d1d6c52cc8b46b0c324169047807acc0461c872
     url(r'^relatorio/$', views.relatorio, name='relatorio'),
     url(r'^modalidade/$', views.modalidade, name='modalidade'),
     url(r'^modalidade/(?P<pk>\d+)/$', views.modalidade_delete, name='modalidade_delete'),
@@ -52,6 +54,6 @@ urlpatterns = [
     url(r'^usuarios/permissao/$', views.usuarios_permissao, name='usuarios_permissao'),
     url(r'^usuarios/new/$', views.usuario_new, name='usuario_new'),
     url(r'^usuarios/(?P<pk>\d+)/edit/$', views.usuario_edit, name='usuario_edit'),
-    url(r'^avaliacao_cursos/$', views.avaliacao_cursos, name='avaliacao_cursos'),
+#    url(r'^avaliacao_cursos/$', views.avaliacao_cursos, name='avaliacao_cursos'),
     url(r'^error/$', views.error, name='error')
 ]

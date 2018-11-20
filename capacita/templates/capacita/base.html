@@ -13,35 +13,42 @@
     <!-- <script src="{% static 'js/dropdown.js' %}"></script> -->
 </head>
 <body>
-    <div class="ui inverted menu">
+    <div class="ui inverted menu bgSenado">
         <div class="item">
             <img src="{% static 'images/senado.png' %}">
         </div>
-        <a href="/plano/" class="item">Plano Capacitação</a>
-        <a class="item" href="/necessidade/">Necessidade</a>
-        <a class="item" href="/avaliacao_cursos">Treinamentos Sugeridos</a>
+        <a class="item" href="/necessidade/">Treinamento</a>
+        {% if user.is_superuser %}
         <div class="ui dropdown item">
-            Administração
+        Administração
             <i class="dropdown icon"></i>
             <div class="menu">
-                <a class="item" href="/eventos/">Eventos</a>
-                <a class="item" href="/orgao/">Secretarias</a>
-                <a class="item"  href="/tipo/">Tipos Plano Capacitação</a>
-                <a class="item"  href="/modalidade/">Modalidade de Treinamento</a>
-                <a class="item" href="/areas/">Áreas de Interesse</a>
+                <a class="item" href="/plano/">Plano Capacitação</a>
+                <a class="item" href="/orgao/">Órgãos</a>
                 <a class="item" href="/usuarios/">Usuários</a>
+                <!--<a class="item" href="/avaliacao_cursos">Treinamentos Sugeridos</a>-->
+                <li class="divider"></li>
+                <a class="item" href="/areas/">Áreas de Conhecimento</a>
+                <a class="item" href="/areas/">Treinamentos</a>
+                <a class="item" href="/eventos/">Eventos</a>
+                <a class="item"  href="/modalidade/">Modalidades de Treinamento</a>
+                <a class="item"  href="/tipo/">Tipos de Treinamento</a>
+                <a class="item" href="/objetivos/">Objetivos de Treinamento</a>
             </div>
-        </div>
-        {% if user.is_authenticated %}
-        <div class="right menu">
-            <div class="ui item">
-                {{ user.username }}
-            </div>
-            <a class="ui item" href="/logout/">
-                Sair
-            </a>
         </div>
         {% endif %}
+        <div class="right menu">
+            {% if user.is_authenticated %}
+            <div class="right menu">
+                <div class="ui item">
+                    {{ user.username }}
+                </div>
+                <a class="ui item" href="/logout/">
+                    Sair
+                </a>
+            </div>
+            {% endif %}
+        </div>
     </div>
 
     {% if user.is_authenticated %}

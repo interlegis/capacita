@@ -2,25 +2,27 @@
 
 from django.shortcuts import render, redirect,get_object_or_404
 from django.db.models import Avg, Max, Count, Sum
+from django.contrib.auth.decorators import login_required
+
 import xlsxwriter
-from .filtro_necessidade import *
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from .models import *
 from .forms import *
 from .filters import *
+from .filtro_necessidade import *
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 
+@login_required
 def home(request):
-    if not request.user.is_authenticated:
-        return redirect("/login")
-    else:
-        return render(request, 'capacita/home.html')
+  return render(request, 'capacita/home.html')
 
+
+@login_required
 def plano(request):
     group = Group.objects.get(name='admin' or 'gestor')
     if (group in request.user.groups.all()):
@@ -35,6 +37,7 @@ def plano(request):
     else:
         return render(request, 'capacita/error.html')
 
+@login_required
 def plano_delete(request, id):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -42,12 +45,12 @@ def plano_delete(request, id):
         plano.delete()
         return redirect("plano")
 
-
+@login_required
 def plano_show(request, id):
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
     return render(request, 'capacita/plano_show.html', {'plano' : plano})
 
-
+@login_required
 def plano_new(request):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -67,6 +70,7 @@ def plano_new(request):
     else:
         return redirect('error')
 
+@login_required
 def plano_edit(request, id):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -88,19 +92,20 @@ def plano_edit(request, id):
     else:
         return redirect('error')
 
+@login_required
 def necessidade(request):
     if (hasattr(request.user, 'profile')):
         areas = Area_Conhecimento.objects.all()
         niveis = Nivel.objects.all()
         planos = Plano_Capacitacao.objects.all()
-        group = Group.objects.get(name='admin')
-        group2 = Group.objects.get(name='gestor')
-        group3 = Group.objects.get(name='solicitante')
+        groupAdmin = Group.objects.get(name='admin')
+        groupGestor = Group.objects.get(name='gestor')
+        groupSolicitante = Group.objects.get(name='solicitante')
 
         profile_usuario = Profile.objects.get(user_id = request.user.id)
         orgao_usuario = Orgao.objects.get(cod_orgao=profile_usuario.orgao_id)
 
-        if(group in request.user.groups.all()):
+        if(groupAdmin in request.user.groups.all()):
             is_admin = True
         else:
             is_admin = False
@@ -115,29 +120,31 @@ def necessidade(request):
             area = request.GET.get('area')
         if  request.GET.get('nivel'):
             nivel = request.GET.get('nivel')
-        if  request.GET.get('plano'):
-            plano = request.GET.get('plano')
-        if  request.GET.get('turno'):
-            turno = request.GET.get('turno')
         if  request.GET.get('qtd_servidor'):
             qtd_servidor = request.GET.get('qtd_servidor')
 
-        necessidades = necessidade_query(area,nivel,plano,turno, int(qtd_servidor))
-        necessidades = necessidades.order_by('custo')
-        necessidades = necessidades.filter(ind_excluido = 0)
-        print("PLANO = ", necessidades.count())
+        # FIXME retornar filtro assim que ele for simplificado
+        #necessidades = necessidade_query(area,nivel,plano,turno, int(qtd_servidor))
+        #necessidades = necessidades.filter(ind_excluido = 0)
+        necessidades = Necessidade.objects.all()
 
-
+        # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
         if(is_admin == False):
-            necessidades = necessidades.filter(cod_usuario__profile__orgao_id = request.user.profile.orgao_id)
+            necessidades = necessidades.filter(cod_orgao__orgao_id = request.user.profile.orgao_id)
 
-        if(group in request.user.groups.all() or group2 in request.user.groups.all() or group3 in request.user.groups.all() or request.user.profile.permissao_necessidade == True):
-            return render(request, 'capacita/necessidade.html', {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 'orgao_usuario' : orgao_usuario, 'is_admin' : is_admin})
+        if(groupAdmin in request.user.groups.all() or
+            groupGestor in request.user.groups.all() or
+            groupSolicitante in request.user.groups.all() or
+            request.user.profile.permissao_necessidade == True):
+            return render(request, 'capacita/necessidade.html',
+                {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos,
+                 'orgao_usuario' : orgao_usuario, 'is_admin' : is_admin})
         else:
             return render(request, 'capacita/error.html')
     else:
         return redirect('error')
 
+@login_required
 def necessidade_show(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
     group = Group.objects.get(name='admin')
@@ -164,7 +171,7 @@ def necessidade_show(request, pk):
 
             return redirect('/necessidade/' + pk + '/show')
 
-
+@login_required
 def necessidade_new(request):
     if (hasattr(request.user, 'profile')):
         areas = Area_Conhecimento.objects.all()
@@ -178,8 +185,6 @@ def necessidade_new(request):
         if(planos_habilitados.count() > 0):
             if request.method == "POST":
                 data = request.POST.copy()
-                tipo = Tipo_Plano_Capacitacao.objects.get(cod_tipo_plano_capacitacao = request.POST['cod_tipo'])
-                print("FORM = ", request.POST['treinamento'])
                 form = NecessidadeForm(request.POST)
                 if form.is_valid():
                     necessidade = form.save(commit=False)
@@ -189,17 +194,16 @@ def necessidade_new(request):
                     necessidade.txt_descricao = request.POST.get('txt_descricao', None)
                     necessidade.cod_usuario = usuario
                     necessidade.cod_area_conhecimento = Area_Conhecimento.objects.get(pk=request.POST['area_conhecimento'])
+                    necessidade.cod_objetivo_treinamento = Objetivo_Treinamento.objects.get(pk=request.POST['objetivo_treinamento'])
                     if request.POST['treinamento'] == '-1' and request.POST['txt_descricao']:
-                        print("1")
                         necessidade.txt_descricao = request.POST['txt_descricao']
                     elif request.POST['treinamento'] == '-1':
-                        print("2")
                         return render(request, 'capacita/necessidade_edit.html', {'form': form, 'erro_sugestao': "Preencha o campo de sugestão!"})
                     #     treinamento_sugerido = Treinamento(cod_area_conhecimento = request.POST['area_conhecimento'], nome = request.POST['txt_descricao'], sugestao = True)
                     #     treinamento_sugerido.save()
                     else:
-                        print("3  -> ", request.POST['treinamento'])
                         necessidade.cod_treinamento = Treinamento.objects.get(pk=request.POST['treinamento'])
+
                     necessidade.save()
                     return redirect('necessidade')
                 else:
@@ -207,7 +211,6 @@ def necessidade_new(request):
                 return render(request, 'capacita/necessidade_edit.html', {'form': form})
             else:
                 form = NecessidadeForm()
-                print("TREINAMENTO = ", treinamentos)
 
                 if (group in request.user.groups.all() or usuario.profile.permissao_necessidade == True ):
                     return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'eh_necessidade' : False, 'planos_habilitados' : planos_habilitados, 'treinamentos' : treinamentos})
@@ -216,9 +219,11 @@ def necessidade_new(request):
         else:
             return render(request, 'capacita/necessidade_edit.html', {'form': form})
     else:
-        return render(request, 'capacita/necessidade_edit.html', {'form': form})
+        #return render(request, 'capacita/necessidade_edit.html', {'form': form})
+        return redirect('error')
 
 
+@login_required
 def necessidade_edit(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
     treinamentos = Treinamento.objects.all()
@@ -245,12 +250,14 @@ def necessidade_edit(request, pk):
     else:
         return render(request, 'capacita/error.html')
 
+@login_required
 def necessidade_delete(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
     necessidade.ind_excluido = 1
     necessidade.save()
     return redirect("necessidade")
 
+@login_required
 def orgao(request):
     if (hasattr(request.user, 'profile')):
         orgaos_list = Orgao.objects.all()
@@ -274,6 +281,7 @@ def orgao(request):
     else:
         return redirect('error')
 
+@login_required
 def orgao_edit(request, pk):
     orgao = get_object_or_404(Orgao, pk=pk)
     if request.method == "POST":
@@ -286,6 +294,7 @@ def orgao_edit(request, pk):
         form = OrgaoForm(instance=orgao)
     return render(request, 'capacita/orgao_edit.html', {'form': form})
 
+@login_required
 def orgao_new(request):
     if request.method == "POST":
         form = OrgaoForm(request.POST)
@@ -297,11 +306,13 @@ def orgao_new(request):
         form = OrgaoForm()
     return render(request, 'capacita/orgao_edit.html', {'form': form})
 
+@login_required
 def orgao_delete(request, id):
     orgao = get_object_or_404(Orgao, pk=id)
     orgao.delete()
     return redirect("orgao")
 
+@login_required
 def tipo(request):
     if (hasattr(request.user, 'profile')):
         group = Group.objects.get(name='admin')
@@ -314,12 +325,14 @@ def tipo(request):
     else:
         return redirect('error')
 
+@login_required
 def tipo_delete(request, pk):
     tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=pk)
     tipo.ind_excluido = 1
     tipo.save()
     return redirect("tipo")
 
+@login_required
 def tipo_edit(request,id):
     tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=id)
     if request.method == 'POST':
@@ -332,6 +345,7 @@ def tipo_edit(request,id):
         form = TipoForm(instance=tipo)
     return render(request, 'capacita/tipo_edit.html', {'form' : form})
 
+@login_required
 def tipo_new(request):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -352,6 +366,7 @@ def tipo_new(request):
     else:
         return redirect('error')
 
+@login_required
 def relatorio(request):
     # Create a workbook and add a worksheet.
     workbook = xlsxwriter.Workbook('Necessidades.xlsx')
@@ -363,7 +378,14 @@ def relatorio(request):
     bold = workbook.add_format({'bold': True, 'center_across' : True})
     center = workbook.add_format({'center_across' : True})
 
-    necessidades = Necessidade.objects.values('treinamento', 'txt_descricao', 'aprovado').annotate(cod_necessidade=Max('cod_necessidade'),custo=Sum('custo') ,qtd_servidor=Sum('qtd_servidor'), hor_duracao= Avg('hor_duracao'),cod_prioridade=Avg('cod_prioridade_id'),cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'), cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id'))
+
+    necessidades = Necessidade.objects.all()
+    # .values('treinamento', 'txt_descricao', 'aprovado').annotate(
+    #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'),
+    #     hor_duracao= Avg('hor_duracao'),cod_prioridade=Avg('cod_prioridade_id'),
+    #     cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'),
+    #     cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id')
+    # )
 
     necessidades = necessidades.filter(ind_excluido = 0)
 
@@ -371,38 +393,50 @@ def relatorio(request):
     row = 0
     col = 0
 
-    worksheet.write(row, col,         "Sugestão de Treinamento", bold)
-    worksheet.write(row, col + 1,     "Prioridade", bold)
-    worksheet.write(row, col + 2,     "Quantidade de Servidores", bold)
-    worksheet.write(row, col + 3,     "Area Conhecimento", bold)
-    worksheet.write(row, col + 4,     "Nivel", bold)
-    worksheet.write(row, col + 5,     "Carga Horária", bold)
-    worksheet.write(row, col + 6,     "Evento", bold)
-    worksheet.write(row, col + 7,     "Demandante", bold)
-    worksheet.write(row, col + 8,     "Custo", bold)
-    worksheet.write(row, col + 9,     "Aprovado", bold)
+    worksheet.write(row, col,         "PCASF", bold)
+    worksheet.write(row, col + 1,     "Órgão", bold)
+    worksheet.write(row, col + 2,     "Área de Conhecimento", bold)
+    worksheet.write(row, col + 3,     "Treinamento", bold)
+    worksheet.write(row, col + 4,     "Evento", bold)
+    worksheet.write(row, col + 5,     "Modalidade", bold)
+    worksheet.write(row, col + 6,     "Nível", bold)
+    worksheet.write(row, col + 7,     "Carga Horária", bold)
+    worksheet.write(row, col + 8,     "Tipo de Treinamento", bold)
+    worksheet.write(row, col + 9,     "Prioridade", bold)
+    worksheet.write(row, col + 10,     "Quantidade de Servidores", bold)
+    worksheet.write(row, col + 11,     "Objetivo", bold)
+    worksheet.write(row, col + 12,     "Justificativa", bold)
 
     row += 1
 
     for necessidade in necessidades:
-        if (necessidade['treinamento'] == '' or necessidade['treinamento'] == None):
-            treinamento = necessidade['txt_descricao']
-        else:
-            treinamento = Treinamento.objects.get(cod_treinamento=necessidade['treinamento']).nome
 
-        worksheet.write(row, col,     treinamento, center)
-        worksheet.write(row, col + 1, Prioridade.objects.get(cod_prioridade=necessidade['cod_prioridade']).nome, center)
-        worksheet.write(row, col + 2, necessidade['qtd_servidor'], center)
-        # worksheet.write(row, col + 3, Sub_Area_Conhecimento.objects.get(cod_sub_area_conhecimento=necessidade['cod_sub_area_conhecimento']).txt_descricao, center)
-        worksheet.write(row, col + 4, Nivel.objects.get(cod_nivel=necessidade['cod_nivel']).nome, center)
-        worksheet.write(row, col + 5, necessidade['hor_duracao'], center)
-        worksheet.write(row, col + 6, Evento.objects.get(cod_evento=necessidade['cod_evento']).nome, center)
-        worksheet.write(row, col + 7, User.objects.get(id=necessidade['cod_usuario']).username, center)
-        worksheet.write(row, col + 8, necessidade['custo'], center)
-        if (necessidade['aprovado'] == 0):
-            worksheet.write(row, col + 9, 'Sim', center)
+        print (necessidade.cod_treinamento)
+
+        if (necessidade.cod_treinamento == '' or necessidade.cod_treinamento == None):
+            treinamento = necessidade.txt_descricao
         else:
-            worksheet.write(row, col + 9, 'Não', center)
+            treinamento = Treinamento.objects.get(cod_treinamento=necessidade.cod_treinamento.cod_treinamento).nome
+
+        worksheet.write(row, col,     necessidade.cod_plano_capacitacao.ano_plano_capacitacao, center)
+        worksheet.write(row, col + 1, necessidade.cod_orgao.nome, center)
+        worksheet.write(row, col + 2, necessidade.cod_area_conhecimento.txt_descricao, center)
+        worksheet.write(row, col + 3, treinamento, center)
+        worksheet.write(row, col + 4, necessidade.cod_evento.nome, center)
+        #Evento.objects.get(cod_evento=necessidade['cod_evento']).nome, center)
+        worksheet.write(row, col + 5, necessidade.cod_modalidade.nome, center)
+        worksheet.write(row, col + 6, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
+        worksheet.write(row, col + 7, necessidade.hor_duracao, center)
+        worksheet.write(row, col + 8, '', center) #FIXME recuperar tipo de treinamento
+        worksheet.write(row, col + 9, Prioridade.objects.get(cod_prioridade=necessidade.cod_prioridade.cod_prioridade).nome, center)
+        worksheet.write(row, col + 10, necessidade.qtd_servidor, center)
+        worksheet.write(row, col + 11, Objetivo_Treinamento.objects.get(cod_objetivo_treinamento=necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento).nome, center)
+        worksheet.write(row, col + 12, necessidade.justificativa, center)
+
+    #    if (necessidade['aprovado'] == 0):
+    #        worksheet.write(row, col + 8, 'Sim', center)
+    #    else:
+    #        worksheet.write(row, col + 8, 'Não', center)
 
         row += 1
 
@@ -418,6 +452,7 @@ def relatorio(request):
 
     return response
 
+@login_required
 def areas(request):
     if (hasattr(request.user, 'profile')):
         area_conhecimento = Area_Conhecimento.objects.all().exclude(cod_area_conhecimento = -1).exclude(ind_excluido = 1)
@@ -479,7 +514,7 @@ def area_delete(request, id):
     else:
         return redirect('error')
 
-
+@login_required
 def usuarios(request):
     if (hasattr(request.user, 'profile')):
         orgao_id = request.user.profile.orgao_id
@@ -537,6 +572,7 @@ def usuarios_permissao(request):
         return redirect("/")
     return HttpResponseRedirect('/usuarios/')
 
+@login_required
 def usuario_new(request):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -577,6 +613,7 @@ def usuario_new(request):
     else:
         return redirect('error')
 
+@login_required
 def usuario_edit(request, pk):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -613,6 +650,7 @@ def usuario_edit(request, pk):
     else:
         return redirect('error')
 
+@login_required
 def modalidade(request):
     if (hasattr(request.user, 'profile')):
         group = Group.objects.get(name = 'admin')
@@ -625,6 +663,7 @@ def modalidade(request):
     else:
         return redirect('error')
 
+@login_required
 def eventos(request):
     if (hasattr(request.user, 'profile')):
         group = Group.objects.get(name = 'admin')
@@ -637,6 +676,7 @@ def eventos(request):
     else:
         return redirect('error')
 
+@login_required
 def evento_edit(request, pk):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -658,6 +698,7 @@ def evento_edit(request, pk):
     else:
         return redirect('error')
 
+@login_required
 def evento_new(request):
     if request.method == "POST":
         form = EventoForm(request.POST)
@@ -669,6 +710,7 @@ def evento_new(request):
         form = EventoForm()
     return render(request, 'capacita/evento_edit.html', {'form': form})
 
+@login_required
 def evento_delete(request, pk):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -680,6 +722,7 @@ def evento_delete(request, pk):
     else:
         return redirect('error')
 
+@login_required
 def modalidade_edit(request, pk):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -701,6 +744,7 @@ def modalidade_edit(request, pk):
     else:
         return redirect('error')
 
+@login_required
 def modalidade_new(request):
     if request.method == "POST":
         form = ModalidadeForm(request.POST)
@@ -712,6 +756,7 @@ def modalidade_new(request):
         form = ModalidadeForm()
     return render(request, 'capacita/modalidade_edit.html', {'form': form})
 
+@login_required
 def modalidade_delete(request, pk):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
@@ -723,6 +768,7 @@ def modalidade_delete(request, pk):
     else:
         return redirect('error')
 
+@login_required
 def api_areas(request):
     areas = Area_Conhecimento.objects.all().values()
 
@@ -730,24 +776,29 @@ def api_areas(request):
 
     return JsonResponse(areas, safe=False)
 
+@login_required
 def api_cursos(request):
     treinamentos = Treinamento.objects.all().values()
     treinamentos = list(treinamentos)
     return JsonResponse(treinamentos, safe=False)
 
+@login_required
 def api_tipos(request):
     tipos = Tipo_Plano_Capacitacao.objects.all().values()
     tipos = list(tipos)
     return JsonResponse(tipos, safe=False)
 
+@login_required
 def api_planos(request):
     planos = Plano_Capacitacao.objects.all().values()
     planos = list(planos)
     return JsonResponse(planos, safe=False)
 
+@login_required
 def error(request):
     return render(request, 'capacita/error.html')
 
+@login_required
 def avaliacao_cursos(request):
     group = Group.objects.get(name='admin')
     group2 = Group.objects.get(name='gestor')

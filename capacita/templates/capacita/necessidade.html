@@ -2,7 +2,30 @@
 
 {% block content %}
 
+    {% if not necessidades %}
+    <div style="padding-left: 5%; padding-bottom: 4%" class="table_div">
+        <div class="content">
+            <h2 style="float: left;" class="ui header">Treinamentos solicitados para {{user.profile.orgao.nome}}</h2>
+        </div>
+    </div>
+    <div style="padding-left: 5%; padding-bottom: 0%">
+        <div style="width:80%" class="ui warning message">Ainda não foi solicitado nenhum treinamento para {{user.profile.orgao.nome}}.
+        <br><br>
+        Clique no botão abaixo para realizar um pedido de treinamento
+        </div>
+    </div>
     <div class="table_div">
+        <a href="/necessidade/new/"><button class="ui button basic secondary">Novo</button></a>
+    </div>
+    {% else %}
+    <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
+        <div class="content">
+            <h2 style="float: left;" class="ui header">PCASF {{necessidades.0.cod_plano_capacitacao}} - Treinamentos solicitados para {{user.profile.orgao.nome}}</td>
+            </h2>
+        </div>
+    </div>
+    <div style="padding-bottom:0%" class="table_div">
+        <!--
         <div class="ui accordion field">
             <div class="title">
                 <i class="dropdown icon"></i>
@@ -12,7 +35,7 @@
                 <form class="ui form" method="get">
                     <div class="three fields">
                         <div class="select_area field">
-                            <label>Área de Interesse</label>
+                            <label>Área de Conhecimento</label>
                             <select name="area" id="">
                                 <option value="">-------------</option>
                                 {% for area in areas %}
@@ -27,7 +50,7 @@
                                 {% for nivel in niveis %}
                                 <option value="{{nivel.cod_nivel}}">{{nivel.nome}}</option>
                                 {% endfor %}
-                            </select>
+                                </select>
                         </div>
                         <div class="field">
                             <label>Plano de Capacitação</label>
@@ -51,8 +74,9 @@
                 </form>
             </div>
         </div>
+        -->
         <br>
-
+        
         <div>
             <h3 style="float: left;" class="ui dividing header">Necessidades</h3>
             <a style="float: right;" href="/relatorio/">Gerar Planilha</a>
@@ -60,36 +84,36 @@
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
+                <th>Área de Conhecimento</th>
                 <th>Treinamento</th>
-                <th>Plano Capacitação</th>
+                <th>Evento</th>
                 <th>Quantidade de Servidores</th>
-                <th>Área Conhecimento</th>
-                <th>Aprovado</th>
+                <th>Nível</th>
+                <th>Carga Horária</th>
+                <th>Modalidade</th>
+                <th>Prioridade</th>
                 <th>Ver</th>
-                {% if is_admin %}
                 <th>Editar</th>
                 <th>Excluir</th>
-                {% endif %}
                 </tr>
             </thead>
             <tbody>
 
                 {% for necessidade in necessidades %}
                     <tr class="center aligned">
+                        <td>{{necessidade.cod_area_conhecimento}}</td>
                         {% if necessidade.cod_treinamento == None %}
                         <td>{{necessidade.txt_descricao}}</td>
                         {% else %}
                         <td>{{necessidade.cod_treinamento.nome}}</td>
                         {% endif %}
-                        <td>{{necessidade.cod_plano_capacitacao}}</td>
+                        <td>{{necessidade.cod_evento}}</td>
                         <td>{{necessidade.qtd_servidor}}</td>
-                        <td>{{necessidade.cod_area_conhecimento}}</td>
-                        {% if necessidade.aprovado == False %}
-                        <td>Não</td>
-                        {% endif %}
-                        {% if necessidade.aprovado == True %}
-                        <td>Sim</td>
-                        {% endif %}
+                        <td>{{necessidade.cod_nivel}}</td>
+                        <td>{{necessidade.hor_duracao}}</td>
+                        <td>{{necessidade.cod_modalidade}}</td>
+                        <td>{{necessidade.cod_prioridade}}</td>
+                        
                         <td><a class="links" href="{% url 'necessidade_show' necessidade.cod_necessidade %}"><i class="search icon"></i></a></td>
                         {% if is_admin %}
                         <td><a class="links" href="{% url 'necessidade_edit' necessidade.cod_necessidade %}"><i class="pencil icon"></i></a></td>
@@ -101,8 +125,9 @@
             </tbody>
         </table>
         <br>
-        <a href="/necessidade/new/"><button class="ui button basic secondary">Novo</button></a>
-
     </div>
-
+    <div class="table_div">
+        <a href="/necessidade/new/"><button class="ui button basic secondary">Novo</button></a>
+    </div>
+    {% endif %}
     {% endblock %}

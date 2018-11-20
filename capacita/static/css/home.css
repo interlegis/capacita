@@ -14,3 +14,11 @@
 .section_container{
     padding-bottom: 40px !important;
 }
+
+.bgSenado{
+    height: 82px;
+    min-height: 82px;
+    background-repeat: repeat-x;
+    z-index: 1001;
+    background-image: url(../images/bg_Senado.jpg) !important;
+}
