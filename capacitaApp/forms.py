@@ -16,6 +16,7 @@ class NecessidadeForm(forms.ModelForm):
     modalidades = emptyField + [(modalidade.pk, modalidade) for modalidade in Modalidade_Treinamento.objects.all()]
     niveis = emptyField + [(niveis.pk, niveis) for niveis in Nivel.objects.all()]
     tipos_treinamento = emptyField + [(tipo.pk, tipo) for tipo in Tipo_Treinamento.objects.all()]
+
     # Adicionando forms
     objetivo_treinamento = forms.ChoiceField(
                             choices= objetivos,
@@ -30,26 +31,26 @@ class NecessidadeForm(forms.ModelForm):
                                 widget = forms.Select(attrs = {
                                     'onclick': "selectTreinamento(this);",
                                 }))
-    cod_modalidade = forms.ChoiceField(
+    modalidade = forms.ChoiceField(
                             choices= modalidades,
                             )
-    cod_nivel = forms.ChoiceField(
+    nivel = forms.ChoiceField(
                             choices= niveis,
                             )
-    cod_tipo_treinamento = forms.ChoiceField(
+    tipo_treinamento = forms.ChoiceField(
                             choices= tipos_treinamento,
                             )
     class Meta:
         model = Necessidade
-        fields = ('qtd_servidor','hor_duracao','cod_nivel','cod_modalidade', 'cod_prioridade', 'cod_tipo_treinamento', 'justificativa', 'cod_evento', 'treinamento', 'area_conhecimento', 'objetivo_treinamento')
+        fields = ('qtd_servidor','hor_duracao','nivel','modalidade', 'cod_prioridade', 'tipo_treinamento', 'justificativa', 'cod_evento', 'treinamento', 'area_conhecimento', 'objetivo_treinamento')
         labels = {
             'qtd_servidor' : 'Quantidade de Servidores Efetivos',
             'hor_duracao'  : 'Hora de duração',
             'cod_evento' : 'Evento',
-            'cod_tipo_treinamento' : 'Tipo de Treinamento',
+            'tipo_treinamento' : 'Tipo de Treinamento',
             'justificativa' : 'Justificativa',
-            'cod_modalidade' : 'Modalidade de Treinamento',
-            'cod_nivel' : 'Nível',
+            'modalidade' : 'Modalidade de Treinamento',
+            'nivel' : 'Nível',
             'cod_prioridade' : 'Prioridade',
             'treinamento': 'Treinamento',
             'area_conhecimento': 'Área de conhecimento',
@@ -116,6 +117,7 @@ class GroupForm(forms.ModelForm):
         fields = ('id', )
 
 class TreinamentoForm(forms.ModelForm):
+
     class Meta:
         model = Treinamento
         fields = ('cod_treinamento', 'cod_area_conhecimento', 'nome')

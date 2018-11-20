@@ -178,8 +178,8 @@ def necessidade_new(request):
         treinamentos = Treinamento.objects.all()
         usuario = User.objects.get(id = request.user.id)
         group = Group.objects.get(name='admin' or 'gestor')
+        orgao = Profile.objects.get(user=usuario).orgao_id
         # form2 = TreinamentoForm()
-
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
 
         if(planos_habilitados.count() > 0):
@@ -189,6 +189,10 @@ def necessidade_new(request):
                 if form.is_valid():
                     necessidade = form.save(commit=False)
                     necessidade.cod_plano_capacitacao = planos_habilitados[0]
+                    necessidade.cod_tipo_treinamento = Tipo_Treinamento.objects.get(cod_tipo_treinamento = request.POST['tipo_treinamento'])
+                    necessidade.cod_modalidade = Modalidade_Treinamento.objects.get(cod_modalidade = request.POST['modalidade'])
+                    necessidade.cod_orgao = Orgao.objects.get(cod_orgao=orgao)
+                    necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
                     if (request.POST.get('curso_id', None)):
                         necessidade.treinamento = Treinamento.objects.get(cod_treinamento = request.POST.get('curso_id', None))
                     necessidade.txt_descricao = request.POST.get('txt_descricao', None)
@@ -230,6 +234,7 @@ def necessidade_edit(request, pk):
     usuario = User.objects.get(id = request.user.id)
     group = Group.objects.get(name='admin' or 'gestor')
     areas = Area_Conhecimento.objects.all()
+    orgao = Profile.objects.get(user=usuario).orgao_id
 
     planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True);
 
@@ -238,7 +243,12 @@ def necessidade_edit(request, pk):
             form = NecessidadeForm(request.POST, instance=necessidade)
             if form.is_valid():
                 necessidade = form.save(commit=False)
-                necessidade.cod_plano_capacitacao = Plano_Capacitacao.objects.get(cod_plano_capacitacao = request.POST['plano'])
+                necessidade.cod_plano_capacitacao = planos_habilitados[0]
+                necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
+                necessidade.cod_tipo_treinamento = Tipo_Treinamento.objects.get(cod_tipo_treinamento = request.POST['tipo_treinamento'])
+                necessidade.cod_modalidade = Modalidade_Treinamento.objects.get(cod_modalidade = request.POST['modalidade'])
+                necessidade.cod_orgao = Orgao.objects.get(cod_orgao=orgao)
+                necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
                 if (request.POST.get('curso_id', None)):
                     necessidade.treinamento = Treinamento.objects.get(cod_treinamento = request.POST.get('curso_id', None))
                 necessidade.txt_descricao = request.POST.get('txt_descricao', None)
