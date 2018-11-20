@@ -230,6 +230,19 @@ def necessidade_new(request):
 @login_required
 def necessidade_edit(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
+    necessidade_updated = {
+        'treinamento': necessidade.cod_treinamento.cod_treinamento,
+        'nivel': necessidade.cod_nivel.cod_nivel,
+        'area_conhecimento': necessidade.cod_area_conhecimento.cod_area_conhecimento,
+        'cod_evento': necessidade.cod_evento.cod_evento,
+        'modalidade': necessidade.cod_modalidade.cod_modalidade,
+        'hor_duracao': necessidade.hor_duracao,
+        'tipo_treinamento': necessidade.cod_tipo_treinamento.cod_tipo_treinamento,
+        'cod_prioridade': necessidade.cod_prioridade.cod_prioridade,
+        'qtd_servidor': necessidade.qtd_servidor,
+        'objetivo_treinamento': necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento,
+        'justificativa': necessidade.justificativa
+    }
     treinamentos = Treinamento.objects.all()
     usuario = User.objects.get(id = request.user.id)
     group = Group.objects.get(name='admin' or 'gestor')
@@ -245,17 +258,21 @@ def necessidade_edit(request, pk):
                 necessidade = form.save(commit=False)
                 necessidade.cod_plano_capacitacao = planos_habilitados[0]
                 necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
-                necessidade.cod_tipo_treinamento = Tipo_Treinamento.objects.get(cod_tipo_treinamento = request.POST['tipo_treinamento'])
+                # necessidade.cod_tipo_treinamento = Tipo_Treinamento.objects.get(cod_tipo_treinamento = request.POST['tipo_treinamento'])
                 necessidade.cod_modalidade = Modalidade_Treinamento.objects.get(cod_modalidade = request.POST['modalidade'])
                 necessidade.cod_orgao = Orgao.objects.get(cod_orgao=orgao)
                 necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
-                if (request.POST.get('curso_id', None)):
-                    necessidade.treinamento = Treinamento.objects.get(cod_treinamento = request.POST.get('curso_id', None))
+                # if (request.POST.get('curso_id', None)):
+                    # necessidade.treinamento = Treinamento.objects.get(cod_treinamento = request.POST.get('curso_id', None))
                 necessidade.txt_descricao = request.POST.get('txt_descricao', None)
                 necessidade.save()
                 return redirect('necessidade')
         else:
-            form = NecessidadeForm(instance=necessidade)
+            form = NecessidadeForm(necessidade_updated, instance=necessidade)
+            form.fields['nivel'].initial = necessidade.cod_nivel
+            form.fields['area_conhecimento'].initial = necessidade.cod_area_conhecimento
+            form.fields['treinamento'].initial = necessidade.cod_treinamento
+            form.fields['modalidade'].initial = necessidade.cod_modalidade
         return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'planos_habilitados' : planos_habilitados, 'necessidade' : necessidade, 'treinamentos' : treinamentos})
     else:
         return render(request, 'capacita/error.html')
