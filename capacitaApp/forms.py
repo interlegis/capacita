@@ -8,7 +8,7 @@ class NecessidadeForm(forms.ModelForm):
     emptyField = [('', '---------')]
     treinamento_outro = [('-1', 'Outro')]
     treinamentos = emptyField + [(treinamento.pk, treinamento) for treinamento in Treinamento.objects.all().exclude(cod_treinamento = -1)] + treinamento_outro
-    areas_conhecimento = emptyField + [(area.pk, area) for area in Area_Conhecimento.objects.all()]
+    areas_conhecimento = emptyField + [(area.pk, area) for area in Area_Conhecimento.objects.all().exclude(ind_excluido=1)]
     objetivos = emptyField + [(objetivo.pk, objetivo) for objetivo in Objetivo_Treinamento.objects.all()]
     justificativa = forms.CharField(widget=forms.Textarea)
     objetivo_treinamento = forms.ChoiceField(
@@ -63,6 +63,13 @@ class OrgaoForm(forms.ModelForm):
         labels = {
             'nome' : 'Nome'
         }
+
+class AreaConhecimentoForm(forms.ModelForm):
+
+    class Meta:
+        model = Area_Conhecimento
+        fields = ('cod_area_conhecimento', 'txt_descricao')
+
 
 class EventoForm(forms.ModelForm):
 
