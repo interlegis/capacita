@@ -134,12 +134,12 @@ def necessidade(request):
         if(is_admin == False):
             necessidades = necessidades.filter(cod_orgao__orgao_id = request.user.profile.orgao_id)
 
-        if(groupAdmin in request.user.groups.all() or 
-            groupGestor in request.user.groups.all() or 
-            groupSolicitante in request.user.groups.all() or 
+        if(groupAdmin in request.user.groups.all() or
+            groupGestor in request.user.groups.all() or
+            groupSolicitante in request.user.groups.all() or
             request.user.profile.permissao_necessidade == True):
-            return render(request, 'capacita/necessidade.html', 
-                {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 
+            return render(request, 'capacita/necessidade.html',
+                {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos,
                  'orgao_usuario' : orgao_usuario, 'is_admin' : is_admin})
         else:
             return render(request, 'capacita/error.html')
@@ -209,7 +209,7 @@ def necessidade_new(request):
                     #     treinamento_sugerido.save()
                     else:
                         necessidade.cod_treinamento = Treinamento.objects.get(pk=request.POST['treinamento'])
-                    
+
                     necessidade.save()
                     return redirect('necessidade')
                 else:
@@ -259,22 +259,21 @@ def necessidade_edit(request, pk):
             if form.is_valid():
                 necessidade = form.save(commit=False)
                 necessidade.cod_plano_capacitacao = planos_habilitados[0]
-                necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
-                # necessidade.cod_tipo_treinamento = Tipo_Treinamento.objects.get(cod_tipo_treinamento = request.POST['tipo_treinamento'])
+                necessidade.cod_tipo_treinamento = Tipo_Treinamento.objects.get(cod_tipo_treinamento = request.POST['tipo_treinamento'])
                 necessidade.cod_modalidade = Modalidade_Treinamento.objects.get(cod_modalidade = request.POST['modalidade'])
                 necessidade.cod_orgao = Orgao.objects.get(cod_orgao=orgao)
                 necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
-                # if (request.POST.get('curso_id', None)):
-                    # necessidade.treinamento = Treinamento.objects.get(cod_treinamento = request.POST.get('curso_id', None))
+                necessidade.cod_treinamento = Treinamento.objects.get(cod_treinamento = request.POST['treinamento'])
                 necessidade.txt_descricao = request.POST.get('txt_descricao', None)
+                necessidade.cod_usuario = usuario
+                necessidade.cod_area_conhecimento = Area_Conhecimento.objects.get(pk=request.POST['area_conhecimento'])
+                necessidade.cod_objetivo_treinamento = Objetivo_Treinamento.objects.get(pk=request.POST['objetivo_treinamento'])
+                if request.POST['treinamento'] == '-1' and request.POST['txt_descricao']:
+                    necessidade.txt_descricao = request.POST['txt_descricao']
                 necessidade.save()
                 return redirect('necessidade')
         else:
             form = NecessidadeForm(necessidade_updated, instance=necessidade)
-            form.fields['nivel'].initial = necessidade.cod_nivel
-            form.fields['area_conhecimento'].initial = necessidade.cod_area_conhecimento
-            form.fields['treinamento'].initial = necessidade.cod_treinamento
-            form.fields['modalidade'].initial = necessidade.cod_modalidade
         return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'planos_habilitados' : planos_habilitados, 'necessidade' : necessidade, 'treinamentos' : treinamentos})
     else:
         return render(request, 'capacita/error.html')
@@ -290,7 +289,7 @@ def necessidade_delete(request, pk):
 def treinamento(request):
     treinamentos = Treinamento.objects.all()
     return render(request, 'capacita/treinamento.html', {'treinamentos' : treinamentos})
-    
+
 @login_required
 def treinamento_edit(request, pk):
     treinamento = get_object_or_404(Treinamento, pk=pk)
@@ -304,7 +303,7 @@ def treinamento_edit(request, pk):
         form = TreinamentoForm(instance=treinamento)
 
     return render(request, 'capacita/treinamento_edit.html', {'form': form})
-    
+
 @login_required
 def treinamento_new(request):
     if request.method == "POST":
@@ -328,7 +327,7 @@ def treinamento_delete(request, pk):
 def objetivos(request):
     objetivos = Objetivo_Treinamento.objects.all()
     return render(request, 'capacita/objetivos.html', {'objetivos' : objetivos})
-    
+
 @login_required
 def objetivo_edit(request, pk):
     objetivo = get_object_or_404(Objetivo_Treinamento, pk=pk)
@@ -342,7 +341,7 @@ def objetivo_edit(request, pk):
         form = ObjetivoTreinamentoForm(instance=objetivo)
 
     return render(request, 'capacita/objetivo_edit.html', {'form': form})
-    
+
 @login_required
 def objetivo_new(request):
     if request.method == "POST":
@@ -468,9 +467,9 @@ def relatorio(request):
 
     necessidades = Necessidade.objects.all()
     # .values('treinamento', 'txt_descricao', 'aprovado').annotate(
-    #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'), 
+    #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'),
     #     hor_duracao= Avg('hor_duracao'),cod_prioridade=Avg('cod_prioridade_id'),
-    #     cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'), 
+    #     cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'),
     #     cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id')
     # )
 
@@ -479,7 +478,7 @@ def relatorio(request):
 
     row = 0
     col = 0
-    
+
     worksheet.write(row, col,         "PCASF", bold)
     worksheet.write(row, col + 1,     "Órgão", bold)
     worksheet.write(row, col + 2,     "Área de Conhecimento", bold)
@@ -509,7 +508,7 @@ def relatorio(request):
         worksheet.write(row, col + 1, necessidade.cod_orgao.nome, center)
         worksheet.write(row, col + 2, necessidade.cod_area_conhecimento.txt_descricao, center)
         worksheet.write(row, col + 3, treinamento, center)
-        worksheet.write(row, col + 4, necessidade.cod_evento.nome, center) 
+        worksheet.write(row, col + 4, necessidade.cod_evento.nome, center)
         #Evento.objects.get(cod_evento=necessidade['cod_evento']).nome, center)
         worksheet.write(row, col + 5, necessidade.cod_modalidade.nome, center)
         worksheet.write(row, col + 6, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
@@ -847,7 +846,7 @@ def api_cursos(request):
     return JsonResponse(treinamentos, safe=False)
 
 @login_required
-def api_tipos(request):
+def api_tipos_treinamento(request):
     tipos = Tipo_Plano_Capacitacao.objects.all().values()
     tipos = list(tipos)
     return JsonResponse(tipos, safe=False)
