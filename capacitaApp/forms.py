@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, Group
 from .models import *
 
 class NecessidadeForm(forms.ModelForm):
+    # Adicionando objetos em variáveis
     emptyField = [('', '---------')]
     treinamento_outro = [('-1', '* Outro (especificar) *')]
     treinamentos = emptyField + [(treinamento.pk, treinamento) for treinamento in Treinamento.objects.all().exclude(cod_treinamento = -1)] + treinamento_outro
@@ -12,6 +13,10 @@ class NecessidadeForm(forms.ModelForm):
     objetivos = emptyField + [(objetivo.pk, objetivo) for objetivo in Objetivo_Treinamento.objects.all()]
     justificativa = forms.CharField(widget=forms.Textarea)
     objetivos = emptyField + [(objetivo.pk, objetivo) for objetivo in Objetivo_Treinamento.objects.all()]
+    modalidades = emptyField + [(modalidade.pk, modalidade) for modalidade in Modalidade_Treinamento.objects.all()]
+    niveis = emptyField + [(niveis.pk, niveis) for niveis in Nivel.objects.all()]
+    tipos_treinamento = emptyField + [(tipo.pk, tipo) for tipo in Tipo_Treinamento.objects.all()]
+    # Adicionando forms
     objetivo_treinamento = forms.ChoiceField(
                             choices= objetivos,
                             )
@@ -25,15 +30,23 @@ class NecessidadeForm(forms.ModelForm):
                                 widget = forms.Select(attrs = {
                                     'onclick': "selectTreinamento(this);",
                                 }))
-
+    cod_modalidade = forms.ChoiceField(
+                            choices= modalidades,
+                            )
+    cod_nivel = forms.ChoiceField(
+                            choices= niveis,
+                            )
+    cod_tipo_treinamento = forms.ChoiceField(
+                            choices= tipos_treinamento,
+                            )
     class Meta:
         model = Necessidade
-        fields = ('qtd_servidor','hor_duracao','cod_nivel','cod_modalidade', 'cod_prioridade', 'justificativa', 'cod_evento', 'treinamento', 'area_conhecimento', 'objetivo_treinamento')
+        fields = ('qtd_servidor','hor_duracao','cod_nivel','cod_modalidade', 'cod_prioridade', 'cod_tipo_treinamento', 'justificativa', 'cod_evento', 'treinamento', 'area_conhecimento', 'objetivo_treinamento')
         labels = {
             'qtd_servidor' : 'Quantidade de Servidores Efetivos',
             'hor_duracao'  : 'Hora de duração',
             'cod_evento' : 'Evento',
-            'cod_tipo' : 'Tipo de Modalidade',
+            'cod_tipo_treinamento' : 'Tipo de Treinamento',
             'justificativa' : 'Justificativa',
             'cod_modalidade' : 'Modalidade de Treinamento',
             'cod_nivel' : 'Nível',
