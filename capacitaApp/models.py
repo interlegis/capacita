@@ -12,7 +12,7 @@ class Orgao(models.Model):
     nome = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.sigla
+        return self.nome
 
     class Meta:
         db_table = 'orgao'
@@ -97,7 +97,7 @@ class Necessidade(models.Model):
     cod_orgao = models.ForeignKey('orgao', models.DO_NOTHING)
 
     ind_excluido = models.NullBooleanField(null = False, default=False)
-    
+
     def __str__(self):
         return self.txt_descricao
 
@@ -290,4 +290,3 @@ class DjangoSession(models.Model):
     class Meta:
         managed = False
         db_table = 'django_session'
-

@@ -35,12 +35,9 @@ urlpatterns = [
     url(r'^api/planos/$', views.api_planos, name='api_planos'),
     url(r'^api/tipos/$', views.api_tipos, name='api_tipos'),
     url(r'^api/treinamentos/$', views.api_cursos, name='api_cursos'),
-<<<<<<< HEAD
     url(r'^area/(?P<pk>\d+)/edit/$', views.area_edit, name='area_edit'),
     url(r'^area/(?P<id>\d+)/$', views.area_delete, name='area_delete'),
     url(r'^area/new/$', views.area_new, name='area_new'),
-=======
->>>>>>> 3d1d6c52cc8b46b0c324169047807acc0461c872
     url(r'^relatorio/$', views.relatorio, name='relatorio'),
     url(r'^modalidade/$', views.modalidade, name='modalidade'),
     url(r'^modalidade/(?P<pk>\d+)/$', views.modalidade_delete, name='modalidade_delete'),
