@@ -5,6 +5,10 @@
     <meta charset="utf-8" />
     <title>Capacita</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/semantic.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/table.css' %}">
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
@@ -15,7 +19,7 @@
 <body>
     <div class="ui inverted menu bgSenado">
         <div class="item">
-            <img src="{% static 'images/senado.png' %}">
+            <img class="logoSenado" src="{% static 'images/logo_senado_federal.svg' %}">
         </div>
         <a class="item" href="/necessidade/">Treinamento</a>
         {% if user.is_superuser %}
@@ -37,15 +41,13 @@
             </div>
         </div>
         {% endif %}
-        <div class="right menu">
+        <div class="right menu dropdown show">
             {% if user.is_authenticated %}
-            <div class="right menu">
-                <div class="ui item">
-                    {{ user.username }}
-                </div>
-                <a class="ui item" href="/logout/">
-                    Sair
-                </a>
+            <a class="ui item dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ user.username }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="/logout/">Sair</a>
             </div>
             {% endif %}
         </div>
