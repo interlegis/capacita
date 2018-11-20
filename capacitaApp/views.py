@@ -847,7 +847,7 @@ def api_cursos(request):
 
 @login_required
 def api_tipos_treinamento(request):
-    tipos = Tipo_Plano_Capacitacao.objects.all().values()
+    tipos = Tipo_Treinamento.objects.all().values()
     tipos = list(tipos)
     return JsonResponse(tipos, safe=False)
 
