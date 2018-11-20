@@ -12,7 +12,7 @@ class Orgao(models.Model):
     nome = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.sigla
+        return self.nome
 
     class Meta:
         db_table = 'orgao'
@@ -28,6 +28,7 @@ class Area_Conhecimento(models.Model):
     class Meta:
         db_table = 'area_conhecimento'
         ordering = ['txt_descricao']
+
 
 class Treinamento(models.Model):
     cod_treinamento = models.AutoField(primary_key=True)
