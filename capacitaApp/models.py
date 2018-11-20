@@ -29,6 +29,7 @@ class Area_Conhecimento(models.Model):
         db_table = 'area_conhecimento'
         ordering = ['txt_descricao']
 
+
 class Treinamento(models.Model):
     cod_treinamento = models.AutoField(primary_key=True)
     cod_area_conhecimento = models.ForeignKey('Area_Conhecimento', models.DO_NOTHING, default='0')
