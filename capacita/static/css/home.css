@@ -22,3 +22,9 @@
     z-index: 1001;
     background-image: url(../images/bg_Senado.jpg) !important;
 }
+
+.logoSenado{
+    margin-left: 5% !important;
+    width: 170px !important;
+    height: 23px !important;
+}
