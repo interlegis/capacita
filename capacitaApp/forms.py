@@ -6,11 +6,11 @@ from .models import *
 
 class NecessidadeForm(forms.ModelForm):
     emptyField = [('', '---------')]
-    treinamento_outro = [('-1', 'Outro')]
+    treinamento_outro = [('-1', '* Outro (especificar) *')]
     treinamentos = emptyField + [(treinamento.pk, treinamento) for treinamento in Treinamento.objects.all().exclude(cod_treinamento = -1)] + treinamento_outro
     areas_conhecimento = emptyField + [(area.pk, area) for area in Area_Conhecimento.objects.all()]
-    objetivos = emptyField + [(objetivo.pk, objetivo) for objetivo in Objetivo_Treinamento.objects.all()]
     justificativa = forms.CharField(widget=forms.Textarea)
+    objetivos = emptyField + [(objetivo.pk, objetivo) for objetivo in Objetivo_Treinamento.objects.all()]
     objetivo_treinamento = forms.ChoiceField(
                             choices= objetivos,
                             )
@@ -27,7 +27,7 @@ class NecessidadeForm(forms.ModelForm):
 
     class Meta:
         model = Necessidade
-        fields = ('qtd_servidor','hor_duracao','cod_nivel', 'cod_tipo','cod_modalidade', 'cod_prioridade', 'justificativa', 'cod_evento', 'treinamento', 'area_conhecimento', 'objetivo_treinamento')
+        fields = ('qtd_servidor','hor_duracao','cod_nivel','cod_modalidade', 'cod_prioridade', 'justificativa', 'cod_evento', 'treinamento', 'area_conhecimento', 'objetivo_treinamento')
         labels = {
             'qtd_servidor' : 'Quantidade de Servidores Efetivos',
             'hor_duracao'  : 'Hora de duração',
@@ -39,21 +39,14 @@ class NecessidadeForm(forms.ModelForm):
             'cod_prioridade' : 'Prioridade',
             'treinamento': 'Treinamento',
             'area_conhecimento': 'Área de conhecimento',
-            'objetivo_treinamento': "Objetivo Treinamento"
+            'objetivo_treinamento': "Objetivo de Treinamento"
         }
-
-    # def __init__(self, *args, **kwargs):
-    #     super(NecessidadeForm, self).__init__(*args, **kwargs)
-    #     self.fields['treinamento'].widget.attrs\
-    #         .update({
-    #             'id' : 'nome_curso_form'
-    #         })
 
 class PlanoForm(forms.ModelForm):
 
     class Meta:
         model = Plano_Capacitacao
-        fields = ('ano_plano_capacitacao','qtd_servidores_efetivos', 'qtd_servidores_comissionados', 'plano_habilitado')
+        fields = ('ano_plano_capacitacao', 'plano_habilitado')
 
 class OrgaoForm(forms.ModelForm):
 
@@ -72,12 +65,6 @@ class EventoForm(forms.ModelForm):
         labels = {
             'nome' : 'Nome'
         }
-
-class TipoForm(forms.ModelForm):
-
-    class Meta:
-        model = Tipo_Plano_Capacitacao
-        fields = ('sgl_tipo_plano_capacitacao', 'nome_tipo_plano_capacitacao', )
 
 class UserForm(forms.ModelForm):
 

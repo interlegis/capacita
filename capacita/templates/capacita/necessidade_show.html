@@ -4,22 +4,23 @@
 
     <div class="table_div">
 
-        {% if necessidade.treinamento == None %}
+        {% if necessidade.cod_treinamento %}
+        <h2 class="ui dividing header">{{ necessidade.cod_treinamento.nome }}</h2>
+        {% else %}
         <h2 class="ui dividing header">{{ necessidade.txt_descricao }}</h2>
-        {% endif %}
-        {% if necessidade.treinamento %}
-        <h2 class="ui dividing header">{{ necessidade.treinamento }}</h2>
         {% endif %}
 
         <br>
         <div class="ui three column very relaxed grid">
             <div class="column">
-                <strong>Necessidade ID:</strong>
+                <strong>Código da necessidade:</strong>
                 <p>{{ necessidade.cod_necessidade }}</p>
-                <strong>Nome:</strong>
+                <strong>Descrição:</strong>
+                {% if necessidade.cod_treinamento %}
+                <p>{{ necessidade.cod_treinamento.nome }}</p>
+                {% else %}
                 <p>{{ necessidade.txt_descricao }}</p>
-                <strong>Quantidade de Servidores:</strong>
-                <p>{{ necessidade.qtd_servidor }}</p>
+                {% endif %}
                 <strong>Área de Conhecimento:</strong>
                 <p>{{ necessidade.cod_area_conhecimento }}</p>
                 <strong>Treinamento:</strong>
@@ -28,22 +29,26 @@
             <div class="column">
                 <strong>Plano de Capacitação:</strong>
                 <p>{{ necessidade.cod_plano_capacitacao }}</p>
-                <strong>Prioridade:</strong>
-                <p>{{ necessidade.cod_prioridade }}</p>
-                <strong>Nível:</strong>
-                <p>{{ necessidade.cod_nivel }}</p>
-                <strong>Custo:</strong>
-                <p>R$ {{ necessidade.custo }}</p>
+                <strong>Evento:</strong>
+                <p>{{ necessidade.cod_evento }}</p>
                 <strong>Modalidade de Treinamento</strong>
                 <p>{{ necessidade.cod_modalidade }}</p>
+                <strong>Nível:</strong>
+                <p>{{ necessidade.cod_nivel }}</p>
+                <strong>Carga Horária:</strong>
+                <p>{{ necessidade.hor_duracao }}</p>
+                <strong>Tipo de Treinamento:</strong>
+                <p>{{ necessidade.hor_duracao }}</p>
+                <strong>Prioridade:</strong>
+                <p>{{ necessidade.cod_prioridade }}</p>
+                <strong>Quantidade de Servidores:</strong>
+                <p>{{ necessidade.qtd_servidor }}</p>
+                <strong>Objetivo do Treinamento:</strong>
+                <p>{{ necessidade.cod_objetivo_treinamento }}</p>
             </div>
             <div class="column">
                 <strong>Usuário</strong>
                 <p>{{ necessidade.cod_usuario.username }}</p>
-                <strong>Hora de duração:</strong>
-                <p>{{ necessidade.hor_duracao }}</p>
-                <strong>Evento:</strong>
-                <p>{{ necessidade.cod_evento }}</p>
                 {% if is_admin %}
                 <strong>Aprovado</strong>
                 <form class="ui form" action="" method="POST">{% csrf_token %}
@@ -61,7 +66,8 @@
                 {% endif %}
             </div>
         </div>
-
+        <br>
+        <a href="/necessidade/"><button class="ui button basic secondary">Voltar</button></a>
     </div>
 
     {% endblock %}
