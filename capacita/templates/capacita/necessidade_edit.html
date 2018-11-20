@@ -41,13 +41,14 @@
             </div>
             <div class="four fields">
                 <div class="field">
+                    {{ form.modalidade.errors  }}
                     <label>Modalidade de Treinamento</label>
-                    {{ form.cod_modalidade }}
+                    {{ form.modalidade }}
                 </div>
                 <div class="field">
-                    {{ form.cod_nivel.errors  }}
+                    {{ form.nivel.errors  }}
                     <label>Nível</label>
-                    {{ form.cod_nivel  }}
+                    {{ form.nivel  }}
                 </div>
                 <div class="field">
                     <label>Carga Horária</label>
@@ -58,9 +59,9 @@
                 </div>
                 <div class="field">
                     <label>Tipo de Treinamento</label>
-                    {{ form.cod_tipo }}
+                    {{ form.tipo_treinamento }}
                     <small class="text-danger">
-                      {{ form.cod_tipo.errors }}
+                      {{ form.tipo_treinamento.errors }}
                     </small>
                 </div>
             </div>

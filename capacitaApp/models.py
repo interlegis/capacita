@@ -54,6 +54,16 @@ class Treinamento(models.Model):
         db_table = 'treinamento'
         ordering = ['nome']
 
+class Tipo_Treinamento(models.Model):
+    cod_tipo_treinamento = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=900)
+
+    def __str__(self):
+        return self.nome
+
+    class Meta:
+        db_table = 'tipo_treinamento'
+
 class Objetivo_Treinamento(models.Model):
     cod_objetivo_treinamento = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=150)
@@ -93,23 +103,24 @@ class Evento(models.Model):
 class Necessidade(models.Model):
     cod_necessidade = models.AutoField(primary_key=True)
     cod_plano_capacitacao = models.ForeignKey('plano_capacitacao', models.DO_NOTHING)
-    cod_area_conhecimento = models.ForeignKey('area_conhecimento', models.DO_NOTHING, default='0')
+    cod_area_conhecimento = models.ForeignKey('area_conhecimento', models.DO_NOTHING)
     cod_treinamento = models.ForeignKey('treinamento', models.DO_NOTHING, default='-1')
     txt_descricao = models.CharField(max_length=200, null=True)
     cod_evento = models.ForeignKey('evento', models.DO_NOTHING, null=True)
-    cod_modalidade = models.ForeignKey('modalidade_treinamento', models.DO_NOTHING, default='0')
-    cod_nivel = models.ForeignKey('nivel', models.DO_NOTHING, default='0')
+    cod_modalidade = models.ForeignKey('modalidade_treinamento', models.DO_NOTHING)
+    cod_nivel = models.ForeignKey('nivel', models.DO_NOTHING)
     hor_duracao = models.DecimalField(max_digits=2, decimal_places=0, validators=[MinValueValidator(0)])
     cod_prioridade = models.ForeignKey('prioridade', models.DO_NOTHING)
     qtd_servidor = models.DecimalField(max_digits=6, decimal_places=0, validators=[MinValueValidator(0)])
-    cod_objetivo_treinamento = models.ForeignKey('objetivo_treinamento', models.DO_NOTHING, default='0')
+    cod_objetivo_treinamento = models.ForeignKey('objetivo_treinamento', models.DO_NOTHING)
     justificativa = models.CharField(max_length=300)
     aprovado = models.NullBooleanField(null = False, default=False)
     cod_usuario = models.ForeignKey(User,models.DO_NOTHING)
     cod_orgao = models.ForeignKey('orgao', models.DO_NOTHING)
+    cod_tipo_treinamento = models.ForeignKey('tipo_treinamento', models.DO_NOTHING)
 
     ind_excluido = models.NullBooleanField(null = False, default=False)
-    
+
     def __str__(self):
         return self.txt_descricao
 
@@ -302,4 +313,3 @@ class DjangoSession(models.Model):
     class Meta:
         managed = False
         db_table = 'django_session'
-
