@@ -307,7 +307,7 @@ def treinamento_edit(request, pk):
             treinamento = form.save(commit=False)
             treinamento.save()
             return redirect('treinamentos')
-    elif request.method != "POST":
+    elif request.method != "POST" and admin:
         form = TreinamentoForm(instance=treinamento)
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -323,7 +323,7 @@ def treinamento_new(request):
             treinamento = form.save(commit=False)
             treinamento.save()
             return redirect('treinamentos')
-    elif request.method != "POST":
+    elif request.method != "POST" and admin:
         form = TreinamentoForm()
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -362,7 +362,7 @@ def objetivo_edit(request, pk):
             objetivo = form.save(commit=False)
             objetivo.save()
             return redirect('objetivos')
-    elif request.method != "POST":
+    elif request.method != "POST" and admin:
         form = ObjetivoTreinamentoForm(instance=objetivo)
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -378,7 +378,7 @@ def objetivo_new(request):
             objetivo = form.save(commit=False)
             objetivo.save()
             return redirect('objetivos')
-    elif request.method != "POST":
+    elif request.method != "POST" and admin:
         form = ObjetivoTreinamentoForm()
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -405,13 +405,16 @@ def orgao(request):
         paginator = Paginator(orgaos_list, 10)
         permissao = False
         paginator = Paginator(orgaos_list, 6)
-        try:
-            orgaos = paginator.page(page)
-        except PageNotAnInteger:
-            orgaos = paginator.page(1)
-        except EmptyPage:
-            orgaos = paginator.page(paginator.num_pages)
-        return render(request, 'capacita/orgao.html', {'orgaos' : orgaos, 'is_admin' : admin, 'is_gestor': gestor})
+        if admin:
+            try:
+                orgaos = paginator.page(page)
+            except PageNotAnInteger:
+                orgaos = paginator.page(1)
+            except EmptyPage:
+                orgaos = paginator.page(paginator.num_pages)
+            return render(request, 'capacita/orgao.html', {'orgaos' : orgaos, 'is_admin' : admin, 'is_gestor': gestor})
+        else:
+            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
@@ -426,7 +429,7 @@ def orgao_edit(request, pk):
             orgao = form.save(commit=False)
             orgao.save()
             return redirect('orgao')
-    elif request.method != "POST":
+    elif request.method != "POST" and admin:
         form = OrgaoForm(instance=orgao)
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -442,7 +445,7 @@ def orgao_new(request):
             orgao = form.save(commit=False)
             orgao.save()
             return redirect('orgao')
-    elif request.method != "POST":
+    elif request.method != "POST" and admin:
         form = OrgaoForm()
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -803,7 +806,10 @@ def eventos(request):
     gestor = is_gestor(request)
     if (hasattr(request.user, 'profile')):
         eventos = Evento.objects.filter(ind_excluido = False)
-        return render(request, 'capacita/eventos.html', {'eventos' : eventos, 'permissao' : admin, 'is_admin': admin, 'is_gestor': gestor})
+        if admin:
+            return render(request, 'capacita/eventos.html', {'eventos' : eventos, 'permissao' : admin, 'is_admin': admin, 'is_gestor': gestor})
+        else:
+            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
@@ -838,7 +844,7 @@ def evento_new(request):
             evento = form.save(commit=False)
             evento.save()
             return redirect('eventos')
-    elif request.method != "POST":
+    elif request.method != "POST" and admin:
         form = EventoForm()
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -866,7 +872,7 @@ def modalidade_edit(request, pk):
             modalidade = form.save(commit=False)
             modalidade.save()
             return redirect('modalidade')
-    elif request.method != "POST":
+    elif request.method != "POST" and admin:
         form = ModalidadeForm(instance=modalidade)
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -886,7 +892,7 @@ def modalidade_new(request):
             modalidade = form.save(commit=False)
             modalidade.save()
             return redirect('modalidade')
-    elif request.method != "POST":
+    elif request.method != "POST" and admin:
         form = ModalidadeForm()
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -905,26 +911,42 @@ def modalidade_delete(request, pk):
 
 @login_required
 def api_areas(request):
-    areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True).values()
-    areas = list(areas)
+    admin_or_gestor = is_admin(request) or is_gestor(request)
+    if(admin_or_gestor):
+        areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True).values()
+        areas = list(areas)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     return JsonResponse(areas, safe=False)
 
 @login_required
 def api_cursos(request):
-    treinamentos = Treinamento.objects.all().exclude(ind_excluido = True).values()
-    treinamentos = list(treinamentos)
+    admin_or_gestor = is_admin(request) or is_gestor(request)
+    if(admin_or_gestor):
+        treinamentos = Treinamento.objects.all().exclude(ind_excluido = True).values()
+        treinamentos = list(treinamentos)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     return JsonResponse(treinamentos, safe=False)
 
 @login_required
 def api_tipos_treinamento(request):
-    tipos = Tipo_Treinamento.objects.all().exclude(ind_excluido = True).values()
-    tipos = list(tipos)
+    admin_or_gestor = is_admin(request) or is_gestor(request)
+    if(admin_or_gestor):
+        tipos = Tipo_Treinamento.objects.all().exclude(ind_excluido = True).values()
+        tipos = list(tipos)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     return JsonResponse(tipos, safe=False)
 
 @login_required
 def api_planos(request):
-    planos = Plano_Capacitacao.objects.all().exclude(ind_excluido = True).values()
-    planos = list(planos)
+    admin_or_gestor = is_admin(request) or is_gestor(request)
+    if(admin_or_gestor):
+        planos = Plano_Capacitacao.objects.all().exclude(ind_excluido = True).values()
+        planos = list(planos)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     return JsonResponse(planos, safe=False)
 
 @login_required
@@ -945,7 +967,7 @@ def avaliacao_cursos(request):
         necessidade.save()
 
         return redirect('avaliacao_cursos')
-    elif request.method != "POST":
+    elif request.method != "POST" and admin:
         cursos_necessidades = Necessidade.objects.exclude(txt_descricao = None).exclude(txt_descricao = '')
         return render(request, "capacita/avaliacao_cursos.html", {'necessidades' : cursos_necessidades, 'is_admin': admin, 'is_gestor': gestor})
     else:
