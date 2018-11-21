@@ -66,7 +66,9 @@ function selectSugestao(select){
 
   $.getJSON("/api/treinamentos/", function(data){
     cod_area = data[$("#id_treinamento").val()]
-    console.log(cod_area);
+    id = cod_area.cod_area_conhecimento_id
+    if (cod_area != $("#id_area_conhecimento").val())
+      $("#id_area_conhecimento").val(id)
   });
 }
 
