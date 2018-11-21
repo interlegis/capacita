@@ -9,18 +9,18 @@
             <thead>
                 <tr class="center aligned">
                 <th>Nome</th>
-                {% if permissao == True %}
+                {% if is_admin == True %}
                 <th>Editar</th>
                 <th>Excluir</th>
                 {% endif %}
                 </tr>
             </thead>
             <tbody>
-                
+
                 {% for orgao in orgaos %}
                     <tr class="center aligned">
                         <td>{{orgao.nome}}</td>
-                        {% if permissao == True %}
+                        {% if is_admin == True %}
                         <td><a class="links" href="{% url 'orgao_edit' orgao.cod_orgao %}"><i class="pencil icon"></i></a></td>
                         <td><a class="links" href="{% url 'orgao_delete' orgao.cod_orgao %}"><i class="delete icon"></i></a></td>
                         {% endif %}
@@ -52,7 +52,7 @@
         </table>
         {% endif %}
         <br>
-        {% if permissao == True %}
+        {% if is_admin == True %}
         <a href="/orgao/new/"><button class="ui button basic secondary">Novo</button></a>
         {% endif %}
     </div>

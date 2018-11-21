@@ -5,7 +5,7 @@
 
     <div class="ui container">
         <form class="ui form" method="post">{% csrf_token %}
-            
+
             <h4 class="ui dividing header">Formulário de Treinamentos</h4>
 
             <div class="field">
@@ -14,7 +14,7 @@
                 {{ form.nome  }}
             </div>
             <button class="ui primary button" type="submit">Salvar</button>
-            <a href="/treinamentos/"><button class="ui button basic secondary">Voltar</button></a>
+            <a href="/treinamentos"><button class="ui button basic secondary">Voltar</button></a>
         </div>
         </form>
     </div>
