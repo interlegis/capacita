@@ -4,7 +4,7 @@
 
     <div class="table_div">
 
-        <h4 class="ui dividing header">Modalidades de Treinamento</h4>
+        <h4 class="ui dividing header">Objetivos de Treinamento</h4>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
@@ -15,18 +15,18 @@
             </thead>
             <tbody>
                 
-                {% for modalidade in modalidades %}
+                {% for objetivo in objetivos %}
                     <tr class="center aligned">
-                        <td>{{modalidade.nome}}</td>
-                        <td><a class="links" href="{% url 'modalidade_edit' modalidade.cod_modalidade %}"><i class="pencil icon"></i></a></td>
-                        <td><a class="links" href="{% url 'modalidade_delete' modalidade.cod_modalidade %}"><i class="delete icon"></i></a></td>
+                        <td>{{objetivo.nome}}</td>
+                        <td><a class="links" href="{% url 'objetivo_edit' objetivo.cod_objetivo_treinamento %}"><i class="pencil icon"></i></a></td>
+                        <td><a class="links" href="{% url 'objetivo_delete' objetivo.cod_objetivo_treinamento %}"><i class="delete icon"></i></a></td>
                     </tr>
                 {% endfor %}
 
             </tbody>
         </table>
         <br>
-        <a href="/modalidade/new/"><button class="ui button basic secondary">Novo</button></a>
+        <a href="/objetivo/new/"><button class="ui button basic secondary">Novo</button></a>
     </div>
 
     {% endblock %}

@@ -26,6 +26,7 @@ $('input.permitido').on('change', function(){
 })
 
 function selectTreinamento(){
+    $("#id_treinamento").val('')
     $("#id_treinamento option").each(function(){
         $(this).hide();
     });
@@ -51,7 +52,7 @@ function selectTreinamento(){
               $('#id_treinamento option[value="' + treinamento + '"]').show();
             }
           }
-          $('#id_treinamento option[value="-1"]').show();          
+          $('#id_treinamento option[value="-1"]').show();
         }
     });
 }
@@ -62,18 +63,16 @@ function selectSugestao(select){
     $('#sugestao').css({'display': 'block'})
   else
     $('#sugestao').css({'display': 'none'})
+
+  $.getJSON("/api/treinamentos/", function(data){
+    cod_area = data[$("#id_treinamento").val()]
+    id = cod_area.cod_area_conhecimento_id
+    if (cod_area != $("#id_area_conhecimento").val())
+      $("#id_area_conhecimento").val(id)
+  });
 }
 
 var tipo;
-
-$.getJSON("/api/tipos/", function(data){
-    for(var i = 0; i < data.length; i++){
-        if(data[i].nome_tipo_plano_capacitacao == 'Treinamentos Externos'){
-            tipo = data[i].cod_tipo_plano_capacitacao;
-        }
-    }
-    console.log(tipo);
-});
 
 var planos_externos = [];
 var plano;

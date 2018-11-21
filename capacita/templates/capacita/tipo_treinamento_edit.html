@@ -4,7 +4,7 @@
     {% block content %}
 
     <div class="ui container">
-        <h4 class="ui dividing header">Modalidade de Treinamento</h4>
+        <h4 class="ui dividing header">Tipo de Treinamento</h4>
         <form class="ui form" method="post">{% csrf_token %}
 
             <div class="field">
@@ -12,11 +12,12 @@
                 {{ form.nome.errors }}
               </div>
                 <label>Nome</label>
-                {{ form.nome  }}
+                {{ form.nome }}
             </div>
+
+
             <button class="ui primary button" type="submit">Salvar</button>
-            <a href="/modalidade/"  class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
-            </div>
+            <a href="/tipos_treinamento/" class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
         </form>
     </div>
 

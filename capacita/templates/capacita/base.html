@@ -19,12 +19,16 @@
 <body>
     <div class="ui inverted menu bgSenado">
         <div class="item">
+          <a href="https://www.senado.gov.br">
             <img class="logoSenado" src="{% static 'images/logo_senado_federal.svg' %}">
+          </a>
         </div>
         <span class="item">CAPACITA</span>
 
+        {% if is_gestor %}
         <a class="item" href="/necessidade/">Treinamento</a>
-        {% if user.is_superuser %}
+        {% endif %}
+        {% if is_admin %}
         <div class="ui dropdown item">
         Administração
             <i class="dropdown icon"></i>
@@ -35,10 +39,10 @@
                 <!--<a class="item" href="/avaliacao_cursos">Treinamentos Sugeridos</a>-->
                 <li class="divider"></li>
                 <a class="item" href="/areas/">Áreas de Conhecimento</a>
-                <a class="item" href="/areas/">Treinamentos</a>
+                <a class="item" href="/treinamentos/">Treinamentos</a>
                 <a class="item" href="/eventos/">Eventos</a>
                 <a class="item"  href="/modalidade/">Modalidades de Treinamento</a>
-                <a class="item"  href="/tipo/">Tipos de Treinamento</a>
+                <a class="item"  href="/tipos_treinamento/">Tipos de Treinamento</a>
                 <a class="item" href="/objetivos/">Objetivos de Treinamento</a>
             </div>
         </div>

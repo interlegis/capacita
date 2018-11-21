@@ -17,48 +17,66 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 
+def is_admin(request):
+    user = User.objects.get(id = request.user.id)
+    relacoes = AuthUserGroups.objects.all()
+    for relacao in relacoes:
+        if relacao.user_id == user.id and relacao.group_id == 1:
+            return True
+    return False
+
+def is_gestor(request):
+    user = User.objects.get(id = request.user.id)
+    relacoes = AuthUserGroups.objects.all()
+    for relacao in relacoes:
+        if relacao.user_id == user.id and relacao.group_id == 2:
+            return True
+    return False
+
+
 @login_required
 def home(request):
-  return render(request, 'capacita/home.html')
-
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    return render(request, 'capacita/home.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def plano(request):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
-    else:
-        permissao = False
-    planos = Plano_Capacitacao.objects.all()
-    group = Group.objects.get(name='admin')
-    group2 = Group.objects.get(name='gestor')
+    planos = Plano_Capacitacao.objects.all().exclude(ind_excluido = True)
     form = PlanoForm()
+    admin = is_admin(request)
+    gestor = is_gestor(request)
 
-    if (group in request.user.groups.all() or group2 in request.user.groups.all()):
-        return render(request, 'capacita/plano_capacitacao.html', {'planos' : planos, 'form' : form, 'permissao' : permissao})
+    if admin:
+        return render(request, 'capacita/plano_capacitacao.html', {'planos' : planos, 'form' : form, 'is_admin': admin, 'is_gestor': gestor})
     else:
-        return render(request, 'capacita/error.html')
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def plano_delete(request, id):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if (admin):
         plano = get_object_or_404(Plano_Capacitacao, pk=id)
         plano.delete()
         return redirect("plano")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def plano_show(request, id):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
-    return render(request, 'capacita/plano_show.html', {'plano' : plano})
+    if admin:
+        return render(request, 'capacita/plano_show.html', {'plano' : plano})
+    else:
+        return redirect('error')
 
 @login_required
 def plano_new(request):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
-    else:
-        permissao = False
+    admin = is_admin(request)
+    gestor = is_gestor(request)
     if request.method == "POST":
         form = PlanoForm(request.POST)
         if form.is_valid():
@@ -67,18 +85,15 @@ def plano_new(request):
             return redirect('plano')
     else:
         form = PlanoForm()
-    if(permissao):
-        return render(request, 'capacita/plano_edit.html', {'form': form})
+    if(admin):
+        return render(request, 'capacita/plano_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
 @login_required
 def plano_edit(request, id):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
-    else:
-        permissao = False
+    admin = is_admin(request)
+    gestor = is_gestor(request)
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
     if request.method == "POST":
         form = PlanoForm(request.POST, instance=plano)
@@ -88,29 +103,23 @@ def plano_edit(request, id):
             return redirect("plano")
     else:
         form = PlanoForm(instance=plano)
-    if(permissao):
-
-        return render(request, 'capacita/plano_edit.html', {'form' : form})
+    if(admin):
+        return render(request, 'capacita/plano_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
 @login_required
 def necessidade(request):
     if (hasattr(request.user, 'profile')):
-        areas = Area_Conhecimento.objects.all()
-        niveis = Nivel.objects.all()
-        planos = Plano_Capacitacao.objects.all()
-        groupAdmin = Group.objects.get(name='admin')
-        groupGestor = Group.objects.get(name='gestor')
-        groupSolicitante = Group.objects.get(name='solicitante')
+        areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True)
+        niveis = Nivel.objects.all().exclude(ind_excluido = True)
+        planos = Plano_Capacitacao.objects.all().exclude(ind_excluido = True)
+        gestor = is_gestor(request)
+        admin = is_admin(request)
+        gestor_orgao = True
 
         profile_usuario = Profile.objects.get(user_id = request.user.id)
         orgao_usuario = Orgao.objects.get(cod_orgao=profile_usuario.orgao_id)
-
-        if(groupAdmin in request.user.groups.all()):
-            is_admin = True
-        else:
-            is_admin = False
 
         area = False;
         plano = False;
@@ -125,64 +134,47 @@ def necessidade(request):
         if  request.GET.get('qtd_servidor'):
             qtd_servidor = request.GET.get('qtd_servidor')
 
-        # FIXME retornar filtro assim que ele for simplificado
-        #necessidades = necessidade_query(area,nivel,plano,turno, int(qtd_servidor))
-        #necessidades = necessidades.filter(ind_excluido = 0)
-        necessidades = Necessidade.objects.all()
+        necessidades = Necessidade.objects.all().exclude(ind_excluido = True)
+        necessidades = necessidades.filter(cod_orgao = request.user.profile.orgao_id)
 
         # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
-        if(is_admin == False):
-            necessidades = necessidades.filter(cod_orgao__orgao_id = request.user.profile.orgao_id)
-
-        if(groupAdmin in request.user.groups.all() or 
-            groupGestor in request.user.groups.all() or 
-            groupSolicitante in request.user.groups.all() or 
-            request.user.profile.permissao_necessidade == True):
-            return render(request, 'capacita/necessidade.html', 
-                {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos, 
-                 'orgao_usuario' : orgao_usuario, 'is_admin' : is_admin})
+        if(gestor):
+            return render(request, 'capacita/necessidade.html',
+                {'necessidades' : necessidades, 'areas' : areas, 'niveis' : niveis, 'planos' : planos,
+                 'orgao_usuario' : orgao_usuario, 'is_admin' : admin, 'is_gestor': gestor})
         else:
-            return render(request, 'capacita/error.html')
+            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
 @login_required
 def necessidade_show(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
-    group = Group.objects.get(name='admin')
-    group2 = Group.objects.get(name='gestor')
-
+    gestor = is_gestor(request)
+    admin = is_admin(request)
     if request.method == 'GET':
-        if group in request.user.groups.all():
-            is_admin = True
+        if (gestor):
+            return render(request, 'capacita/necessidade_show.html', {'necessidade' : necessidade, 'is_admin' : admin, 'is_gestor': gestor})
         else:
-            is_admin = False
-
-        if ((group in request.user.groups.all() or group2 in request.user.groups.all()) or request.user.profile.permissao_necessidade == True):
-            return render(request, 'capacita/necessidade_show.html', {'necessidade' : necessidade, 'is_admin' : is_admin})
+            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    elif request.method == 'POST':
+        necessidade = Necessidade.objects.get(cod_necessidade = pk)
+        if request.POST['aprovado'] == 'True':
+            necessidade.aprovado = True
         else:
-            return redirect("/error")
-    else:
-        if request.method == 'POST':
-            necessidade = Necessidade.objects.get(cod_necessidade = pk)
-            if request.POST['aprovado'] == 'True':
-                necessidade.aprovado = True
-            else:
-                necessidade.aprovado = False
-            necessidade.save()
-
-            return redirect('/necessidade/' + pk + '/show')
+            necessidade.aprovado = False
+        necessidade.save()
+        return redirect('/necessidade/' + pk + '/show')
 
 @login_required
 def necessidade_new(request):
     if (hasattr(request.user, 'profile')):
-        areas = Area_Conhecimento.objects.all()
-        treinamentos = Treinamento.objects.all()
+        areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True)
+        treinamentos = Treinamento.objects.all().exclude(ind_excluido = True)
         usuario = User.objects.get(id = request.user.id)
-        group = Group.objects.get(name='gestor')
-        group2 = Group.objects.get(name='admin')
-        
-        #FIXME mover esse teste para antes da criação de curso
+        admin = is_admin(request)
+        gestor= is_gestor(request)
+        orgao = Profile.objects.get(user=usuario).orgao_id
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
 
         if(planos_habilitados.count() > 0):
@@ -192,6 +184,10 @@ def necessidade_new(request):
                 if form.is_valid():
                     necessidade = form.save(commit=False)
                     necessidade.cod_plano_capacitacao = planos_habilitados[0]
+                    necessidade.cod_tipo_treinamento = Tipo_Treinamento.objects.get(cod_tipo_treinamento = request.POST['tipo_treinamento'])
+                    necessidade.cod_modalidade = Modalidade_Treinamento.objects.get(cod_modalidade = request.POST['modalidade'])
+                    necessidade.cod_orgao = Orgao.objects.get(cod_orgao=orgao)
+                    necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
                     if (request.POST.get('curso_id', None)):
                         necessidade.treinamento = Treinamento.objects.get(cod_treinamento = request.POST.get('curso_id', None))
                     necessidade.txt_descricao = request.POST.get('txt_descricao', None)
@@ -206,7 +202,7 @@ def necessidade_new(request):
                     #     treinamento_sugerido.save()
                     else:
                         necessidade.cod_treinamento = Treinamento.objects.get(pk=request.POST['treinamento'])
-                    
+
                     necessidade.save()
                     return redirect('necessidade')
                 else:
@@ -215,12 +211,12 @@ def necessidade_new(request):
             else:
                 form = NecessidadeForm()
 
-                if (group in request.user.groups.all() or group2 in request.user.groups.all() or usuario.profile.permissao_necessidade == True ):
-                    return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'eh_necessidade' : False, 'planos_habilitados' : planos_habilitados, 'treinamentos' : treinamentos})
+                if (gestor):
+                    return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'eh_necessidade' : False, 'planos_habilitados' : planos_habilitados, 'treinamentos' : treinamentos, 'is_admin': admin, 'is_gestor': gestor})
                 else:
-                    return render(request, 'capacita/necessidade_edit.html', {'form': form})
+                    return render(request, 'capacita/necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
         else:
-            return render(request, 'capacita/necessidade_edit.html', {'form': form})
+            return render(request, 'capacita/necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
     else:
         #return render(request, 'capacita/necessidade_edit.html', {'form': form})
         return redirect('error')
@@ -229,147 +225,296 @@ def necessidade_new(request):
 @login_required
 def necessidade_edit(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
-    treinamentos = Treinamento.objects.all()
+    necessidade_updated = {
+        'treinamento': necessidade.cod_treinamento.cod_treinamento,
+        'nivel': necessidade.cod_nivel.cod_nivel,
+        'area_conhecimento': necessidade.cod_area_conhecimento.cod_area_conhecimento,
+        'cod_evento': necessidade.cod_evento.cod_evento,
+        'modalidade': necessidade.cod_modalidade.cod_modalidade,
+        'hor_duracao': necessidade.hor_duracao,
+        'tipo_treinamento': necessidade.cod_tipo_treinamento.cod_tipo_treinamento,
+        'cod_prioridade': necessidade.cod_prioridade.cod_prioridade,
+        'qtd_servidor': necessidade.qtd_servidor,
+        'objetivo_treinamento': necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento,
+        'justificativa': necessidade.justificativa
+    }
+    treinamentos = Treinamento.objects.all().exclude(ind_excluido = True)
     usuario = User.objects.get(id = request.user.id)
-    group = Group.objects.get(name='gestor')
-    group2 = Group.objects.get(name='admin')
-    areas = Area_Conhecimento.objects.all()
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    gestor_orgao = True
+    areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True)
+    orgao = Profile.objects.get(user=usuario).orgao_id
+    if orgao != necessidade.cod_orgao.cod_orgao:
+        gestor_orgao = False
 
     planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True);
 
-    if (group in request.user.groups.all() or group2 in request.user.groups.all()):
+    if (gestor_orgao):
         if request.method == "POST":
             form = NecessidadeForm(request.POST, instance=necessidade)
             if form.is_valid():
                 necessidade = form.save(commit=False)
-                necessidade.cod_plano_capacitacao = Plano_Capacitacao.objects.get(cod_plano_capacitacao = request.POST['plano'])
-                if (request.POST.get('curso_id', None)):
-                    necessidade.treinamento = Treinamento.objects.get(cod_treinamento = request.POST.get('curso_id', None))
+                necessidade.cod_plano_capacitacao = planos_habilitados[0]
+                necessidade.cod_tipo_treinamento = Tipo_Treinamento.objects.get(cod_tipo_treinamento = request.POST['tipo_treinamento'])
+                necessidade.cod_modalidade = Modalidade_Treinamento.objects.get(cod_modalidade = request.POST['modalidade'])
+                necessidade.cod_orgao = Orgao.objects.get(cod_orgao=orgao)
+                necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
+                necessidade.cod_treinamento = Treinamento.objects.get(cod_treinamento = request.POST['treinamento'])
                 necessidade.txt_descricao = request.POST.get('txt_descricao', None)
+                necessidade.cod_usuario = usuario
+                necessidade.cod_area_conhecimento = Area_Conhecimento.objects.get(pk=request.POST['area_conhecimento'])
+                necessidade.cod_objetivo_treinamento = Objetivo_Treinamento.objects.get(pk=request.POST['objetivo_treinamento'])
+                if request.POST['treinamento'] == '-1' and request.POST['txt_descricao']:
+                    necessidade.txt_descricao = request.POST['txt_descricao']
                 necessidade.save()
                 return redirect('necessidade')
         else:
-            form = NecessidadeForm(instance=necessidade)
-        return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'planos_habilitados' : planos_habilitados, 'necessidade' : necessidade, 'treinamentos' : treinamentos})
+            form = NecessidadeForm(necessidade_updated, instance=necessidade)
+        return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'planos_habilitados' : planos_habilitados, 'necessidade' : necessidade, 'treinamentos' : treinamentos, 'is_admin': admin, 'is_gestor': gestor})
     else:
-        return render(request, 'capacita/error.html')
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def necessidade_delete(request, pk):
-    necessidade = get_object_or_404(Necessidade, pk=pk)
-    necessidade.ind_excluido = 1
-    necessidade.save()
-    return redirect("necessidade")
+    gestor = is_gestor(request)
+    if gestor:
+        necessidade = get_object_or_404(Necessidade, pk=pk)
+        necessidade.ind_excluido = 1
+        necessidade.save()
+        return redirect("necessidade")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def treinamentos(request):
+    treinamentos = Treinamento.objects.all().exclude(ind_excluido = True)
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        return render(request, 'capacita/treinamento.html', {'treinamentos' : treinamentos, 'is_admin': admin, 'is_gestor': gestor})
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def treinamento_edit(request, pk):
+    treinamento = get_object_or_404(Treinamento, pk=pk)
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin and request.method == "POST":
+        form = TreinamentoForm(request.POST, instance=treinamento)
+        if form.is_valid():
+            treinamento = form.save(commit=False)
+            treinamento.save()
+            return redirect('treinamentos')
+    elif request.method != "POST" and admin:
+        form = TreinamentoForm(instance=treinamento)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/treinamento_edit.html', {'form': form, 'is_admin':admin, 'is_gestor': gestor})
+
+@login_required
+def treinamento_new(request):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin and request.method == "POST":
+        form = TreinamentoForm(request.POST)
+        if form.is_valid():
+            treinamento = form.save(commit=False)
+            treinamento.save()
+            return redirect('treinamentos')
+    elif request.method != "POST" and admin:
+        form = TreinamentoForm()
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/treinamento_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def treinamento_delete(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        treinamento = get_object_or_404(Treinamento, pk=pk)
+        treinamento.ind_excluido = True
+        treinamento.save()
+        return redirect("treinamentos")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def objetivos(request):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        objetivos = Objetivo_Treinamento.objects.all().exclude(ind_excluido = True)
+        return render(request, 'capacita/objetivos.html', {'objetivos' : objetivos, 'is_admin': admin, 'is_gestor': gestor})
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def objetivo_edit(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    objetivo = get_object_or_404(Objetivo_Treinamento, pk=pk)
+    if request.method == "POST" and admin:
+        form = ObjetivoTreinamentoForm(request.POST, instance=objetivo)
+        if form.is_valid():
+            objetivo = form.save(commit=False)
+            objetivo.save()
+            return redirect('objetivos')
+    elif request.method != "POST" and admin:
+        form = ObjetivoTreinamentoForm(instance=objetivo)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/objetivo_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def objetivo_new(request):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if request.method == "POST" and admin:
+        form = ObjetivoTreinamentoForm(request.POST)
+        if form.is_valid():
+            objetivo = form.save(commit=False)
+            objetivo.save()
+            return redirect('objetivos')
+    elif request.method != "POST" and admin:
+        form = ObjetivoTreinamentoForm()
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/objetivo_edit.html', {'form': form})
+
+@login_required
+def objetivo_delete(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        objetivo = get_object_or_404(Objetivo_Treinamento, pk=pk)
+        objetivo.delete()
+        return redirect("objetivos")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def orgao(request):
     if (hasattr(request.user, 'profile')):
         orgaos_list = Orgao.objects.all()
         page = request.GET.get('page', 1)
-        group = Group.objects.get(name='admin')
-        group2 = Group.objects.get(name='gestor')
+        admin = is_admin(request)
+        gestor = is_gestor(request)
         paginator = Paginator(orgaos_list, 10)
         permissao = False
-
-        if(group in request.user.groups.all()):
-            permissao = True
-
         paginator = Paginator(orgaos_list, 6)
-        try:
-            orgaos = paginator.page(page)
-        except PageNotAnInteger:
-            orgaos = paginator.page(1)
-        except EmptyPage:
-            orgaos = paginator.page(paginator.num_pages)
-
-        return render(request, 'capacita/orgao.html', {'orgaos' : orgaos, 'permissao' : permissao})
+        if admin:
+            try:
+                orgaos = paginator.page(page)
+            except PageNotAnInteger:
+                orgaos = paginator.page(1)
+            except EmptyPage:
+                orgaos = paginator.page(paginator.num_pages)
+            return render(request, 'capacita/orgao.html', {'orgaos' : orgaos, 'is_admin' : admin, 'is_gestor': gestor})
+        else:
+            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
 @login_required
 def orgao_edit(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
     orgao = get_object_or_404(Orgao, pk=pk)
-    if request.method == "POST":
+    if request.method == "POST" and admin:
         form = OrgaoForm(request.POST, instance=orgao)
         if form.is_valid():
             orgao = form.save(commit=False)
             orgao.save()
             return redirect('orgao')
-    else:
+    elif request.method != "POST" and admin:
         form = OrgaoForm(instance=orgao)
-    return render(request, 'capacita/orgao_edit.html', {'form': form})
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/orgao_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def orgao_new(request):
-    if request.method == "POST":
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if request.method == "POST" and admin:
         form = OrgaoForm(request.POST)
         if form.is_valid():
             orgao = form.save(commit=False)
             orgao.save()
             return redirect('orgao')
-    else:
+    elif request.method != "POST" and admin:
         form = OrgaoForm()
-    return render(request, 'capacita/orgao_edit.html', {'form': form})
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/orgao_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def orgao_delete(request, id):
-    orgao = get_object_or_404(Orgao, pk=id)
-    orgao.delete()
-    return redirect("orgao")
-
-@login_required
-def tipo(request):
-    if (hasattr(request.user, 'profile')):
-        group = Group.objects.get(name='admin')
-        if (group in request.user.groups.all()):
-            permissao = True
-        else:
-            permissao = False
-        tipos = Tipo_Plano_Capacitacao.objects.filter(ind_excluido = 0)
-        return render(request, 'capacita/tipo_plano.html', {'tipos' : tipos, 'permissao' : permissao})
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        orgao = get_object_or_404(Orgao, pk=id)
+        orgao.delete()
+        return redirect("orgao")
     else:
-        return redirect('error')
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
-def tipo_delete(request, pk):
-    tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=pk)
-    tipo.ind_excluido = 1
-    tipo.save()
-    return redirect("tipo")
+def tipos_treinamento(request):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    tipos = Tipo_Treinamento.objects.filter()
+    if admin:
+        return render(request, 'capacita/tipo_treinamento.html', {'tipos' : tipos, 'is_admin': admin, 'is_gestor': gestor})
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
-def tipo_edit(request,id):
-    tipo = get_object_or_404(Tipo_Plano_Capacitacao, pk=id)
-    if request.method == 'POST':
-        form = TipoForm(request.POST, instance=tipo, initial={'ind_excluido' : 0})
+def tipo_treinamento_delete(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        tipo = get_object_or_404(Tipo_Treinamento, pk=pk)
+        tipo.delete()
+        return redirect("tipos_treinamento")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def tipo_treinamento_edit(request,id):
+    tipo = get_object_or_404(Tipo_Treinamento, pk=id)
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if request.method == 'POST' and admin:
+        form = TipoTreinamentoForm(request.POST, instance=tipo, initial={'ind_excluido' : 0})
         if form.is_valid():
             tipo = form.save(commit=False)
             tipo.save()
-            return redirect("tipo")
+            return redirect("tipos_treinamento")
+    elif request.method != 'POST':
+        form = TipoTreinamentoForm(instance=tipo)
     else:
-        form = TipoForm(instance=tipo)
-    return render(request, 'capacita/tipo_edit.html', {'form' : form})
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/tipo_treinamento_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
-def tipo_new(request):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
-    else:
-        permissao = False
+def tipo_treinamento_new(request):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
     if request.method == 'POST':
-        form = TipoForm(request.POST)
+        form = TipoTreinamentoForm(request.POST)
         if form.is_valid():
             tipo = form.save(commit=False)
             tipo.save()
-            return redirect("tipo")
+            return redirect("tipos_treinamento")
+    elif request.method != 'POST':
+        form = TipoTreinamentoForm()
     else:
-        form = TipoForm()
-
-    if (permissao == True):
-        return render(request, 'capacita/tipo_edit.html', {'form' : form, 'permissao' : permissao})
-    else:
-        return redirect('error')
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/tipo_treinamento_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def relatorio(request):
@@ -384,11 +529,11 @@ def relatorio(request):
     center = workbook.add_format({'center_across' : True})
 
 
-    necessidades = Necessidade.objects.all()
+    necessidades = Necessidade.objects.all().exclude(ind_excluido = True)
     # .values('treinamento', 'txt_descricao', 'aprovado').annotate(
-    #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'), 
+    #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'),
     #     hor_duracao= Avg('hor_duracao'),cod_prioridade=Avg('cod_prioridade_id'),
-    #     cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'), 
+    #     cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'),
     #     cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id')
     # )
 
@@ -397,7 +542,7 @@ def relatorio(request):
 
     row = 0
     col = 0
-    
+
     worksheet.write(row, col,         "PCASF", bold)
     worksheet.write(row, col + 1,     "Órgão", bold)
     worksheet.write(row, col + 2,     "Área de Conhecimento", bold)
@@ -427,7 +572,7 @@ def relatorio(request):
         worksheet.write(row, col + 1, necessidade.cod_orgao.nome, center)
         worksheet.write(row, col + 2, necessidade.cod_area_conhecimento.txt_descricao, center)
         worksheet.write(row, col + 3, treinamento, center)
-        worksheet.write(row, col + 4, necessidade.cod_evento.nome, center) 
+        worksheet.write(row, col + 4, necessidade.cod_evento.nome, center)
         #Evento.objects.get(cod_evento=necessidade['cod_evento']).nome, center)
         worksheet.write(row, col + 5, necessidade.cod_modalidade.nome, center)
         worksheet.write(row, col + 6, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
@@ -459,16 +604,60 @@ def relatorio(request):
 
 @login_required
 def areas(request):
-    if (hasattr(request.user, 'profile')):
-        area_filtrada = request.GET.get('cod_area_conhecimento_id', '')
-        group = Group.objects.get(name='admin')
-        if (group in request.user.groups.all()):
-            permissao = True
-        else:
-            permissao = False
-        return render(request, 'capacita/areas.html', { 'area_filtrada' : area_filtrada, 'permissao' : permissao})
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True);
+        return render(request, 'capacita/areas.html', { 'areas' : areas , 'is_admin': admin, 'is_gestor': gestor})
     else:
-        return redirect('error')
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+
+@login_required
+def area_delete(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        area = get_object_or_404(Area_Conhecimento, pk=pk)
+        area.delete()
+        return redirect("areas")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def area_edit(request,id):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    area = get_object_or_404(Area_Conhecimento, pk=id)
+    if request.method == 'POST' and admin:
+        form = AreaConhecimentoForm(request.POST, instance=area, initial={'ind_excluido' : 0})
+        if form.is_valid():
+            area = form.save(commit=False)
+            area.save()
+            return redirect("areas")
+    elif request.method != 'POST':
+        form = AreaConhecimentoForm(instance=area)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/area_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def area_new(request):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if request.method == 'POST' and admin:
+        form = AreaConhecimentoForm(request.POST)
+        if form.is_valid():
+            area = form.save(commit=False)
+            area.save()
+            return redirect("areas")
+    elif request.method != 'POST':
+        form = AreaConhecimentoForm()
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/area_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+
+
 
 @login_required
 def usuarios(request):
@@ -481,12 +670,13 @@ def usuarios(request):
         for profile in profiles:
             if (User.objects.get(id = profile.user_id) != request.user):
                 users.append(User.objects.get(id = profile.user_id))
-
+        admin = is_admin(request)
+        gestor = is_gestor(request)
         group = Group.objects.get(name='gestor')
         group2 = Group.objects.get(name='admin')
 
     else:
-        profiles = Profile.objects.all()
+        profiles = Profile.objects.all().exclude(ind_excluido = True)
         orgao = ""
         group2 = group = None
 
@@ -509,12 +699,12 @@ def usuarios(request):
                 if (User.objects.get(id = profile.user_id) != request.user):
                     users.append(User.objects.get(id = profile.user_id))
 
-        return render(request, 'capacita/usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'orgaos' : orgaos})
+        return render(request, 'capacita/usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'orgaos' : orgaos, 'is_admin': admin, 'is_gestor': gestor})
     else:
         if ((group in request.user.groups.all())):
-            return render(request, 'capacita/usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao})
+            return render(request, 'capacita/usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'is_admin': admin, 'is_gestor': gestor})
         else:
-            return render(request, 'capacita/error.html')
+            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @csrf_exempt
 def usuarios_permissao(request):
@@ -530,13 +720,9 @@ def usuarios_permissao(request):
 
 @login_required
 def usuario_new(request):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
-    else:
-        permissao = False
-
-    if request.method == 'POST':
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if request.method == 'POST' and admin:
         form = UserForm(request.POST)
         id_group = request.POST['group']
         my_group = Group.objects.get(id=id_group)
@@ -550,32 +736,30 @@ def usuario_new(request):
                 profile.save()
                 usuario.save()
             else:
-                return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
+                return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True, 'is_admin': admin, 'is_gestor': gestor})
 
             return redirect("usuarios")
         else:
-            print("Error: ", form.errors)
-            return render(request, 'capacita/usuario_edit.html', {'form' : form})
-    else:
+            return render(request, 'capacita/usuario_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+    elif request.method != 'POST':
         form = UserForm()
         orgaos = Orgao.objects.all()
         groups = Group.objects.all()
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
     orgaos = Orgao.objects.all()
     groups = Group.objects.all()
 
-    if(permissao):
-        return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
+    if(admin):
+        return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
 @login_required
 def usuario_edit(request, pk):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
-    else:
-        permissao = False
+    admin = is_admin(request)
+    gestor = is_gestor(request)
     usuario = get_object_or_404(User, pk=pk)
 
     if request.method == "POST":
@@ -601,76 +785,75 @@ def usuario_edit(request, pk):
 
     groups = Group.objects.all()
     orgaos = Orgao.objects.all()
-    if(permissao == True):
-        return render(request, 'capacita/usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario})
+    if(admin):
+        return render(request, 'capacita/usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
 @login_required
 def modalidade(request):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
     if (hasattr(request.user, 'profile')):
-        group = Group.objects.get(name = 'admin')
-        permissao = False
-        if group in request.user.groups.all():
-            permissao = True
-
         modalidades = Modalidade_Treinamento.objects.filter(ind_excluido = False)
-        return render(request, 'capacita/modalidades.html', {'modalidades' : modalidades, 'permissao' : permissao})
+        return render(request, 'capacita/modalidades.html', {'modalidades' : modalidades, 'permissao' : admin, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
 @login_required
 def eventos(request):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
     if (hasattr(request.user, 'profile')):
-        group = Group.objects.get(name = 'admin')
-        permissao = False
-        if group in request.user.groups.all():
-            permissao = True
-
         eventos = Evento.objects.filter(ind_excluido = False)
-        return render(request, 'capacita/eventos.html', {'eventos' : eventos, 'permissao' : permissao})
+        if admin:
+            return render(request, 'capacita/eventos.html', {'eventos' : eventos, 'permissao' : admin, 'is_admin': admin, 'is_gestor': gestor})
+        else:
+            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
 @login_required
 def evento_edit(request, pk):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
-    else:
-        permissao = False
+    admin = is_admin(request)
+    gestor = is_gestor(request)
     evento = get_object_or_404(Evento, pk=pk)
-    if request.method == "POST":
+    form = EventoForm(instance=evento)
+    if request.method == "POST" and admin:
         form = EventoForm(request.POST, instance=evento)
         if form.is_valid():
             evento = form.save(commit=False)
             evento.save()
             return redirect('eventos')
-    else:
-        form = EventoForm(instance=evento)
-
-    if(permissao == True):
-        return render(request, 'capacita/evento_edit.html', {'form': form})
+        elif request.method == "POST":
+            form = EventoForm(instance=evento)
+        else:
+            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    if(admin):
+        return render(request, 'capacita/evento_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
 @login_required
 def evento_new(request):
-    if request.method == "POST":
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if request.method == "POST" and admin:
         form = EventoForm(request.POST)
         if form.is_valid():
             evento = form.save(commit=False)
             evento.save()
             return redirect('eventos')
-    else:
+    elif request.method != "POST" and admin:
         form = EventoForm()
-    return render(request, 'capacita/evento_edit.html', {'form': form})
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/evento_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def evento_delete(request, pk):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
+    admin = is_admin(request)
+    if (admin):
         evento = get_object_or_404(Evento, pk=pk)
         evento.ind_excluido = True
         evento.save()
@@ -680,43 +863,45 @@ def evento_delete(request, pk):
 
 @login_required
 def modalidade_edit(request, pk):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
-    else:
-        permissao = False
+    admin = is_admin(request)
+    gestor = is_gestor(request)
     modalidade = get_object_or_404(Modalidade_Treinamento, pk=pk)
-    if request.method == "POST":
+    if request.method == "POST" and admin:
         form = ModalidadeForm(request.POST, instance=modalidade)
         if form.is_valid():
             modalidade = form.save(commit=False)
             modalidade.save()
             return redirect('modalidade')
-    else:
+    elif request.method != "POST" and admin:
         form = ModalidadeForm(instance=modalidade)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
-    if(permissao == True):
-        return render(request, 'capacita/modalidade_edit.html', {'form': form})
+    if(admin):
+        return render(request, 'capacita/modalidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
 @login_required
 def modalidade_new(request):
-    if request.method == "POST":
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if request.method == "POST" and admin:
         form = ModalidadeForm(request.POST)
         if form.is_valid():
             modalidade = form.save(commit=False)
             modalidade.save()
             return redirect('modalidade')
-    else:
+    elif request.method != "POST" and admin:
         form = ModalidadeForm()
-    return render(request, 'capacita/modalidade_edit.html', {'form': form})
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'capacita/modalidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def modalidade_delete(request, pk):
-    group = Group.objects.get(name='admin')
-    if (group in request.user.groups.all()):
-        permissao = True
+    admin = is_admin(request)
+    if (admin):
         modalidade = get_object_or_404(Modalidade_Treinamento, pk=pk)
         modalidade.ind_excluido = True
         modalidade.save()
@@ -726,28 +911,42 @@ def modalidade_delete(request, pk):
 
 @login_required
 def api_areas(request):
-    areas = Area_Conhecimento.objects.all().values()
-
-    areas = list(areas)
-
+    admin_or_gestor = is_admin(request) or is_gestor(request)
+    if(admin_or_gestor):
+        areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True).values()
+        areas = list(areas)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     return JsonResponse(areas, safe=False)
 
 @login_required
 def api_cursos(request):
-    treinamentos = Treinamento.objects.all().values()
-    treinamentos = list(treinamentos)
+    admin_or_gestor = is_admin(request) or is_gestor(request)
+    if(admin_or_gestor):
+        treinamentos = Treinamento.objects.all().exclude(ind_excluido = True).values()
+        treinamentos = list(treinamentos)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     return JsonResponse(treinamentos, safe=False)
 
 @login_required
-def api_tipos(request):
-    tipos = Tipo_Plano_Capacitacao.objects.all().values()
-    tipos = list(tipos)
+def api_tipos_treinamento(request):
+    admin_or_gestor = is_admin(request) or is_gestor(request)
+    if(admin_or_gestor):
+        tipos = Tipo_Treinamento.objects.all().exclude(ind_excluido = True).values()
+        tipos = list(tipos)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     return JsonResponse(tipos, safe=False)
 
 @login_required
 def api_planos(request):
-    planos = Plano_Capacitacao.objects.all().values()
-    planos = list(planos)
+    admin_or_gestor = is_admin(request) or is_gestor(request)
+    if(admin_or_gestor):
+        planos = Plano_Capacitacao.objects.all().exclude(ind_excluido = True).values()
+        planos = list(planos)
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     return JsonResponse(planos, safe=False)
 
 @login_required
@@ -756,9 +955,10 @@ def error(request):
 
 @login_required
 def avaliacao_cursos(request):
-    # group = Group.objects.get(name='admin')
-    # if (group in request.user.groups.all()):
-    if request.method == "POST":
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    gestor_or_adm = is_gestor(request) or admin
+    if request.method == "POST" and gestor_or_adm:
         necessidade = Necessidade.objects.get(cod_necessidade = request.POST['cod_necessidade'])
         necessidade.txt_descricao = None
         treinamento = Treinamento.objects.create(nome = request.POST['txt'], cod_area_conhecimento = necessidade.cod_area_conhecimento)
@@ -767,8 +967,8 @@ def avaliacao_cursos(request):
         necessidade.save()
 
         return redirect('avaliacao_cursos')
-    else:
+    elif request.method != "POST" and admin:
         cursos_necessidades = Necessidade.objects.exclude(txt_descricao = None).exclude(txt_descricao = '')
-        return render(request, "capacita/avaliacao_cursos.html", {'necessidades' : cursos_necessidades})
-    # else:
-    #     return redirect('error')
+        return render(request, "capacita/avaliacao_cursos.html", {'necessidades' : cursos_necessidades, 'is_admin': admin, 'is_gestor': gestor})
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})

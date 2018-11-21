@@ -91,6 +91,7 @@ target/
 .ipynb_checkpoints/
 *.ipynb
 
+Python-capacita/
 
 # specific to this project
 whoosh_index

@@ -4,9 +4,9 @@
     {% block content %}
 
     <div class="ui container">
+        <h4 class="ui dividing header">Usuário</h4>
         <form class="ui form" method="post">{% csrf_token %}
 
-            <h4 class="ui dividing header">Novo Usuário</h4>
             <div class="field">
                 {{ form.username.errors }}
                 <label>Login</label>
@@ -58,7 +58,7 @@
                 </div>
             </div>
             <button class="ui primary button" type="submit">Salvar</button>
-
+            <a href="/usuarios/" class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
         </form>
     </div>
 

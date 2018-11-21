@@ -4,7 +4,7 @@
 
     <div class="table_div">
 
-        <h4 class="ui dividing header">Modalidades de Treinamento</h4>
+        <h4 class="ui dividing header">Tipos de Treinamento</h4>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
@@ -15,18 +15,18 @@
             </thead>
             <tbody>
                 
-                {% for modalidade in modalidades %}
+                {% for tipo in tipos %}
                     <tr class="center aligned">
-                        <td>{{modalidade.nome}}</td>
-                        <td><a class="links" href="{% url 'modalidade_edit' modalidade.cod_modalidade %}"><i class="pencil icon"></i></a></td>
-                        <td><a class="links" href="{% url 'modalidade_delete' modalidade.cod_modalidade %}"><i class="delete icon"></i></a></td>
+                        <td>{{tipo.nome}}</td>
+                        <td><a class="links" href="{% url 'tipo_treinamento_edit' tipo.cod_tipo_treinamento %}"><i class="pencil icon"></i></a></td>
+                        <td><a class="links" href="{% url 'tipo_treinamento_delete' tipo.cod_tipo_treinamento %}"><i class="delete icon"></i></a></td>
                     </tr>
                 {% endfor %}
 
             </tbody>
         </table>
         <br>
-        <a href="/modalidade/new/"><button class="ui button basic secondary">Novo</button></a>
+        <a href="/tipo_treinamento/new/"><button class="ui button basic secondary">Novo</button></a>
     </div>
 
     {% endblock %}

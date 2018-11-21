@@ -4,31 +4,26 @@
 
     <div class="table_div">
 
-        <h4 class="ui dividing header">Órgãos</h4>
+        <h4 class="ui dividing header">Treinamentos</h4>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
                 <th>Nome</th>
-                {% if is_admin == True %}
                 <th>Editar</th>
                 <th>Excluir</th>
-                {% endif %}
                 </tr>
             </thead>
             <tbody>
-
-                {% for orgao in orgaos %}
+                {% for treinamento in treinamentos %}
                     <tr class="center aligned">
-                        <td>{{orgao.nome}}</td>
-                        {% if is_admin == True %}
-                        <td><a class="links" href="{% url 'orgao_edit' orgao.cod_orgao %}"><i class="pencil icon"></i></a></td>
-                        <td><a class="links" href="{% url 'orgao_delete' orgao.cod_orgao %}"><i class="delete icon"></i></a></td>
-                        {% endif %}
+                        <td>{{treinamento.nome}}</td>
+                        <td><a class="links" href="{% url 'treinamento_edit' treinamento.cod_treinamento %}"><i class="pencil icon"></i></a></td>
+                        <td><a class="links" href="{% url 'treinamento_delete' treinamento.cod_treinamento %}"><i class="delete icon"></i></a></td>
                     </tr>
                 {% endfor %}
             </tbody>
-            {% if orgaos.has_other_pages %}
-            <tfoot>
+
+            <!--<tfoot>
                 <tr><th colspan="7">
                     <div class="ui right floated pagination menu">
                     {% if orgaos.has_previous %}
@@ -48,13 +43,12 @@
                     {% endif %}
                     </div>
                 </th>
-            </tr></tfoot>
+                </tr>
+            </tfoot>
+            -->
         </table>
-        {% endif %}
         <br>
-        {% if is_admin == True %}
-        <a href="/orgao/new/"><button class="ui button basic secondary">Novo</button></a>
-        {% endif %}
+        <a href="/treinamento/new/"><button class="ui button basic secondary">Novo</button></a>
     </div>
 
     {% endblock %}

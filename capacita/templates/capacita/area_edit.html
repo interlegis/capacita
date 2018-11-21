@@ -3,21 +3,18 @@
     {% block content %}
 
     <div class="ui container">
+        <h3 class="ui dividing header">Área de Conhecimento</h3>
         <form class="ui form" method="post">{% csrf_token %}
-            
-            <h3 class="ui dividing header">Sub-Área Edição</h3>
-            
+
             <div class="field">
-                {{ form.cod_area_conhecimento.errors }}
-                <label>Área de Conhecimento</label>
-                {{ form.cod_area_conhecimento }}
-            </div>
-            <div class="field">
+              <div class="text-danger">
                 {{ form.txt_descricao.errors }}
+              </div>
                 <label>Nome</label>
                 {{ form.txt_descricao  }}
             </div>
             <button class="ui primary button" type="submit">Salvar</button>
+            <a href="/areas/"  class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
             </div>
         </form>
     </div>
