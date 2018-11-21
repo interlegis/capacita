@@ -53,21 +53,21 @@ def plano(request):
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
-def plano_delete(request, pk):
+def plano_delete(request, id):
     admin = is_admin(request)
     gestor = is_gestor(request)
     if (admin):
-        plano = get_object_or_404(Plano_Capacitacao, pk=pk)
+        plano = get_object_or_404(Plano_Capacitacao, pk=id)
         plano.delete()
         return redirect("plano")
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
-def plano_show(request, pk):
+def plano_show(request, id):
     admin = is_admin(request)
     gestor = is_gestor(request)
-    plano = get_object_or_404(Plano_Capacitacao, pk=pk)
+    plano = get_object_or_404(Plano_Capacitacao, pk=id)
     if admin:
         return render(request, 'capacita/plano_show.html', {'plano' : plano})
     else:
@@ -91,10 +91,10 @@ def plano_new(request):
         return redirect('error')
 
 @login_required
-def plano_edit(request, pk):
+def plano_edit(request, id):
     admin = is_admin(request)
     gestor = is_gestor(request)
-    plano = get_object_or_404(Plano_Capacitacao, pk=pk)
+    plano = get_object_or_404(Plano_Capacitacao, pk=id)
     if request.method == "POST":
         form = PlanoForm(request.POST, instance=plano)
         if form.is_valid():
@@ -623,10 +623,10 @@ def area_delete(request, pk):
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
-def area_edit(request,pk):
+def area_edit(request,id):
     admin = is_admin(request)
     gestor = is_gestor(request)
-    area = get_object_or_404(Area_Conhecimento, pk=pk)
+    area = get_object_or_404(Area_Conhecimento, pk=id)
     if request.method == 'POST' and admin:
         form = AreaConhecimentoForm(request.POST, instance=area, initial={'ind_excluido' : 0})
         if form.is_valid():
@@ -749,7 +749,7 @@ def usuario_new(request):
     orgaos = Orgao.objects.all()
     groups = Group.objects.all()
 
-    if(permissao):
+    if(admin):
         return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
@@ -763,14 +763,14 @@ def usuario_edit(request, pk):
     if request.method == "POST":
         form = UserForm(request.POST, instance=usuario)
         id_group = request.POST['group']
-        my_group = Group.objects.get(pk=pk_group)
+        my_group = Group.objects.get(id=id_group)
         if form.is_valid():
             usuario = form.save(commit=False)
             usuario.groups.clear()
             profile = Profile.objects.get(user_id = usuario.id)
             profile.orgao_id = request.POST['orgao']
             profile.save()
-            my_group = Group.objects.get(pk=pk_group)
+            my_group = Group.objects.get(id=id_group)
             usuario.groups.add(my_group)
             usuario.is_active = True
             usuario.save()
