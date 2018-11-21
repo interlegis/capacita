@@ -6,14 +6,18 @@
     <div class="ui container">
         <h4 class="ui dividing header">Treinamento</h4>
         <form class="ui form" method="post">{% csrf_token %}
-            
+
             <div class="field">
+              <div class="text-danger">
                 {{ form.nome.errors }}
+              </div>
                 <label>Nome</label>
                 {{ form.nome  }}
             </div>
             <div class="field">
+              <div class="text-danger">
                 {{ form.cod_area_conhecimento.errors }}
+              </div>
                 <label>Código da Área de Conhecimento</label>
                 {{ form.cod_area_conhecimento  }}
             </div>
