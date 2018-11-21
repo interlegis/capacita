@@ -159,4 +159,4 @@ class AreaConhecimentoForm(forms.ModelForm):
 
     class Meta:
         model = Area_Conhecimento
-        fields = ('txt_descricao',) 
+        fields = ('txt_descricao',)
