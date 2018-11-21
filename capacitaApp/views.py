@@ -42,7 +42,7 @@ def home(request):
 
 @login_required
 def plano(request):
-    planos = Plano_Capacitacao.objects.all()
+    planos = Plano_Capacitacao.objects.all().exclude(ind_excluido = True)
     form = PlanoForm()
     admin = is_admin(request)
     gestor = is_gestor(request)
@@ -111,9 +111,9 @@ def plano_edit(request, id):
 @login_required
 def necessidade(request):
     if (hasattr(request.user, 'profile')):
-        areas = Area_Conhecimento.objects.all()
-        niveis = Nivel.objects.all()
-        planos = Plano_Capacitacao.objects.all()
+        areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True)
+        niveis = Nivel.objects.all().exclude(ind_excluido = True)
+        planos = Plano_Capacitacao.objects.all().exclude(ind_excluido = True)
         gestor = is_gestor(request)
         admin = is_admin(request)
         gestor_orgao = True
@@ -169,13 +169,12 @@ def necessidade_show(request, pk):
 @login_required
 def necessidade_new(request):
     if (hasattr(request.user, 'profile')):
-        areas = Area_Conhecimento.objects.all()
-        treinamentos = Treinamento.objects.all()
+        areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True)
+        treinamentos = Treinamento.objects.all().exclude(ind_excluido = True)
         usuario = User.objects.get(id = request.user.id)
         admin = is_admin(request)
         gestor= is_gestor(request)
         orgao = Profile.objects.get(user=usuario).orgao_id
-        # form2 = TreinamentoForm()
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
 
         if(planos_habilitados.count() > 0):
@@ -239,12 +238,12 @@ def necessidade_edit(request, pk):
         'objetivo_treinamento': necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento,
         'justificativa': necessidade.justificativa
     }
-    treinamentos = Treinamento.objects.all()
+    treinamentos = Treinamento.objects.all().exclude(ind_excluido = True)
     usuario = User.objects.get(id = request.user.id)
     admin = is_admin(request)
     gestor = is_gestor(request)
     gestor_orgao = True
-    areas = Area_Conhecimento.objects.all()
+    areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True)
     orgao = Profile.objects.get(user=usuario).orgao_id
     if orgao != necessidade.cod_orgao.cod_orgao:
         gestor_orgao = False
@@ -289,7 +288,7 @@ def necessidade_delete(request, pk):
 
 @login_required
 def treinamentos(request):
-    treinamentos = Treinamento.objects.all()
+    treinamentos = Treinamento.objects.all().exclude(ind_excluido = True)
     admin = is_admin(request)
     gestor = is_gestor(request)
     if admin:
@@ -347,7 +346,7 @@ def objetivos(request):
     admin = is_admin(request)
     gestor = is_gestor(request)
     if admin:
-        objetivos = Objetivo_Treinamento.objects.all()
+        objetivos = Objetivo_Treinamento.objects.all().exclude(ind_excluido = True)
         return render(request, 'capacita/objetivos.html', {'objetivos' : objetivos, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -527,7 +526,7 @@ def relatorio(request):
     center = workbook.add_format({'center_across' : True})
 
 
-    necessidades = Necessidade.objects.all()
+    necessidades = Necessidade.objects.all().exclude(ind_excluido = True)
     # .values('treinamento', 'txt_descricao', 'aprovado').annotate(
     #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'),
     #     hor_duracao= Avg('hor_duracao'),cod_prioridade=Avg('cod_prioridade_id'),
@@ -605,7 +604,7 @@ def areas(request):
     admin = is_admin(request)
     gestor = is_gestor(request)
     if admin:
-        areas = Area_Conhecimento.objects.all();
+        areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True);
         return render(request, 'capacita/areas.html', { 'areas' : areas , 'is_admin': admin, 'is_gestor': gestor})
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -634,7 +633,7 @@ def area_edit(request,id):
             area.save()
             return redirect("areas")
     elif request.method != 'POST':
-        form = AreaConhecimentoForm(instance=tipo)
+        form = AreaConhecimentoForm(instance=area)
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     return render(request, 'capacita/area_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
@@ -674,7 +673,7 @@ def usuarios(request):
         group2 = Group.objects.get(name='admin')
 
     else:
-        profiles = Profile.objects.all()
+        profiles = Profile.objects.all().exclude(ind_excluido = True)
         orgao = ""
         group2 = group = None
 
@@ -813,6 +812,7 @@ def evento_edit(request, pk):
     admin = is_admin(request)
     gestor = is_gestor(request)
     evento = get_object_or_404(Evento, pk=pk)
+    form = EventoForm(instance=evento)
     if request.method == "POST" and admin:
         form = EventoForm(request.POST, instance=evento)
         if form.is_valid():
@@ -905,25 +905,25 @@ def modalidade_delete(request, pk):
 
 @login_required
 def api_areas(request):
-    areas = Area_Conhecimento.objects.all().values()
+    areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True).values()
     areas = list(areas)
     return JsonResponse(areas, safe=False)
 
 @login_required
 def api_cursos(request):
-    treinamentos = Treinamento.objects.all().values()
+    treinamentos = Treinamento.objects.all().exclude(ind_excluido = True).values()
     treinamentos = list(treinamentos)
     return JsonResponse(treinamentos, safe=False)
 
 @login_required
 def api_tipos_treinamento(request):
-    tipos = Tipo_Treinamento.objects.all().values()
+    tipos = Tipo_Treinamento.objects.all().exclude(ind_excluido = True).values()
     tipos = list(tipos)
     return JsonResponse(tipos, safe=False)
 
 @login_required
 def api_planos(request):
-    planos = Plano_Capacitacao.objects.all().values()
+    planos = Plano_Capacitacao.objects.all().exclude(ind_excluido = True).values()
     planos = list(planos)
     return JsonResponse(planos, safe=False)
 
