@@ -28,3 +28,32 @@
     width: 170px !important;
     height: 23px !important;
 }
+
+.senado_footer{
+    height: 29px;
+    width: 100%;
+    text-align: center;
+    background-color: #02305c;
+    font: normal 0.7em "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    color: #fff;
+    clear: both;
+    position:absolute;
+    bottom:0;
+}
+
+.versaoClass{
+    padding-top: 8px !important;
+    display: inline-block;
+    float: left;
+    margin-left: 8px;
+}
+.centralText{
+    padding-top: 8px !important;
+    display: inline-block;
+}
+.madeby{
+    padding-top: 8px !important;
+    display: inline-block;
+    float: right;
+    margin-right: 8px !important;
+}

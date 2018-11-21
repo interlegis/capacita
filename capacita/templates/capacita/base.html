@@ -21,6 +21,8 @@
         <div class="item">
             <img class="logoSenado" src="{% static 'images/logo_senado_federal.svg' %}">
         </div>
+        <span class="item">CAPACITA</span>
+
         <a class="item" href="/necessidade/">Treinamento</a>
         {% if user.is_superuser %}
         <div class="ui dropdown item">
@@ -63,6 +65,15 @@
         </div>
     {% endif %}
 
+
+<footer class="footer hidden-xs">
+    <div class="senado_footer">
+        <span class="versaoClass">Versão 2.0</span>
+        <span class="centralText">Senado Federal - Praça dos Três Poderes - Brasília DF - CEP 70165-900 - Fone: (61)3303-4141</span>
+        <span class="madeby">2018 - Interlegis</span>
+    </div>
+
+</footer>
 </body>
 <script src="{% static 'js/semantic.min.js' %}"></script>
 <script src="{% static 'js/base.js' %}"></script>
