@@ -66,15 +66,6 @@ function selectSugestao(select){
 
 var tipo;
 
-$.getJSON("/api/tipos/", function(data){
-    for(var i = 0; i < data.length; i++){
-        if(data[i].nome_tipo_plano_capacitacao == 'Treinamentos Externos'){
-            tipo = data[i].cod_tipo_plano_capacitacao;
-        }
-    }
-    console.log(tipo);
-});
-
 var planos_externos = [];
 var plano;
 

@@ -9,10 +9,8 @@
             <thead>
                 <tr class="center aligned">
                     <th>Nome</th>
-                    {% if permissao == True %}
-                        <th>Editar</th>
-                        <th>Excluir</th>
-                    {% endif %}
+                    <th>Editar</th>
+                    <th>Excluir</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,10 +18,8 @@
                 {% for modalidade in modalidades %}
                     <tr class="center aligned">
                         <td>{{modalidade.nome}}</td>
-                        {% if permissao == True %}
                         <td><a class="links" href="{% url 'modalidade_edit' modalidade.cod_modalidade %}"><i class="pencil icon"></i></a></td>
                         <td><a class="links" href="{% url 'modalidade_delete' modalidade.cod_modalidade %}"><i class="delete icon"></i></a></td>
-                        {% endif %}
                     </tr>
                 {% endfor %}
 

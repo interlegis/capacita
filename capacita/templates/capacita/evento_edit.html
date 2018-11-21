@@ -4,17 +4,16 @@
     {% block content %}
 
     <div class="ui container">
+        <h3 class="ui dividing header">Evento</h3>
         <form class="ui form" method="post">{% csrf_token %}
             
-            <h4 class="ui dividing header">Formulário de Evento</h4>
-
             <div class="field">
                 {{ form.nome.errors }}
                 <label>Nome</label>
                 {{ form.nome  }}
             </div>
             <button class="ui primary button" type="submit">Salvar</button>
-            <a href="/eventos/"><button class="ui button basic secondary">Voltar</button></a>
+            <a href="/eventos/" class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
         </div>
         </form>
     </div>

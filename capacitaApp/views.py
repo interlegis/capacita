@@ -40,16 +40,16 @@ def plano(request):
         return render(request, 'capacita/error.html')
 
 @login_required
-def plano_delete(request, id):
+def plano_delete(request, pk):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
-        plano = get_object_or_404(Plano_Capacitacao, pk=id)
+        plano = get_object_or_404(Plano_Capacitacao, pk=pk)
         plano.delete()
         return redirect("plano")
 
 @login_required
-def plano_show(request, id):
-    plano = get_object_or_404(Plano_Capacitacao, pk=id)
+def plano_show(request, pk):
+    plano = get_object_or_404(Plano_Capacitacao, pk=pk)
     return render(request, 'capacita/plano_show.html', {'plano' : plano})
 
 @login_required
@@ -73,13 +73,13 @@ def plano_new(request):
         return redirect('error')
 
 @login_required
-def plano_edit(request, id):
+def plano_edit(request, pk):
     group = Group.objects.get(name='admin')
     if (group in request.user.groups.all()):
         permissao = True
     else:
         permissao = False
-    plano = get_object_or_404(Plano_Capacitacao, pk=id)
+    plano = get_object_or_404(Plano_Capacitacao, pk=pk)
     if request.method == "POST":
         form = PlanoForm(request.POST, instance=plano)
         if form.is_valid():
@@ -164,14 +164,14 @@ def necessidade_show(request, pk):
             return redirect("/error")
     else:
         if request.method == 'POST':
-            necessidade = Necessidade.objects.get(cod_necessidade = pk)
+            necessidade = Necessidade.objects.get(cod_necessidade = id)
             if request.POST['aprovado'] == 'True':
                 necessidade.aprovado = True
             else:
                 necessidade.aprovado = False
             necessidade.save()
 
-            return redirect('/necessidade/' + pk + '/show')
+            return redirect('/necessidade/' + id + '/show')
 
 @login_required
 def necessidade_new(request):
@@ -287,7 +287,7 @@ def necessidade_delete(request, pk):
     return redirect("necessidade")
 
 @login_required
-def treinamento(request):
+def treinamentos(request):
     treinamentos = Treinamento.objects.all()
     return render(request, 'capacita/treinamento.html', {'treinamentos' : treinamentos})
     
@@ -411,8 +411,8 @@ def orgao_new(request):
     return render(request, 'capacita/orgao_edit.html', {'form': form})
 
 @login_required
-def orgao_delete(request, id):
-    orgao = get_object_or_404(Orgao, pk=id)
+def orgao_delete(request, pk):
+    orgao = get_object_or_404(Orgao, pk=pk)
     orgao.delete()
     return redirect("orgao")
 
@@ -428,8 +428,8 @@ def tipo_treinamento_delete(request, pk):
     return redirect("tipos_treinamento")
 
 @login_required
-def tipo_treinamento_edit(request,id):
-    tipo = get_object_or_404(Tipo_Treinamento, pk=id)
+def tipo_treinamento_edit(request,pk):
+    tipo = get_object_or_404(Tipo_Treinamento, pk=pk)
     if request.method == 'POST':
         form = TipoTreinamentoForm(request.POST, instance=tipo, initial={'ind_excluido' : 0})
         if form.is_valid():
@@ -551,8 +551,8 @@ def area_delete(request, pk):
     return redirect("areas")
 
 @login_required
-def area_edit(request,id):
-    area = get_object_or_404(Area_Conhecimento, pk=id)
+def area_edit(request,pk):
+    area = get_object_or_404(Area_Conhecimento, cod_area_conhecimento=pk)
     if request.method == 'POST':
         form = AreaConhecimentoForm(request.POST, instance=area, initial={'ind_excluido' : 0})
         if form.is_valid():
@@ -560,7 +560,7 @@ def area_edit(request,id):
             area.save()
             return redirect("areas")
     else:
-        form = AreaConhecimentoForm(instance=tipo)
+        form = AreaConhecimentoForm(instance=area)
     return render(request, 'capacita/area_edit.html', {'form' : form})
 
 @login_required
@@ -627,11 +627,11 @@ def usuarios(request):
 @csrf_exempt
 def usuarios_permissao(request):
     if request.method == "POST":
-        profile = Profile.objects.filter(user_id=request.POST.get("usuario_id", "")).update(permissao_necessidade=request.POST.get("data", ""))
+        profile = Profile.objects.filter(user_pk=request.POST.get("usuario_id", "")).update(permissao_necessidade=request.POST.get("data", ""))
         if (request.POST.get("data", "") == 'True'):
-            profile = Profile.objects.filter(user_id=request.POST.get("usuario_id", "")).update(permissao_necessidade=True)
+            profile = Profile.objects.filter(user_pk=request.POST.get("usuario_id", "")).update(permissao_necessidade=True)
         if (request.POST.get("data", "") == 'False'):
-            profile = Profile.objects.filter(user_id=request.POST.get("usuario_id", "")).update(permissao_necessidade=False)
+            profile = Profile.objects.filter(user_pk=request.POST.get("usuario_id", "")).update(permissao_necessidade=False)
     else:
         return redirect("/")
     return HttpResponseRedirect('/usuarios/')
@@ -647,7 +647,7 @@ def usuario_new(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
         id_group = request.POST['group']
-        my_group = Group.objects.get(id=id_group)
+        my_group = Group.objects.get(pk=pk_group)
         if form.is_valid():
             user_check = User.objects.filter(username='zequinha').count()
             if(user_check == 0):
@@ -689,14 +689,14 @@ def usuario_edit(request, pk):
     if request.method == "POST":
         form = UserForm(request.POST, instance=usuario)
         id_group = request.POST['group']
-        my_group = Group.objects.get(id=id_group)
+        my_group = Group.objects.get(pk=pk_group)
         if form.is_valid():
             usuario = form.save(commit=False)
             usuario.groups.clear()
             profile = Profile.objects.get(user_id = usuario.id)
             profile.orgao_id = request.POST['orgao']
             profile.save()
-            my_group = Group.objects.get(id=id_group)
+            my_group = Group.objects.get(pk=pk_group)
             usuario.groups.add(my_group)
             usuario.is_active = True
             usuario.save()

@@ -9,7 +9,7 @@ from django import forms
 
 class Orgao(models.Model):
     cod_orgao = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=200)
+    nome = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.nome
@@ -19,7 +19,7 @@ class Orgao(models.Model):
 
 class Area_Conhecimento(models.Model):
     cod_area_conhecimento = models.AutoField(primary_key=True)
-    txt_descricao = models.CharField(max_length=200)
+    txt_descricao = models.CharField(max_length=200, unique=True)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
     def __str__(self):
@@ -31,7 +31,7 @@ class Area_Conhecimento(models.Model):
 
 class Tipo_Treinamento(models.Model):
     cod_tipo_treinamento = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=900)
+    nome = models.CharField(max_length=900, unique=True)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
     def __str__(self):
@@ -44,7 +44,7 @@ class Tipo_Treinamento(models.Model):
 class Treinamento(models.Model):
     cod_treinamento = models.AutoField(primary_key=True)
     cod_area_conhecimento = models.ForeignKey('Area_Conhecimento', models.DO_NOTHING, default='0')
-    nome = models.CharField(max_length=900)
+    nome = models.CharField(max_length=900, unique=True)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
     def __str__(self):
@@ -56,7 +56,7 @@ class Treinamento(models.Model):
 
 class Tipo_Treinamento(models.Model):
     cod_tipo_treinamento = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=900)
+    nome = models.CharField(max_length=900, unique=True)
 
     def __str__(self):
         return self.nome
@@ -66,7 +66,7 @@ class Tipo_Treinamento(models.Model):
 
 class Objetivo_Treinamento(models.Model):
     cod_objetivo_treinamento = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=150)
+    nome = models.CharField(max_length=150, unique=True)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
     def __str__(self):
@@ -78,7 +78,7 @@ class Objetivo_Treinamento(models.Model):
 
 class Modalidade_Treinamento(models.Model):
     cod_modalidade = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=50)
+    nome = models.CharField(max_length=50, unique=True)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
     def __str__(self):
@@ -90,7 +90,7 @@ class Modalidade_Treinamento(models.Model):
 
 class Evento(models.Model):
     cod_evento = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=60)
+    nome = models.CharField(max_length=60, unique=True)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
     def __str__(self):
@@ -109,7 +109,7 @@ class Necessidade(models.Model):
     cod_evento = models.ForeignKey('evento', models.DO_NOTHING, null=True)
     cod_modalidade = models.ForeignKey('modalidade_treinamento', models.DO_NOTHING)
     cod_nivel = models.ForeignKey('nivel', models.DO_NOTHING)
-    hor_duracao = models.DecimalField(max_digits=2, decimal_places=0, validators=[MinValueValidator(0)])
+    hor_duracao = models.DecimalField(max_digits=3, decimal_places=0, validators=[MinValueValidator(0)])
     cod_prioridade = models.ForeignKey('prioridade', models.DO_NOTHING)
     qtd_servidor = models.DecimalField(max_digits=6, decimal_places=0, validators=[MinValueValidator(0)])
     cod_objetivo_treinamento = models.ForeignKey('objetivo_treinamento', models.DO_NOTHING)
@@ -126,12 +126,12 @@ class Necessidade(models.Model):
 
     class Meta:
         db_table = 'necessidade'
-        ordering = ['cod_necessidade']
+        ordering = ['cod_area_conhecimento','cod_treinamento']
 
 
 class Nivel(models.Model):
     cod_nivel = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=200)
+    nome = models.CharField(max_length=200,unique=True)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
     def __str__(self):
@@ -154,7 +154,7 @@ class Plano_Capacitacao(models.Model):
     cod_plano_capacitacao = models.AutoField(primary_key=True)
 #    data_inicio = models.DateField(null=True)
  #   data_fim = models.DateField(null=True)
-    ano_plano_capacitacao = models.DecimalField(max_digits=4, decimal_places=0)
+    ano_plano_capacitacao = models.DecimalField(max_digits=4, decimal_places=0, unique=True)
     plano_habilitado = models.NullBooleanField(null = False)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
@@ -166,7 +166,7 @@ class Plano_Capacitacao(models.Model):
 
 class Prioridade(models.Model):
     cod_prioridade = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=200)
+    nome = models.CharField(max_length=200, unique=True)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
     def __str__(self):

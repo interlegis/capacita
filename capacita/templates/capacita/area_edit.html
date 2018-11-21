@@ -3,15 +3,9 @@
     {% block content %}
 
     <div class="ui container">
+        <h3 class="ui dividing header">Área de Conhecimento</h3>
         <form class="ui form" method="post">{% csrf_token %}
             
-            <h3 class="ui dividing header">Área de Conhecimento</h3>
-            
-            <div class="field">
-                {{ form.cod_area_conhecimento.errors }}
-                <label>Área de Conhecimento</label>
-                {{ form.cod_area_conhecimento }}
-            </div>
             <div class="field">
                 {{ form.txt_descricao.errors }}
                 <label>Nome</label>

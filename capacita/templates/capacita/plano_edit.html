@@ -4,9 +4,9 @@
     {% block content %}
 
     <div class="ui container">
+        <h4 class="ui dividing header">Plano de Capacitação</h4>
         <form class="ui form" method="post">{% csrf_token %}
             
-            <h4 class="ui dividing header">Plano</h4>
             <div class="two fields">
                 <div class="field">
                     {{ form.ano_plano_capacitacao.errors }}
@@ -23,7 +23,7 @@
             </div>
             
             <button class="ui primary button" type="submit">Salvar</button>
-            <a href="/plano/"><button class="ui button basic secondary">Voltar</button></a>
+            <a href="/plano/" class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
 
         </form>
     </div>
