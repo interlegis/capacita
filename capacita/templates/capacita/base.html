@@ -21,8 +21,10 @@
         <div class="item">
             <img class="logoSenado" src="{% static 'images/logo_senado_federal.svg' %}">
         </div>
+        {% if is_gestor %}
         <a class="item" href="/necessidade/">Treinamento</a>
-        {% if user.is_superuser %}
+        {% endif %}
+        {% if is_admin %}
         <div class="ui dropdown item">
         Administração
             <i class="dropdown icon"></i>
