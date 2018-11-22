@@ -58,6 +58,7 @@ function selectTreinamento(){
 }
 
 function selectSugestao(select){
+  treinamento = $("#id_treinamento").val()
   console.log("TREINAMENTO = ", $("#id_treinamento").val());
   if($('#id_treinamento').val() == -1)
     $('#sugestao').css({'display': 'block'})
@@ -65,10 +66,13 @@ function selectSugestao(select){
     $('#sugestao').css({'display': 'none'})
 
   $.getJSON("/api/treinamentos/", function(data){
-    cod_area = data[$("#id_treinamento").val()]
-    id = cod_area.cod_area_conhecimento_id
-    if (cod_area != $("#id_area_conhecimento").val())
-      $("#id_area_conhecimento").val(id)
+    for(var i = 0; i < data.length; i++){
+      if(data[i].cod_treinamento == treinamento ){
+        if (data[i].cod_area_conhecimento != $("#id_area_conhecimento").val())
+          $("#id_area_conhecimento").val(data[i].cod_area_conhecimento_id)
+          break
+      }
+    }
   });
 }
 
