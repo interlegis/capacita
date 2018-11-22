@@ -37,7 +37,7 @@
     font: normal 0.7em "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     color: #fff;
     clear: both;
-    position:absolute;
+    position: fixed;
     bottom:0;
 }
 
