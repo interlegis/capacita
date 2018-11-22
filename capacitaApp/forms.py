@@ -12,34 +12,62 @@ class NecessidadeForm(forms.ModelForm):
     areas_conhecimento = emptyField + [(area.pk, area) for area in Area_Conhecimento.objects.all().exclude(ind_excluido=1)]
     objetivos = emptyField + [(objetivo.pk, objetivo) for objetivo in Objetivo_Treinamento.objects.all()]
     justificativa = forms.CharField(widget=forms.Textarea)
-    objetivos = emptyField + [(objetivo.pk, objetivo) for objetivo in Objetivo_Treinamento.objects.all()]
     modalidades = emptyField + [(modalidade.pk, modalidade) for modalidade in Modalidade_Treinamento.objects.all()]
     niveis = emptyField + [(niveis.pk, niveis) for niveis in Nivel.objects.all()]
     tipos_treinamento = emptyField + [(tipo.pk, tipo) for tipo in Tipo_Treinamento.objects.all()]
 
     # Adicionando forms
-    objetivo_treinamento = forms.ChoiceField(
-                            choices= objetivos,
-                            )
-    treinamento = forms.ChoiceField(
-                            choices= treinamentos,
-                            widget = forms.Select(attrs = {
-                                'onclick': "selectSugestao(this);",
-                            }))
-    area_conhecimento = forms.ChoiceField(
-                                choices= areas_conhecimento,
-                                widget = forms.Select(attrs = {
-                                    'onclick': "selectTreinamento(this);",
-                                }))
-    modalidade = forms.ChoiceField(
-                            choices= modalidades,
-                            )
-    nivel = forms.ChoiceField(
-                            choices= niveis,
-                            )
-    tipo_treinamento = forms.ChoiceField(
-                            choices= tipos_treinamento,
-                            )
+    objetivo_treinamento = forms.ChoiceField()
+    treinamento = forms.ChoiceField()
+    area_conhecimento = forms.ChoiceField()
+    modalidade = forms.ChoiceField()
+    nivel = forms.ChoiceField()
+    tipo_treinamento = forms.ChoiceField()
+
+    def __init__(self, *args, **kwargs):
+        emptyField = [('', '---------')]
+        treinamento_outro = [('-1', '* Outro (especificar) *')]
+        treinamentos = emptyField + [(treinamento.pk, treinamento) for treinamento in Treinamento.objects.all().exclude(cod_treinamento = -1)] + treinamento_outro
+        areas_conhecimento = emptyField + [(area.pk, area) for area in Area_Conhecimento.objects.all().exclude(ind_excluido=1)]
+        objetivos = emptyField + [(objetivo.pk, objetivo) for objetivo in Objetivo_Treinamento.objects.all()]
+        modalidades = emptyField + [(modalidade.pk, modalidade) for modalidade in Modalidade_Treinamento.objects.all()]
+        niveis = emptyField + [(niveis.pk, niveis) for niveis in Nivel.objects.all()]
+        tipos_treinamento = emptyField + [(tipo.pk, tipo) for tipo in Tipo_Treinamento.objects.all()]
+        super(NecessidadeForm, self).__init__(*args, **kwargs)
+
+        # treinamento
+        self.fields['treinamento'] = forms.ChoiceField(
+            choices= treinamentos
+        )
+        self.fields['treinamento'].widget.attrs['onclick'] = 'selectSugestao(this)'
+
+        # areas_conhecimento
+        self.fields['area_conhecimento'] = forms.ChoiceField(
+            choices= areas_conhecimento
+        )
+        self.fields['area_conhecimento'].widget.attrs['onclick'] = 'selectTreinamento(this)'
+
+        # objetivo_treinamento
+        self.fields['objetivo_treinamento'] = forms.ChoiceField(
+            choices= objetivos
+        )
+
+        # modalidade
+        self.fields['modalidade'] = forms.ChoiceField(
+            choices= modalidades
+        )
+
+        # niveis
+        self.fields['nivel'] = forms.ChoiceField(
+            choices= niveis
+        )
+
+        # tipos_treinamento
+        self.fields['tipo_treinamento'] = forms.ChoiceField(
+            choices= tipos_treinamento
+        )
+
+
     class Meta:
         model = Necessidade
         fields = ('qtd_servidor','hor_duracao','nivel','modalidade', 'cod_prioridade', 'tipo_treinamento', 'justificativa', 'cod_evento', 'treinamento', 'area_conhecimento', 'objetivo_treinamento')
