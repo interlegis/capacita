@@ -91,15 +91,22 @@ TEMPLATES = [
 #     )
 # }
 
+#DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'capacita',
+#         'USER': 'capacita',
+#         'PASSWORD': 'altereme',
+#         'HOST': 'campeirohsabereslb.interlegis.leg.br',
+#         'PORT': '5532',
+#    }
+
+
 DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-         'NAME': 'capacita',
-         'USER': 'capacita',
-         'PASSWORD': 'altereme',
-         'HOST': 'campeirohsabereslb.interlegis.leg.br',
-         'PORT': '5532',
-     }
+    'default': config(
+        'DATABASE_URL', default='sqlite://:memory:',
+        cast=db_url,
+    )
 }
 
 # DATABASES = {
