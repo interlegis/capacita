@@ -8,7 +8,7 @@
         {% else %}
         <h2 class="ui dividing header">Usuários do Sistema</h2>
         {% endif %}
-        
+
         <p>As permissões indicadas na tabela indicam se o Usuário tem permissão para inserir necessidades e editá-las. Tal usuário possui essa permissão se for um Gestor, Admin ou um Solicitante com permissão concedida</p>
         <form class="ui form" method="get">
             <div class="two fields">
@@ -24,7 +24,7 @@
                 </div>
             </div>
         </form>
-        
+
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
@@ -33,13 +33,13 @@
                 </tr>
             </thead>
             <tbody>
-                
+
                 {% for user in users %}
-                 
+
                     <tr class="center aligned">
                         <td> <a style="color: black;" href="/usuarios/{{user.id}}/edit/">{{user.username}}</a></td>
                         {% if user.profile.permissao_necessidade == True %}
-                            <td><div class="ui toggle checkbox checked permitido">
+                            <td><div class="ui toggle checkbox checked permitido" style="z-index: 0;">
                                 <input value="{{user.id}}" class="permitido" type="checkbox" name="public">
                             </div></td>
                         {% endif %}
