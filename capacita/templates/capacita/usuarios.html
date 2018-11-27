@@ -39,13 +39,13 @@
                     <tr class="center aligned">
                         <td> <a style="color: black;" href="/usuarios/{{user.id}}/edit/">{{user.username}}</a></td>
                         {% if user.profile.permissao_necessidade == True %}
-                            <td><div class="ui toggle checkbox checked permitido">
-                                <input value="True" class="permitido" type="checkbox" name="public">
+                            <td><div class="ui toggle checkbox checked permitido" style="z-index: 0;">
+                                <input value="{{user.id}}" class="permitido" type="checkbox" name="public">
                             </div></td>
                         {% endif %}
                         {% if user.profile.permissao_necessidade == False %}
                             <td><div class="ui toggle checkbox checked sem_permissao">
-                                <input value="False" class="sem_permissao" type="checkbox" name="public">
+                                <input value="{{user.id}}" class="sem_permissao" type="checkbox" name="public">
                             </div></td>
                         {% endif %}
                     </tr>

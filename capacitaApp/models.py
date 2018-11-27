@@ -10,6 +10,7 @@ from django import forms
 class Orgao(models.Model):
     cod_orgao = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200, unique=True)
+    ind_excluido = models.NullBooleanField(null = False, default=False)
 
     def __str__(self):
         return self.nome
