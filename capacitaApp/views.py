@@ -543,8 +543,10 @@ def tipo_treinamento_delete(request, pk):
     gestor = is_gestor(request)
     if admin:
         tipo = get_object_or_404(Tipo_Treinamento, pk=pk)
-        tipo.ind_excluido = True
+        tipo.ind_excluido = 1
+        print (tipo.ind_excluido)
         tipo.save()
+        print ("salvo!")
         return redirect("tipos_treinamento")
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -555,7 +557,7 @@ def tipo_treinamento_undelete(request, pk):
     gestor = is_gestor(request)
     if admin:
         tipo = get_object_or_404(Tipo_Treinamento, pk=pk)
-        tipo.ind_excluido = False
+        tipo.ind_excluido = 0
         tipo.save()
         return redirect("tipos_treinamento")
     else:

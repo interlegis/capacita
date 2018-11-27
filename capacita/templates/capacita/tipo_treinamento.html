@@ -19,10 +19,10 @@
                     <tr class="center aligned">
                         <td>{{tipo.nome}}</td>
                         <td><a class="links" href="{% url 'tipo_treinamento_edit' tipo.cod_tipo_treinamento %}"><i class="pencil icon"></i></a></td>
-                        {% if tipo.ind_excluido == false %}
-                        <td><a class="links" href="{% url 'tipo_treinamento_delete' tipo.cod_tipo_treinamento %}"><i class="eye icon"></i></a></td>
-                        {% else %}
+                        {% if tipo.ind_excluido == True %}
                         <td><a class="links" href="{% url 'tipo_treinamento_undelete' tipo.cod_tipo_treinamento %}"><i class="eye slash icon"></i></a></td>
+                        {% else %}
+                        <td><a class="links" href="{% url 'tipo_treinamento_delete' tipo.cod_tipo_treinamento %}"><i class="eye icon"></i></a></td>
                         {% endif %}
 
 
