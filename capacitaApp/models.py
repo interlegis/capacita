@@ -116,7 +116,7 @@ class Necessidade(models.Model):
         return self.txt_descricao
 
     class Meta:
-        
+        db_table = 'necessidade'
         ordering = ['cod_area_conhecimento','cod_treinamento']
 
 
