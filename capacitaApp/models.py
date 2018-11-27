@@ -55,16 +55,6 @@ class Treinamento(models.Model):
         db_table = 'treinamento'
         ordering = ['nome']
 
-class Tipo_Treinamento(models.Model):
-    cod_tipo_treinamento = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=900, unique=True)
-
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        db_table = 'tipo_treinamento'
-
 class Objetivo_Treinamento(models.Model):
     cod_objetivo_treinamento = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=150, unique=True)
@@ -126,7 +116,7 @@ class Necessidade(models.Model):
         return self.txt_descricao
 
     class Meta:
-        db_table = 'necessidade'
+        
         ordering = ['cod_area_conhecimento','cod_treinamento']
 
 

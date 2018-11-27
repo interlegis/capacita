@@ -8,9 +8,9 @@ import xlsxwriter
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from .models import *
-from .forms import *
-from .filters import *
-from .filtro_necessidade import *
+#from .forms import *
+#from .filters import *
+#from .filtro_necessidade import *
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.http import JsonResponse
@@ -315,7 +315,7 @@ def necessidade_delete(request, pk):
 
 @login_required
 def treinamentos(request):
-    treinamentos = Treinamento.objects.all().exclude()
+    treinamentos = Treinamento.objects.all().exclude(pk=-1)
     admin = is_admin(request)
     gestor = is_gestor(request)
     if admin:
@@ -508,9 +508,7 @@ def orgao_delete(request, id):
     admin = is_admin(request)
     gestor = is_gestor(request)
     if admin:
-        orgao = get_object_or_404(Orgao, pk=id)
-        orgao.ind_excluido = 1
-        orgao.save()
+        orgao = Orgao.objects.filter(pk=id).update(ind_excluido=1)
         return redirect("orgao")
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -520,9 +518,7 @@ def orgao_undelete(request, id):
     admin = is_admin(request)
     gestor = is_gestor(request)
     if admin:
-        orgao = get_object_or_404(Orgao, pk=id)
-        orgao.ind_excluido = 0
-        orgao.save()
+        orgao = Orgao.objects.filter(pk=id).update(ind_excluido=0)
         return redirect("orgao")
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})        
