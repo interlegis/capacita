@@ -5,18 +5,11 @@ from django.contrib.auth.models import User, Group
 from .models import *
 
 class NecessidadeForm(forms.ModelForm):
-    # Adicionando objetos em variáveis
     emptyField = [('', '---------')]
     treinamento_outro = [('-1', '* Outro (especificar) *')]
-    treinamentos = emptyField + [(treinamento.pk, treinamento) for treinamento in Treinamento.objects.all().exclude(cod_treinamento = -1)] + treinamento_outro
-    areas_conhecimento = emptyField + [(area.pk, area) for area in Area_Conhecimento.objects.all().exclude(ind_excluido=1)]
-    objetivos = emptyField + [(objetivo.pk, objetivo) for objetivo in Objetivo_Treinamento.objects.all()]
-    justificativa = forms.CharField(widget=forms.Textarea)
-    modalidades = emptyField + [(modalidade.pk, modalidade) for modalidade in Modalidade_Treinamento.objects.all()]
-    niveis = emptyField + [(niveis.pk, niveis) for niveis in Nivel.objects.all()]
-    tipos_treinamento = emptyField + [(tipo.pk, tipo) for tipo in Tipo_Treinamento.objects.all()]
 
     # Adicionando forms
+    justificativa = forms.CharField(widget=forms.Textarea)
     objetivo_treinamento = forms.ChoiceField()
     treinamento = forms.ChoiceField()
     area_conhecimento = forms.ChoiceField()
