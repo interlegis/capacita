@@ -42,7 +42,7 @@ def home(request):
 
 @login_required
 def plano(request):
-    planos = Plano_Capacitacao.objects.all().exclude(ind_excluido = True)
+    planos = Plano_Capacitacao.objects.all()
     form = PlanoForm()
     admin = is_admin(request)
     gestor = is_gestor(request)
@@ -58,10 +58,24 @@ def plano_delete(request, id):
     gestor = is_gestor(request)
     if (admin):
         plano = get_object_or_404(Plano_Capacitacao, pk=id)
-        plano.delete()
+        plano.ind_excluido = 1
+        plano.save()
         return redirect("plano")
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def plano_undelete(request, id):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if (admin):
+        plano = get_object_or_404(Plano_Capacitacao, pk=id)
+        plano.ind_excluido = 0
+        plano.save()
+        return redirect("plano")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
 
 @login_required
 def plano_show(request, id):
@@ -188,8 +202,7 @@ def necessidade_new(request):
                     necessidade.cod_modalidade = Modalidade_Treinamento.objects.get(cod_modalidade = request.POST['modalidade'])
                     necessidade.cod_orgao = Orgao.objects.get(cod_orgao=orgao)
                     necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
-                    if (request.POST.get('curso_id', None)):
-                        necessidade.treinamento = Treinamento.objects.get(cod_treinamento = request.POST.get('curso_id', None))
+                    necessidade.treinamento = Treinamento.objects.get(cod_treinamento = request.POST.get('treinamento'))
                     necessidade.txt_descricao = request.POST.get('txt_descricao', None)
                     necessidade.cod_usuario = usuario
                     necessidade.cod_area_conhecimento = Area_Conhecimento.objects.get(pk=request.POST['area_conhecimento'])
@@ -288,7 +301,7 @@ def necessidade_delete(request, pk):
 
 @login_required
 def treinamentos(request):
-    treinamentos = Treinamento.objects.all().exclude(ind_excluido = True)
+    treinamentos = Treinamento.objects.all().exclude()
     admin = is_admin(request)
     gestor = is_gestor(request)
     if admin:
@@ -342,11 +355,23 @@ def treinamento_delete(request, pk):
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
+def treinamento_undelete(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        treinamento = get_object_or_404(Treinamento, pk=pk)
+        treinamento.ind_excluido = False
+        treinamento.save()
+        return redirect("treinamentos")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
 def objetivos(request):
     admin = is_admin(request)
     gestor = is_gestor(request)
     if admin:
-        objetivos = Objetivo_Treinamento.objects.all().exclude(ind_excluido = True)
+        objetivos = Objetivo_Treinamento.objects.all()
         return render(request, 'capacita/objetivos.html', {'objetivos' : objetivos, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -390,7 +415,20 @@ def objetivo_delete(request, pk):
     gestor = is_gestor(request)
     if admin:
         objetivo = get_object_or_404(Objetivo_Treinamento, pk=pk)
-        objetivo.delete()
+        objetivo.ind_excluido = 1
+        objetivo.save()
+        return redirect("objetivos")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def objetivo_undelete(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        objetivo = get_object_or_404(Objetivo_Treinamento, pk=pk)
+        objetivo.ind_excluido = 0
+        objetivo.save()
         return redirect("objetivos")
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -457,16 +495,29 @@ def orgao_delete(request, id):
     gestor = is_gestor(request)
     if admin:
         orgao = get_object_or_404(Orgao, pk=id)
-        orgao.delete()
+        orgao.ind_excluido = 1
+        orgao.save()
         return redirect("orgao")
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
+def orgao_undelete(request, id):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        orgao = get_object_or_404(Orgao, pk=id)
+        orgao.ind_excluido = 0
+        orgao.save()
+        return redirect("orgao")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})        
+
+@login_required
 def tipos_treinamento(request):
     admin = is_admin(request)
     gestor = is_gestor(request)
-    tipos = Tipo_Treinamento.objects.filter()
+    tipos = Tipo_Treinamento.objects.all()
     if admin:
         return render(request, 'capacita/tipo_treinamento.html', {'tipos' : tipos, 'is_admin': admin, 'is_gestor': gestor})
     else:
@@ -478,7 +529,20 @@ def tipo_treinamento_delete(request, pk):
     gestor = is_gestor(request)
     if admin:
         tipo = get_object_or_404(Tipo_Treinamento, pk=pk)
-        tipo.delete()
+        tipo.ind_excluido = True
+        tipo.save()
+        return redirect("tipos_treinamento")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def tipo_treinamento_undelete(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        tipo = get_object_or_404(Tipo_Treinamento, pk=pk)
+        tipo.ind_excluido = False
+        tipo.save()
         return redirect("tipos_treinamento")
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -518,100 +582,105 @@ def tipo_treinamento_new(request):
 
 @login_required
 def relatorio(request):
-    # Create a workbook and add a worksheet.
-    workbook = xlsxwriter.Workbook('Necessidades.xlsx')
-    worksheet = workbook.add_worksheet()
+    admin = is_admin(request)
+    gestor = is_gestor(request)
 
-    worksheet.set_column(0, 9, 20)
-    worksheet.set_column(4, 4, 40)
+    if admin:
+        # Create a workbook and add a worksheet.
+        workbook = xlsxwriter.Workbook('Necessidades.xlsx')
+        worksheet = workbook.add_worksheet()
 
-    bold = workbook.add_format({'bold': True, 'center_across' : True})
-    center = workbook.add_format({'center_across' : True})
+        worksheet.set_column(0, 9, 20)
+        worksheet.set_column(4, 4, 40)
 
-
-    necessidades = Necessidade.objects.all().exclude(ind_excluido = True)
-    # .values('treinamento', 'txt_descricao', 'aprovado').annotate(
-    #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'),
-    #     hor_duracao= Avg('hor_duracao'),cod_prioridade=Avg('cod_prioridade_id'),
-    #     cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'),
-    #     cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id')
-    # )
-
-    necessidades = necessidades.filter(ind_excluido = 0)
+        bold = workbook.add_format({'bold': True, 'center_across' : True})
+        center = workbook.add_format({'center_across' : True})
 
 
-    row = 0
-    col = 0
+        necessidades = Necessidade.objects.all().exclude(ind_excluido = True)
+        # .values('treinamento', 'txt_descricao', 'aprovado').annotate(
+        #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'),
+        #     hor_duracao= Avg('hor_duracao'),cod_prioridade=Avg('cod_prioridade_id'),
+        #     cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'),
+        #     cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id')
+        # )
 
-    worksheet.write(row, col,         "PCASF", bold)
-    worksheet.write(row, col + 1,     "Órgão", bold)
-    worksheet.write(row, col + 2,     "Área de Conhecimento", bold)
-    worksheet.write(row, col + 3,     "Treinamento", bold)
-    worksheet.write(row, col + 4,     "Evento", bold)
-    worksheet.write(row, col + 5,     "Modalidade", bold)
-    worksheet.write(row, col + 6,     "Nível", bold)
-    worksheet.write(row, col + 7,     "Carga Horária", bold)
-    worksheet.write(row, col + 8,     "Tipo de Treinamento", bold)
-    worksheet.write(row, col + 9,     "Prioridade", bold)
-    worksheet.write(row, col + 10,     "Quantidade de Servidores", bold)
-    worksheet.write(row, col + 11,     "Objetivo", bold)
-    worksheet.write(row, col + 12,     "Justificativa", bold)
+        necessidades = necessidades.filter(ind_excluido = 0)
 
-    row += 1
 
-    for necessidade in necessidades:
+        row = 0
+        col = 0
 
-        print (necessidade.cod_treinamento)
-
-        if (necessidade.cod_treinamento == '' or necessidade.cod_treinamento == None):
-            treinamento = necessidade.txt_descricao
-        else:
-            treinamento = Treinamento.objects.get(cod_treinamento=necessidade.cod_treinamento.cod_treinamento).nome
-
-        worksheet.write(row, col,     necessidade.cod_plano_capacitacao.ano_plano_capacitacao, center)
-        worksheet.write(row, col + 1, necessidade.cod_orgao.nome, center)
-        worksheet.write(row, col + 2, necessidade.cod_area_conhecimento.txt_descricao, center)
-        worksheet.write(row, col + 3, treinamento, center)
-        worksheet.write(row, col + 4, necessidade.cod_evento.nome, center)
-        #Evento.objects.get(cod_evento=necessidade['cod_evento']).nome, center)
-        worksheet.write(row, col + 5, necessidade.cod_modalidade.nome, center)
-        worksheet.write(row, col + 6, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
-        worksheet.write(row, col + 7, necessidade.hor_duracao, center)
-        worksheet.write(row, col + 8, '', center) #FIXME recuperar tipo de treinamento
-        worksheet.write(row, col + 9, Prioridade.objects.get(cod_prioridade=necessidade.cod_prioridade.cod_prioridade).nome, center)
-        worksheet.write(row, col + 10, necessidade.qtd_servidor, center)
-        worksheet.write(row, col + 11, Objetivo_Treinamento.objects.get(cod_objetivo_treinamento=necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento).nome, center)
-        worksheet.write(row, col + 12, necessidade.justificativa, center)
-
-    #    if (necessidade['aprovado'] == 0):
-    #        worksheet.write(row, col + 8, 'Sim', center)
-    #    else:
-    #        worksheet.write(row, col + 8, 'Não', center)
+        worksheet.write(row, col,         "PCASF", bold)
+        worksheet.write(row, col + 1,     "Órgão", bold)
+        worksheet.write(row, col + 2,     "Área de Conhecimento", bold)
+        worksheet.write(row, col + 3,     "Treinamento", bold)
+        worksheet.write(row, col + 4,     "Evento", bold)
+        worksheet.write(row, col + 5,     "Modalidade", bold)
+        worksheet.write(row, col + 6,     "Nível", bold)
+        worksheet.write(row, col + 7,     "Carga Horária", bold)
+        worksheet.write(row, col + 8,     "Tipo de Treinamento", bold)
+        worksheet.write(row, col + 9,     "Prioridade", bold)
+        worksheet.write(row, col + 10,     "Quantidade de Servidores", bold)
+        worksheet.write(row, col + 11,     "Objetivo", bold)
+        worksheet.write(row, col + 12,     "Justificativa", bold)
 
         row += 1
 
-    worksheet.set_default_row(20)
+        for necessidade in necessidades:
 
-    workbook.close()
+            print (necessidade.cod_treinamento)
 
-    fh = open("Necessidades.xlsx", 'rb')
+            if (necessidade.cod_treinamento.cod_treinamento == -1):
+                treinamento = necessidade.txt_descricao
+            else:
+                treinamento = Treinamento.objects.get(cod_treinamento=necessidade.cod_treinamento.cod_treinamento).nome
 
-    response = HttpResponse(fh) # mimetype is replaced by content_type for django 1.7
-    response['Content-Disposition'] = 'attachment; filename=%s' % "Necessidades.xlsx"
-    response['X-Sendfile'] = fh
+            worksheet.write(row, col,     necessidade.cod_plano_capacitacao.ano_plano_capacitacao, center)
+            worksheet.write(row, col + 1, necessidade.cod_orgao.nome, center)
+            worksheet.write(row, col + 2, necessidade.cod_area_conhecimento.txt_descricao, center)
+            worksheet.write(row, col + 3, treinamento, center)
+            worksheet.write(row, col + 4, necessidade.cod_evento.nome, center)
+            #Evento.objects.get(cod_evento=necessidade['cod_evento']).nome, center)
+            worksheet.write(row, col + 5, necessidade.cod_modalidade.nome, center)
+            worksheet.write(row, col + 6, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
+            worksheet.write(row, col + 7, necessidade.hor_duracao, center)
+            worksheet.write(row, col + 8, necessidade.cod_tipo_treinamento.cod_tipo_treinamento, center) 
+            worksheet.write(row, col + 9, Prioridade.objects.get(cod_prioridade=necessidade.cod_prioridade.cod_prioridade).nome, center)
+            worksheet.write(row, col + 10, necessidade.qtd_servidor, center)
+            worksheet.write(row, col + 11, Objetivo_Treinamento.objects.get(cod_objetivo_treinamento=necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento).nome, center)
+            worksheet.write(row, col + 12, necessidade.justificativa, center)
 
-    return response
+        #    if (necessidade['aprovado'] == 0):
+        #        worksheet.write(row, col + 8, 'Sim', center)
+        #    else:
+        #        worksheet.write(row, col + 8, 'Não', center)
+
+            row += 1
+
+        worksheet.set_default_row(20)
+
+        workbook.close()
+
+        fh = open("Necessidades.xlsx", 'rb')
+
+        response = HttpResponse(fh) # mimetype is replaced by content_type for django 1.7
+        response['Content-Disposition'] = 'attachment; filename=%s' % "Necessidades.xlsx"
+        response['X-Sendfile'] = fh
+
+        return response
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def areas(request):
     admin = is_admin(request)
     gestor = is_gestor(request)
     if admin:
-        areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True);
+        areas = Area_Conhecimento.objects.all();
         return render(request, 'capacita/areas.html', { 'areas' : areas , 'is_admin': admin, 'is_gestor': gestor})
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-
 
 @login_required
 def area_delete(request, pk):
@@ -619,7 +688,20 @@ def area_delete(request, pk):
     gestor = is_gestor(request)
     if admin:
         area = get_object_or_404(Area_Conhecimento, pk=pk)
-        area.delete()
+        area.ind_excluido = 1
+        area.save()
+        return redirect("areas")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+@login_required
+def area_undelete(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if admin:
+        area = get_object_or_404(Area_Conhecimento, pk=pk)
+        area.ind_excluido = 0
+        area.save()
         return redirect("areas")
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
@@ -795,7 +877,7 @@ def modalidade(request):
     admin = is_admin(request)
     gestor = is_gestor(request)
     if (hasattr(request.user, 'profile')):
-        modalidades = Modalidade_Treinamento.objects.filter(ind_excluido = False)
+        modalidades = Modalidade_Treinamento.objects.all()
         return render(request, 'capacita/modalidades.html', {'modalidades' : modalidades, 'permissao' : admin, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
@@ -805,7 +887,7 @@ def eventos(request):
     admin = is_admin(request)
     gestor = is_gestor(request)
     if (hasattr(request.user, 'profile')):
-        eventos = Evento.objects.filter(ind_excluido = False)
+        eventos = Evento.objects.all()
         if admin:
             return render(request, 'capacita/eventos.html', {'eventos' : eventos, 'permissao' : admin, 'is_admin': admin, 'is_gestor': gestor})
         else:
@@ -862,6 +944,17 @@ def evento_delete(request, pk):
         return redirect('error')
 
 @login_required
+def evento_undelete(request, pk):
+    admin = is_admin(request)
+    if (admin):
+        evento = get_object_or_404(Evento, pk=pk)
+        evento.ind_excluido = False
+        evento.save()
+        return redirect("eventos")
+    else:
+        return redirect('error')        
+
+@login_required
 def modalidade_edit(request, pk):
     admin = is_admin(request)
     gestor = is_gestor(request)
@@ -908,6 +1001,17 @@ def modalidade_delete(request, pk):
         return redirect("modalidade")
     else:
         return redirect('error')
+
+@login_required
+def modalidade_undelete(request, pk):
+    admin = is_admin(request)
+    if (admin):
+        modalidade = get_object_or_404(Modalidade_Treinamento, pk=pk)
+        modalidade.ind_excluido = False
+        modalidade.save()
+        return redirect("modalidade")
+    else:
+        return redirect('error')        
 
 @login_required
 def api_areas(request):

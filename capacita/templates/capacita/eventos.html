@@ -11,7 +11,7 @@
                     <th>Nome</th>
                     {% if permissao == True %}
                         <th>Editar</th>
-                        <th>Excluir</th>
+                        <th>Visível</th>
                     {% endif %}
                 </tr>
             </thead>
@@ -20,9 +20,11 @@
                 {% for evento in eventos %}
                     <tr class="center aligned">
                         <td>{{evento.nome}}</td>
-                        {% if permissao == True %}
                         <td><a class="links" href="{% url 'evento_edit' evento.cod_evento %}"><i class="pencil icon"></i></a></td>
-                        <td><a class="links" href="{% url 'evento_delete' evento.cod_evento %}"><i class="delete icon"></i></a></td>
+                        {% if evento.ind_excluido == False %}
+                        <td><a class="links" href="{% url 'evento_delete' evento.cod_evento %}"><i class="eye icon"></i></a></td>
+                        {% else %}
+                        <td><a class="links" href="{% url 'evento_undelete' evento.cod_evento %}"><i class="eye slash icon"></i></a></td>
                         {% endif %}
                     </tr>
                 {% endfor %}

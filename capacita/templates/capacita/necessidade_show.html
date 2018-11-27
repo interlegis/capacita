@@ -16,7 +16,7 @@
                 <strong>Código da necessidade:</strong>
                 <p>{{ necessidade.cod_necessidade }}</p>
                 <strong>Descrição:</strong>
-                {% if necessidade.cod_treinamento %}
+                {% if necessidade.cod_treinamento.cod_treinamento != -1 %}
                 <p>{{ necessidade.cod_treinamento.nome }}</p>
                 {% else %}
                 <p>{{ necessidade.txt_descricao }}</p>

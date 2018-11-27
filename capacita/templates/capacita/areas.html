@@ -10,7 +10,7 @@
                 <tr class="center aligned">
                     <th>Nome</th>
                     <th>Editar</th>
-                    <th>Excluir</th>
+                    <th>Visível</th>
                 </tr>
             </thead>
             <tbody>
@@ -19,7 +19,11 @@
                     <tr class="center aligned">
                         <td>{{area.txt_descricao}}</td>
                         <td><a class="links" href="{% url 'area_edit' area.cod_area_conhecimento %}"><i class="pencil icon"></i></a></td>
-                        <td><a class="links" href="{% url 'area_delete' area.cod_area_conhecimento %}"><i class="delete icon"></i></a></td>
+                        {% if area.ind_excluido == False %}
+                        <td><a class="links" href="{% url 'area_delete' area.cod_area_conhecimento %}"><i class="eye icon"></i></a></td>
+                        {% else %}
+                        <td><a class="links" href="{% url 'area_undelete' area.cod_area_conhecimento %}"><i class="eye slash icon"></i></a></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
 

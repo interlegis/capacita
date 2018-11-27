@@ -79,7 +79,6 @@
 
         <div>
             <h3 style="float: left;" class="ui dividing header">Necessidades</h3>
-            <a style="float: right;" href="/relatorio/">Gerar Planilha</a>
         </div>
         <table class="ui celled padded table">
             <thead>
@@ -104,7 +103,7 @@
                 {% for necessidade in necessidades %}
                     <tr class="center aligned">
                         <td>{{necessidade.cod_area_conhecimento}}</td>
-                        {% if necessidade.cod_treinamento == None %}
+                        {% if necessidade.cod_treinamento.cod_treinamento == -1 %}
                         <td>{{necessidade.txt_descricao}}</td>
                         {% else %}
                         <td>{{necessidade.cod_treinamento.nome}}</td>
