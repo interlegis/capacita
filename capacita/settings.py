@@ -56,7 +56,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    # 'django_cas_ng.backends.CASBackend',
+    'django_cas_ng.backends.CASBackend',
 )
 
 ROOT_URLCONF = 'urls'
@@ -91,23 +91,23 @@ TEMPLATES = [
 #     )
 # }
 
-#DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'capacita',
-#         'USER': 'capacita',
-#         'PASSWORD': 'altereme',
-#         'HOST': 'campeirohsabereslb.interlegis.leg.br',
-#         'PORT': '5532',
-#    }
-
-
 DATABASES = {
-    'default': config(
-        'DATABASE_URL', default='sqlite://:memory:',
-        cast=db_url,
-    )
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+         'NAME': 'capacita',
+         'USER': 'capacita',
+         'PASSWORD': os.environ['ADMIN_PASSWORD'],
+         'HOST': 'capacitadb',
+         'PORT': '5432',
+    }
 }
+
+#DATABASES = {
+#    'default': config(
+#        'DATABASE_URL', default='sqlite://:memory:',
+#        cast=db_url,
+#    )
+#}
 
 # DATABASES = {
 #     'default': {
