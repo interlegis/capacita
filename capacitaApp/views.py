@@ -152,12 +152,17 @@ def necessidade_show(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
     gestor = is_gestor(request)
     admin = is_admin(request)
+    gestor_orgao = True
+    usuario = User.objects.get(id = request.user.id)
+    orgao = Profile.objects.get(user=usuario).orgao_id
+    if orgao != necessidade.cod_orgao.cod_orgao:
+        gestor_orgao = False
     if request.method == 'GET':
-        if (gestor):
+        if (gestor_orgao):
             return render(request, 'capacita/necessidade_show.html', {'necessidade' : necessidade, 'is_admin' : admin, 'is_gestor': gestor})
         else:
             return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    elif request.method == 'POST':
+    elif request.method == 'POST' and gestor_orgao:
         necessidade = Necessidade.objects.get(cod_necessidade = pk)
         if request.POST['aprovado'] == 'True':
             necessidade.aprovado = True
@@ -174,10 +179,12 @@ def necessidade_new(request):
         usuario = User.objects.get(id = request.user.id)
         admin = is_admin(request)
         gestor= is_gestor(request)
+        usuario = User.objects.get(id = request.user.id)
         orgao = Profile.objects.get(user=usuario).orgao_id
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
+        # if(request.POST['txt_descricao'] != ''):
 
-        if(planos_habilitados.count() > 0):
+        if(planos_habilitados.count() > 0 and gestor):
             if request.method == "POST":
                 data = request.POST.copy()
                 form = NecessidadeForm(request.POST)
@@ -277,9 +284,16 @@ def necessidade_edit(request, pk):
 
 @login_required
 def necessidade_delete(request, pk):
+    necessidade = get_object_or_404(Necessidade, pk=pk)
+    gestor_orgao = True
+    usuario = User.objects.get(id = request.user.id)
+    orgao = Profile.objects.get(user=usuario).orgao_id
+    if orgao != necessidade.cod_orgao.cod_orgao:
+        gestor_orgao = False
+
+    admin = is_admin(request)
     gestor = is_gestor(request)
-    if gestor:
-        necessidade = get_object_or_404(Necessidade, pk=pk)
+    if gestor_orgao:
         necessidade.ind_excluido = 1
         necessidade.save()
         return redirect("necessidade")
