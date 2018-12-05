@@ -249,7 +249,6 @@ def necessidade_edit(request, pk):
         'treinamento': necessidade.cod_treinamento.cod_treinamento,
         'nivel': necessidade.cod_nivel.cod_nivel,
         'area_conhecimento': necessidade.cod_area_conhecimento.cod_area_conhecimento,
-        'cod_evento': necessidade.cod_evento.cod_evento,
         'modalidade': necessidade.cod_modalidade.cod_modalidade,
         'hor_duracao': necessidade.hor_duracao,
         'tipo_treinamento': necessidade.cod_tipo_treinamento.cod_tipo_treinamento,
@@ -627,7 +626,6 @@ def relatorio(request):
         worksheet.write(row, col + 1,     "Órgão", bold)
         worksheet.write(row, col + 2,     "Área de Conhecimento", bold)
         worksheet.write(row, col + 3,     "Treinamento", bold)
-        worksheet.write(row, col + 4,     "Evento", bold)
         worksheet.write(row, col + 5,     "Modalidade", bold)
         worksheet.write(row, col + 6,     "Nível", bold)
         worksheet.write(row, col + 7,     "Carga Horária", bold)

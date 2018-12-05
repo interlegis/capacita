@@ -79,25 +79,12 @@ class Modalidade_Treinamento(models.Model):
         db_table = 'modalidade_treinamento'
         ordering = ['nome']
 
-class Evento(models.Model):
-    cod_evento = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=60, unique=True)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
-
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        db_table = 'evento'
-        ordering = ['nome']
-
 class Necessidade(models.Model):
     cod_necessidade = models.AutoField(primary_key=True)
     cod_plano_capacitacao = models.ForeignKey('plano_capacitacao', models.DO_NOTHING)
     cod_area_conhecimento = models.ForeignKey('area_conhecimento', models.DO_NOTHING)
     cod_treinamento = models.ForeignKey('treinamento', models.DO_NOTHING, default='-1')
     txt_descricao = models.CharField(max_length=200, null=True)
-    cod_evento = models.ForeignKey('evento', models.DO_NOTHING, null=True)
     cod_modalidade = models.ForeignKey('modalidade_treinamento', models.DO_NOTHING)
     cod_nivel = models.ForeignKey('nivel', models.DO_NOTHING)
     hor_duracao = models.DecimalField(max_digits=3, decimal_places=0, validators=[MinValueValidator(0)], null=True)
