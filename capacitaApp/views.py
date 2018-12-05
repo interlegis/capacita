@@ -521,7 +521,7 @@ def orgao_undelete(request, id):
         orgao = Orgao.objects.filter(pk=id).update(ind_excluido=0)
         return redirect("orgao")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})        
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def tipos_treinamento(request):
@@ -657,7 +657,7 @@ def relatorio(request):
             worksheet.write(row, col + 5, necessidade.cod_modalidade.nome, center)
             worksheet.write(row, col + 6, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
             worksheet.write(row, col + 7, necessidade.hor_duracao, center)
-            worksheet.write(row, col + 8, necessidade.cod_tipo_treinamento.cod_tipo_treinamento, center) 
+            worksheet.write(row, col + 8, necessidade.cod_tipo_treinamento.cod_tipo_treinamento, center)
             worksheet.write(row, col + 9, Prioridade.objects.get(cod_prioridade=necessidade.cod_prioridade.cod_prioridade).nome, center)
             worksheet.write(row, col + 10, necessidade.qtd_servidor, center)
             worksheet.write(row, col + 11, Objetivo_Treinamento.objects.get(cod_objetivo_treinamento=necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento).nome, center)
@@ -895,78 +895,6 @@ def modalidade(request):
         return redirect('error')
 
 @login_required
-def eventos(request):
-    admin = is_admin(request)
-    gestor = is_gestor(request)
-    if (hasattr(request.user, 'profile')):
-        eventos = Evento.objects.all()
-        if admin:
-            return render(request, 'capacita/eventos.html', {'eventos' : eventos, 'permissao' : admin, 'is_admin': admin, 'is_gestor': gestor})
-        else:
-            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    else:
-        return redirect('error')
-
-@login_required
-def evento_edit(request, pk):
-    admin = is_admin(request)
-    gestor = is_gestor(request)
-    evento = get_object_or_404(Evento, pk=pk)
-    form = EventoForm(instance=evento)
-    if request.method == "POST" and admin:
-        form = EventoForm(request.POST, instance=evento)
-        if form.is_valid():
-            evento = form.save(commit=False)
-            evento.save()
-            return redirect('eventos')
-        elif request.method == "POST":
-            form = EventoForm(instance=evento)
-        else:
-            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    if(admin):
-        return render(request, 'capacita/evento_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
-    else:
-        return redirect('error')
-
-@login_required
-def evento_new(request):
-    admin = is_admin(request)
-    gestor = is_gestor(request)
-    if request.method == "POST" and admin:
-        form = EventoForm(request.POST)
-        if form.is_valid():
-            evento = form.save(commit=False)
-            evento.save()
-            return redirect('eventos')
-    elif request.method != "POST" and admin:
-        form = EventoForm()
-    else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/evento_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
-
-@login_required
-def evento_delete(request, pk):
-    admin = is_admin(request)
-    if (admin):
-        evento = get_object_or_404(Evento, pk=pk)
-        evento.ind_excluido = True
-        evento.save()
-        return redirect("eventos")
-    else:
-        return redirect('error')
-
-@login_required
-def evento_undelete(request, pk):
-    admin = is_admin(request)
-    if (admin):
-        evento = get_object_or_404(Evento, pk=pk)
-        evento.ind_excluido = False
-        evento.save()
-        return redirect("eventos")
-    else:
-        return redirect('error')        
-
-@login_required
 def modalidade_edit(request, pk):
     admin = is_admin(request)
     gestor = is_gestor(request)
@@ -1023,7 +951,7 @@ def modalidade_undelete(request, pk):
         modalidade.save()
         return redirect("modalidade")
     else:
-        return redirect('error')        
+        return redirect('error')
 
 @login_required
 def api_areas(request):
