@@ -100,7 +100,7 @@ class Necessidade(models.Model):
     cod_evento = models.ForeignKey('evento', models.DO_NOTHING, null=True)
     cod_modalidade = models.ForeignKey('modalidade_treinamento', models.DO_NOTHING)
     cod_nivel = models.ForeignKey('nivel', models.DO_NOTHING)
-    hor_duracao = models.DecimalField(max_digits=3, decimal_places=0, validators=[MinValueValidator(0)])
+    hor_duracao = models.DecimalField(max_digits=3, decimal_places=0, validators=[MinValueValidator(0)], null=True)
     cod_prioridade = models.ForeignKey('prioridade', models.DO_NOTHING)
     qtd_servidor = models.DecimalField(max_digits=6, decimal_places=0, validators=[MinValueValidator(0)])
     cod_objetivo_treinamento = models.ForeignKey('objetivo_treinamento', models.DO_NOTHING)

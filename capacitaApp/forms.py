@@ -16,6 +16,7 @@ class NecessidadeForm(forms.ModelForm):
     modalidade = forms.ChoiceField()
     nivel = forms.ChoiceField()
     tipo_treinamento = forms.ChoiceField()
+    hor_duracao = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         emptyField = [('', '---------')]
