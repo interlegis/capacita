@@ -164,10 +164,10 @@ class Profile(models.Model):
 class Sugestao(models.Model):
     cod_sugestao = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=60)
-    cod_orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE)
-    cod_area_conhecimento = models.ForeignKey(Area_Conhecimento, null=True, on_delete=models.CASCADE)
+    cod_orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE, db_column='cod_orgao')
+    cod_area_conhecimento = models.ForeignKey(Area_Conhecimento, null=True, on_delete=models.CASCADE, db_column='cod_area_conhecimento')
     observacoes = models.CharField(max_length=200)
-    cod_usuario = models.ForeignKey(User, null=False, on_delete= models.CASCADE)
+    cod_usuario = models.ForeignKey(User, null=True, on_delete= models.CASCADE, db_column='cod_usuario')
 
     def __str__(self):
         return self.nome

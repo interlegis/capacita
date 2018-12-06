@@ -1,0 +1,61 @@
+{% extends 'capacita/base.html' %}
+
+{% block content %}
+
+    {% if not sugestoes %}
+    <div style="padding-left: 5%; padding-bottom: 4%" class="table_div">
+        <div class="content">
+            <h2 style="float: left;" class="ui header">Sugestões solicitadas para {{user.profile.orgao.nome}}</h2>
+        </div>
+    </div>
+    <div style="padding-left: 5%; padding-bottom: 0%">
+        <div style="width:80%" class="ui warning message">Ainda não foi solicitado nenhuma sugestão para {{user.profile.orgao.nome}}.
+        <br><br>
+        Clique no botão abaixo para realizar uma sugestão
+        </div>
+    </div>
+    <div class="table_div">
+        <a href="/sugestao/new/"><button class="ui button basic secondary">Novo</button></a>
+    </div>
+    {% else %}
+    <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
+        <div class="content">
+            <h2 style="float: left;" class="ui header">PCASF {{sugestoes.0.cod_plano_capacitacao}} - Sugestões de Treinamento solicitadas para {{user.profile.orgao.nome}}</td>
+            </h2>
+        </div>
+    </div>
+    <div style="padding-bottom:0%" class="table_div">
+        <br>
+        <div>
+            <h3 style="float: left;" class="ui dividing header">Sugestões</h3>
+        </div>
+        <table class="ui celled padded table">
+            <thead>
+                <tr class="center aligned">
+                <th>Nome</th>
+                <th>Órgão</th>
+                <th>Área de Conhecimento</th>
+                <th>Usuário</th>
+                <th>Observações</th>
+            </thead>
+            <tbody>
+
+                {% for sugestao in sugestoes %}
+                    <tr class="center aligned">
+                        <td>{{sugestao.nome}}</td>                        
+                        <td>{{sugestao.cod_orgao_id}}</td>
+                        <td>{{sugestao.cod_area_conhecimento}}</td>
+                        <td>{{sugestao.cod_usuario}}</td>
+                        <td>{{sugestao.observacoes}}</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        <br>
+    </div>
+    <div class="table_div">
+        <a href="/sugestao/new/"><button class="ui button basic secondary">Novo</button></a>
+    </div>
+    {% endif %}
+    {% endblock %}

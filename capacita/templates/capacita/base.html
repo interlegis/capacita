@@ -26,7 +26,13 @@
         <a class="item capacitaLogo" href="/">CAPACITA</a>
 
         {% if is_gestor %}
-        <a class="item" href="/necessidade/">Treinamento</a>
+        <div class="ui dropdown item">
+        Treinamento
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <a class="item" href="/sugestao/">Sugestões</a>
+            </div>
+        </div>
         {% endif %}
         {% if is_admin %}
         <div class="ui dropdown item">

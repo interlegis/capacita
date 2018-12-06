@@ -118,6 +118,12 @@ class TipoTreinamentoForm(forms.ModelForm):
             'nome' : 'Nome'
         }
 
+class SugestaoForm(forms.ModelForm):
+
+    class Meta:
+        model = Sugestao
+        fields = ('nome', 'cod_orgao', 'cod_area_conhecimento', 'observacoes')
+        
 class TreinamentoForm(forms.ModelForm):
 
     class Meta:
