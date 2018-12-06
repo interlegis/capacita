@@ -174,6 +174,39 @@ class Profile(models.Model):
     class Meta:
         db_table = 'capacita_profile'
 
+class Sugestao(models.Model):
+    cod_sugestao = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=60)
+    cod_orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE)
+    cod_area_conhecimento = models.ForeignKey(Area_Conhecimento, null=True, on_delete=models.CASCADE)
+    observacoes = models.CharField(max_length=200)
+    cod_usuario = models.ForeignKey(User, null=False, on_delete= models.CASCADE)
+
+    def __str__(self):
+        return self.nome
+
+    class Meta:
+        db_table = 'sugestao'
+
+class Necessidade_Orgao(models.Model):
+    cod_necessidade_orgao = models.AutoField(primary_key=True)
+    cod_situacao_necessidade_orgao = models.ForeignKey('Situacao_Necessidade_Orgao', on_delete=models.CASCADE)
+    cod_orgao = models.OneToOneField(Orgao, on_delete=models.CASCADE)
+    cod_plano_capacitacao = models.OneToOneField(Plano_Capacitacao, on_delete=models.CASCADE)
+    cod_orgao_atual = models.ForeignKey(Orgao, related_name="to_orgao_atual", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'necessidade_orgao'
+
+class Situacao_Necessidade_Orgao(models.Model):
+    cod_situacao_necessidade_orgao = models.AutoField(primary_key=True)
+    cod_necessidade_orgao = models.ForeignKey(Necessidade_Orgao, on_delete=models.CASCADE)
+    descricao = models.CharField(max_length=200)
+    estado_inicial = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'situacao_necessidade_orgao'
+
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)
 
