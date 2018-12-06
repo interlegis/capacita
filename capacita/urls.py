@@ -7,8 +7,8 @@ import django_cas_ng.views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-#    url(r'^login/$', LoginView.as_view(), name='login'),
-#   url(r'^logout/$', LogoutView.as_view(), name='logout'),
+   # url(r'^login/$', LoginView.as_view(), name='login'),
+   # url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
     url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),
     url(r'^callback/$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'),
@@ -54,11 +54,6 @@ urlpatterns = [
     url(r'^modalidade/(?P<pk>\d+)/undelete$', views.modalidade_undelete, name='modalidade_undelete'),
     url(r'^modalidade/(?P<pk>\d+)/edit/$', views.modalidade_edit, name='modalidade_edit'),
     url(r'^modalidade/new/$', views.modalidade_new, name='modalidade_new'),
-    url(r'^eventos/$', views.eventos, name='eventos'),
-    url(r'^evento/(?P<pk>\d+)/delete$', views.evento_delete, name='evento_delete'),
-    url(r'^evento/(?P<pk>\d+)/undelete$', views.evento_undelete, name='evento_undelete'),
-    url(r'^evento/(?P<pk>\d+)/edit/$', views.evento_edit, name='evento_edit'),
-    url(r'^evento/new/$', views.evento_new, name='evento_new'),
     url(r'^objetivos/$', views.objetivos, name='objetivos'),
     url(r'^objetivo/(?P<pk>\d+)/delete$', views.objetivo_delete, name='objetivo_delete'),
     url(r'^objetivo/(?P<pk>\d+)/undelete$', views.objetivo_undelete, name='objetivo_undelete'),

@@ -16,6 +16,7 @@ class NecessidadeForm(forms.ModelForm):
     modalidade = forms.ChoiceField()
     nivel = forms.ChoiceField()
     tipo_treinamento = forms.ChoiceField()
+    hor_duracao = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         emptyField = [('', '---------')]
@@ -63,11 +64,10 @@ class NecessidadeForm(forms.ModelForm):
 
     class Meta:
         model = Necessidade
-        fields = ('qtd_servidor','hor_duracao','nivel','modalidade', 'cod_prioridade', 'tipo_treinamento', 'justificativa', 'cod_evento', 'treinamento', 'area_conhecimento', 'objetivo_treinamento')
+        fields = ('qtd_servidor','hor_duracao','nivel','modalidade', 'cod_prioridade', 'tipo_treinamento', 'justificativa', 'treinamento', 'area_conhecimento', 'objetivo_treinamento')
         labels = {
             'qtd_servidor' : 'Quantidade de Servidores Efetivos',
             'hor_duracao'  : 'Hora de duração',
-            'cod_evento' : 'Evento',
             'tipo_treinamento' : 'Tipo de Treinamento',
             'justificativa' : 'Justificativa',
             'modalidade' : 'Modalidade de Treinamento',
@@ -99,15 +99,6 @@ class AreaConhecimentoForm(forms.ModelForm):
         model = Area_Conhecimento
         fields = ('cod_area_conhecimento', 'txt_descricao')
 
-
-class EventoForm(forms.ModelForm):
-
-    class Meta:
-        model = Evento
-        fields = ('nome', )
-        labels = {
-            'nome' : 'Nome'
-        }
 
 class ObjetivoTreinamentoForm(forms.ModelForm):
 
