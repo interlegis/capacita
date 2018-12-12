@@ -613,7 +613,6 @@ def relatorio(request):
         #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'),
         #     hor_duracao= Avg('hor_duracao'),cod_prioridade=Avg('cod_prioridade_id'),
         #     cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'),
-        #     cod_nivel=Avg('cod_nivel_id'),cod_evento=Avg('cod_evento_id')
         # )
 
         necessidades = necessidades.filter(ind_excluido = 0)
@@ -650,8 +649,6 @@ def relatorio(request):
             worksheet.write(row, col + 1, necessidade.cod_orgao.nome, center)
             worksheet.write(row, col + 2, necessidade.cod_area_conhecimento.txt_descricao, center)
             worksheet.write(row, col + 3, treinamento, center)
-            worksheet.write(row, col + 4, necessidade.cod_evento.nome, center)
-            #Evento.objects.get(cod_evento=necessidade['cod_evento']).nome, center)
             worksheet.write(row, col + 5, necessidade.cod_modalidade.nome, center)
             worksheet.write(row, col + 6, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
             worksheet.write(row, col + 7, necessidade.hor_duracao, center)

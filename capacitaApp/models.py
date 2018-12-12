@@ -9,6 +9,7 @@ from django import forms
 
 class Orgao(models.Model):
     cod_orgao = models.AutoField(primary_key=True)
+    cod_superior = models.ForeignKey('Orgao', models.DO_NOTHING, null = True)
     nome = models.CharField(max_length=200, unique=True)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
@@ -81,7 +82,6 @@ class Modalidade_Treinamento(models.Model):
 
 class Necessidade(models.Model):
     cod_necessidade = models.AutoField(primary_key=True)
-    cod_plano_capacitacao = models.ForeignKey('plano_capacitacao', models.DO_NOTHING)
     cod_area_conhecimento = models.ForeignKey('area_conhecimento', models.DO_NOTHING)
     cod_treinamento = models.ForeignKey('treinamento', models.DO_NOTHING, default='-1')
     txt_descricao = models.CharField(max_length=200, null=True)
@@ -94,9 +94,8 @@ class Necessidade(models.Model):
     justificativa = models.CharField(max_length=300)
     aprovado = models.NullBooleanField(null = False, default=False)
     cod_usuario = models.ForeignKey(User,models.DO_NOTHING)
-    cod_orgao = models.ForeignKey('orgao', models.DO_NOTHING)
     cod_tipo_treinamento = models.ForeignKey('tipo_treinamento', models.DO_NOTHING)
-
+    cod_necessidade_orgao = models.ForeignKey('Necessidade_Orgao', models.DO_NOTHING)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
     def __str__(self):
@@ -127,7 +126,6 @@ class Permissao(models.Model):
     class Meta:
         db_table = 'permissao'
 
-
 class Plano_Capacitacao(models.Model):
     cod_plano_capacitacao = models.AutoField(primary_key=True)
 #    data_inicio = models.DateField(null=True)
@@ -141,6 +139,7 @@ class Plano_Capacitacao(models.Model):
 
     class Meta:
         db_table = 'plano_capacitacao'
+        ordering = ['ano_plano_capacitacao']
 
 class Prioridade(models.Model):
     cod_prioridade = models.AutoField(primary_key=True)
@@ -177,22 +176,12 @@ class Sugestao(models.Model):
 
 class Necessidade_Orgao(models.Model):
     cod_necessidade_orgao = models.AutoField(primary_key=True)
-    cod_situacao_necessidade_orgao = models.ForeignKey('Situacao_Necessidade_Orgao', on_delete=models.CASCADE)
-    cod_orgao = models.OneToOneField(Orgao, on_delete=models.CASCADE)
-    cod_plano_capacitacao = models.OneToOneField(Plano_Capacitacao, on_delete=models.CASCADE)
-    cod_orgao_atual = models.ForeignKey(Orgao, related_name="to_orgao_atual", on_delete=models.CASCADE)
+    cod_orgao = models.ForeignKey(Orgao, on_delete=models.CASCADE)
+    cod_plano_capacitacao = models.ForeignKey(Plano_Capacitacao, on_delete=models.CASCADE)
+    estado = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'necessidade_orgao'
-
-class Situacao_Necessidade_Orgao(models.Model):
-    cod_situacao_necessidade_orgao = models.AutoField(primary_key=True)
-    cod_necessidade_orgao = models.ForeignKey(Necessidade_Orgao, on_delete=models.CASCADE)
-    descricao = models.CharField(max_length=200)
-    estado_inicial = models.BooleanField(default=False)
-
-    class Meta:
-        db_table = 'situacao_necessidade_orgao'
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)
