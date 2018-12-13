@@ -18,6 +18,7 @@ class Orgao(models.Model):
 
     class Meta:
         db_table = 'orgao'
+        ordering = ['nome']
 
 class Area_Conhecimento(models.Model):
     cod_area_conhecimento = models.AutoField(primary_key=True)
@@ -116,7 +117,7 @@ class Nivel(models.Model):
 
     class Meta:
         db_table = 'nivel'
-
+        ordering = ['nome']
 
 class Permissao(models.Model):
     cod_permissao = models.AutoField(primary_key=True)
@@ -151,6 +152,7 @@ class Prioridade(models.Model):
 
     class Meta:
         db_table = 'prioridade'
+        ordering = ['nome']
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -173,12 +175,14 @@ class Sugestao(models.Model):
 
     class Meta:
         db_table = 'sugestao'
+        ordering = ['nome']
 
 class Necessidade_Orgao(models.Model):
     cod_necessidade_orgao = models.AutoField(primary_key=True)
     cod_orgao = models.ForeignKey(Orgao, on_delete=models.CASCADE)
     cod_plano_capacitacao = models.ForeignKey(Plano_Capacitacao, on_delete=models.CASCADE)
     estado = models.BooleanField(default=False)
+    importado = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'necessidade_orgao'
