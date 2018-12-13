@@ -1,5 +1,7 @@
 from django.contrib import admin
 from capacitaApp.models import *
+from plano.models import *
+from necessidade.models import *
 
 admin.site.register(Area_Conhecimento)
 admin.site.register(Necessidade)
