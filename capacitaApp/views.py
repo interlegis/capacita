@@ -17,6 +17,9 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 
+# Para importação
+from copy import deepcopy
+
 def is_admin(request):
     user = User.objects.get(id = request.user.id)
     relacoes = AuthUserGroups.objects.all()
@@ -128,21 +131,36 @@ def plano_edit(request, id):
 @login_required
 def necessidade(request):
     if (hasattr(request.user, 'profile')):
+        usuario = User.objects.get(id = request.user.id)
+        orgao = Profile.objects.get(user=usuario)
+        planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
+        necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao.orgao_id)
         gestor = is_gestor(request)
         admin = is_admin(request)
-        usuario = User.objects.get(id = request.user.id)
-        orgao = Profile.objects.get(user=usuario).orgao_id
-        planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
 
-        necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
-        necessidades = Necessidade.objects.all().exclude(ind_excluido = True).filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
-
-        # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
-        if(gestor):
-            return render(request, 'capacita/necessidade.html',
-                {'necessidades' : necessidades, 'is_admin' : admin, 'is_gestor': gestor})
+        #Caso o orgão já tenha enviado o pedido para o orgão superior
+        if (necessidade_orgao.estado == True):
+            return render(request, 'capacita/plano_fechado.html', { 'is_admin' : admin, 'is_gestor': gestor})
         else:
-            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+            orgao_object = Orgao.objects.get(cod_orgao = orgao.orgao_id)
+            superior = None
+            if orgao_object.cod_superior:
+                superior = Orgao.objects.get(cod_orgao = orgao_object.cod_superior.cod_orgao)
+
+            subordinados = Orgao.objects.all().filter(cod_superior = orgao.orgao_id)
+            necessidade_subordinados = Necessidade_Orgao.objects.all().filter(cod_orgao__in = subordinados, cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao)
+            subordinados_status = []
+            for subordinado in subordinados:
+                necessidade_subordinado = necessidade_subordinados.get(cod_orgao = subordinado)
+                subordinados_status.append({'nome': subordinado.nome, 'estado': necessidade_subordinado.estado, 'cod_necessidade_orgao': necessidade_subordinado.cod_necessidade_orgao, 'importado': necessidade_subordinado.importado})
+            necessidades = Necessidade.objects.all().exclude(ind_excluido = True).filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
+
+            # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
+            if(gestor):
+                return render(request, 'capacita/necessidade.html',
+                    {'necessidades' : necessidades, 'is_admin' : admin, 'is_gestor': gestor, 'subordinados': subordinados_status, 'superior': superior})
+            else:
+                return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
@@ -289,6 +307,59 @@ def necessidade_delete(request, pk):
     if gestor_orgao:
         necessidade.ind_excluido = 1
         necessidade.save()
+        return redirect("necessidade")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+def necessidade_approve(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if (admin):
+        necessidade = get_object_or_404(Necessidade, pk=pk)
+        necessidade.aprovado = False
+        necessidade.save()
+        return redirect("necessidade")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+def necessidade_disapprove(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if (admin):
+        necessidade = get_object_or_404(Necessidade, pk=pk)
+        necessidade.aprovado = True
+        necessidade.save()
+        return redirect("necessidade")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+def necessidade_orgao_close(request, pk):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if (admin):
+        necessidade_orgao = get_object_or_404(Necessidade_Orgao, pk=pk)
+        necessidade_orgao.estado = True
+        necessidade_orgao.save()
+        return redirect("necessidade")
+    else:
+        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+
+def importar_necessidade(request, pk, pk_atual):
+    admin = is_admin(request)
+    gestor = is_gestor(request)
+    if (admin):
+        necessidade_orgao = get_object_or_404(Necessidade_Orgao, pk=pk)
+        necessidade_orgao.importado = True
+        necessidade_orgao.save()
+        print("ORGAO = ", necessidade_orgao.importado)
+        print("ORGAO = ", necessidade_orgao.cod_necessidade_orgao)
+
+        necessidades = Necessidade.objects.all().filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
+        for necessidade in necessidades:
+            necessidade_importada = deepcopy(necessidade)
+            necessidade_importada.cod_necessidade = None
+            necessidade_importada.cod_necessidade_orgao = Necessidade_Orgao.objects.get(cod_necessidade_orgao = pk_atual)
+            necessidade_importada.save()
         return redirect("necessidade")
     else:
         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
