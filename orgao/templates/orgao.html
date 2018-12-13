@@ -1,35 +1,40 @@
-{% extends 'capacita/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
 
     <div class="table_div">
 
-        <h4 class="ui dividing header">Treinamentos</h4>
+        <h4 class="ui dividing header">Órgãos</h4>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
                 <th>Nome</th>
+                {% if is_admin == True %}
                 <th>Editar</th>
                 <th>Visível</th>
+                {% endif %}
                 </tr>
             </thead>
             <tbody>
-                {% for treinamento in treinamentos %}
-                    <tr class="center aligned">
-                        <td>{{treinamento.nome}}</td>
-                        <td><a class="links" href="{% url 'treinamento_edit' treinamento.cod_treinamento %}"><i class="pencil icon"></i></a></td>
 
-                        {% if treinamento.ind_excluido == False %}
-                        <td><a class="links" href="{% url 'treinamento_delete' treinamento.cod_treinamento %}"><i class="eye icon"></i></a></td>
+                {% for orgao in orgaos %}
+                    <tr class="center aligned">
+                        <td>{{orgao.nome}}</td>
+                        {% if is_admin == True %}
+                        <td><a class="links" href="{% url 'orgao_edit' orgao.cod_orgao %}"><i class="pencil icon"></i></a></td>
+
+                        {% if orgao.ind_excluido == False %}
+                        <td><a class="links" href="{% url 'orgao_delete' orgao.cod_orgao %}"><i class="eye icon"></i></a></td>
                         {% else %}
-                        <td><a class="links" href="{% url 'treinamento_undelete' treinamento.cod_treinamento %}"><i class="eye slash icon"></i></a></td>
+                        <td><a class="links" href="{% url 'orgao_undelete' orgao.cod_orgao %}"><i class="eye slash icon"></i></a></td>
                         {% endif %}
 
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
-
-            <!--<tfoot>
+            {% if orgaos.has_other_pages %}
+            <tfoot>
                 <tr><th colspan="7">
                     <div class="ui right floated pagination menu">
                     {% if orgaos.has_previous %}
@@ -49,12 +54,13 @@
                     {% endif %}
                     </div>
                 </th>
-                </tr>
-            </tfoot>
-            -->
+            </tr></tfoot>
         </table>
+        {% endif %}
         <br>
-        <a href="/treinamento/new/"><button class="ui button basic secondary">Novo</button></a>
+        {% if is_admin == True %}
+        <a href="/orgao/new/"><button class="ui button basic secondary">Novo</button></a>
+        {% endif %}
     </div>
 
     {% endblock %}

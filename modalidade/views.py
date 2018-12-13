@@ -21,7 +21,7 @@ def modalidade(request):
     gestor = is_gestor(request)
     if (hasattr(request.user, 'profile')):
         modalidades = Modalidade_Treinamento.objects.all()
-        return render(request, 'capacita/modalidades.html', {'modalidades' : modalidades, 'permissao' : admin, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'modalidades.html', {'modalidades' : modalidades, 'permissao' : admin, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
@@ -39,10 +39,10 @@ def modalidade_edit(request, pk):
     elif request.method != "POST" and admin:
         form = ModalidadeForm(instance=modalidade)
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
     if(admin):
-        return render(request, 'capacita/modalidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'modalidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
@@ -59,8 +59,8 @@ def modalidade_new(request):
     elif request.method != "POST" and admin:
         form = ModalidadeForm()
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/modalidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'modalidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def modalidade_delete(request, pk):

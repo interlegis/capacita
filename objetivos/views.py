@@ -21,9 +21,9 @@ def objetivos(request):
     gestor = is_gestor(request)
     if admin:
         objetivos = Objetivo_Treinamento.objects.all()
-        return render(request, 'capacita/objetivos.html', {'objetivos' : objetivos, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'objetivos.html', {'objetivos' : objetivos, 'is_admin': admin, 'is_gestor': gestor})
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def objetivo_edit(request, pk):
@@ -39,8 +39,8 @@ def objetivo_edit(request, pk):
     elif request.method != "POST" and admin:
         form = ObjetivoTreinamentoForm(instance=objetivo)
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/objetivo_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'objetivo_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def objetivo_new(request):
@@ -55,8 +55,8 @@ def objetivo_new(request):
     elif request.method != "POST" and admin:
         form = ObjetivoTreinamentoForm()
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/objetivo_edit.html', {'form': form})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'objetivo_edit.html', {'form': form})
 
 @login_required
 def objetivo_delete(request, pk):
@@ -68,7 +68,7 @@ def objetivo_delete(request, pk):
         objetivo.save()
         return redirect("objetivos")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def objetivo_undelete(request, pk):
@@ -80,4 +80,4 @@ def objetivo_undelete(request, pk):
         objetivo.save()
         return redirect("objetivos")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})

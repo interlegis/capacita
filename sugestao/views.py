@@ -22,9 +22,9 @@ def sugestao(request):
     user = User.objects.get(id = request.user.id)
     sugestoes = Sugestao.objects.all()
     if admin:
-        return render(request, 'capacita/sugestao.html', {'sugestoes' : sugestoes, 'is_admin': admin, 'is_gestor': gestor, 'user' : user})
+        return render(request, 'sugestao.html', {'sugestoes' : sugestoes, 'is_admin': admin, 'is_gestor': gestor, 'user' : user})
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def sugestao_new(request):
@@ -41,5 +41,5 @@ def sugestao_new(request):
     elif request.method != "POST" and admin:
         form = SugestaoForm()
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/sugestao_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'sugestao_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})

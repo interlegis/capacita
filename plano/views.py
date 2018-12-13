@@ -23,9 +23,9 @@ def plano(request):
     gestor = is_gestor(request)
 
     if admin:
-        return render(request, 'capacita/plano_capacitacao.html', {'planos' : planos, 'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'plano_capacitacao.html', {'planos' : planos, 'form' : form, 'is_admin': admin, 'is_gestor': gestor})
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def plano_delete(request, id):
@@ -37,7 +37,7 @@ def plano_delete(request, id):
         plano.save()
         return redirect("plano")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def plano_undelete(request, id):
@@ -49,7 +49,7 @@ def plano_undelete(request, id):
         plano.save()
         return redirect("plano")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 
 @login_required
@@ -58,7 +58,7 @@ def plano_show(request, id):
     gestor = is_gestor(request)
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
     if admin:
-        return render(request, 'capacita/plano_show.html', {'plano' : plano})
+        return render(request, 'plano_show.html', {'plano' : plano})
     else:
         return redirect('error')
 
@@ -78,7 +78,7 @@ def plano_new(request):
     else:
         form = PlanoForm()
     if(admin):
-        return render(request, 'capacita/plano_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'plano_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
@@ -96,6 +96,6 @@ def plano_edit(request, id):
     else:
         form = PlanoForm(instance=plano)
     if(admin):
-        return render(request, 'capacita/plano_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'plano_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')

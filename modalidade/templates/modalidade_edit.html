@@ -1,20 +1,21 @@
-    {% extends 'capacita/base.html' %}
+
+    {% extends 'base.html' %}
 
     {% block content %}
 
     <div class="ui container">
-        <h3 class="ui dividing header">Área de Conhecimento</h3>
+        <h4 class="ui dividing header">Modalidade de Treinamento</h4>
         <form class="ui form" method="post">{% csrf_token %}
 
             <div class="field">
               <div class="text-danger">
-                {{ form.txt_descricao.errors }}
+                {{ form.nome.errors }}
               </div>
                 <label>Nome</label>
-                {{ form.txt_descricao  }}
+                {{ form.nome  }}
             </div>
             <button class="ui primary button" type="submit">Salvar</button>
-            <a href="/areas/"  class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
+            <a href="/modalidade/"  class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
             </div>
         </form>
     </div>

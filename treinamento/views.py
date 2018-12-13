@@ -22,9 +22,9 @@ def treinamentos(request):
     admin = is_admin(request)
     gestor = is_gestor(request)
     if admin:
-        return render(request, 'capacita/treinamento.html', {'treinamentos' : treinamentos, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'treinamento.html', {'treinamentos' : treinamentos, 'is_admin': admin, 'is_gestor': gestor})
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def treinamento_edit(request, pk):
@@ -40,8 +40,8 @@ def treinamento_edit(request, pk):
     elif request.method != "POST" and admin:
         form = TreinamentoForm(instance=treinamento)
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/treinamento_edit.html', {'form': form, 'is_admin':admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'treinamento_edit.html', {'form': form, 'is_admin':admin, 'is_gestor': gestor})
 
 @login_required
 def treinamento_new(request):
@@ -56,8 +56,8 @@ def treinamento_new(request):
     elif request.method != "POST" and admin:
         form = TreinamentoForm()
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/treinamento_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'treinamento_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def treinamento_delete(request, pk):
@@ -69,7 +69,7 @@ def treinamento_delete(request, pk):
         treinamento.save()
         return redirect("treinamentos")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def treinamento_undelete(request, pk):
@@ -81,4 +81,4 @@ def treinamento_undelete(request, pk):
         treinamento.save()
         return redirect("treinamentos")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})

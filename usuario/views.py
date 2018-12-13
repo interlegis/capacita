@@ -56,12 +56,12 @@ def usuarios(request):
                 if (User.objects.get(id = profile.user_id) != request.user):
                     users.append(User.objects.get(id = profile.user_id))
 
-        return render(request, 'capacita/usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'orgaos' : orgaos, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'orgaos' : orgaos, 'is_admin': admin, 'is_gestor': gestor})
     else:
         if ((group in request.user.groups.all())):
-            return render(request, 'capacita/usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'is_admin': admin, 'is_gestor': gestor})
         else:
-            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @csrf_exempt
 def usuarios_permissao(request):
@@ -93,23 +93,23 @@ def usuario_new(request):
                 profile.save()
                 usuario.save()
             else:
-                return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True, 'is_admin': admin, 'is_gestor': gestor})
+                return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True, 'is_admin': admin, 'is_gestor': gestor})
 
             return redirect("usuarios")
         else:
-            return render(request, 'capacita/usuario_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'usuario_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
     elif request.method != 'POST':
         form = UserForm()
         orgaos = Orgao.objects.all()
         groups = Group.objects.all()
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
     orgaos = Orgao.objects.all()
     groups = Group.objects.all()
 
     if(admin):
-        return render(request, 'capacita/usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
@@ -143,6 +143,6 @@ def usuario_edit(request, pk):
     groups = Group.objects.all()
     orgaos = Orgao.objects.all()
     if(admin):
-        return render(request, 'capacita/usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario, 'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')

@@ -21,9 +21,9 @@ def areas(request):
     gestor = is_gestor(request)
     if admin:
         areas = Area_Conhecimento.objects.all();
-        return render(request, 'capacita/areas.html', { 'areas' : areas , 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'areas.html', { 'areas' : areas , 'is_admin': admin, 'is_gestor': gestor})
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def area_delete(request, pk):
@@ -35,7 +35,7 @@ def area_delete(request, pk):
         area.save()
         return redirect("areas")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def area_undelete(request, pk):
@@ -47,7 +47,7 @@ def area_undelete(request, pk):
         area.save()
         return redirect("areas")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def area_edit(request,id):
@@ -63,8 +63,8 @@ def area_edit(request,id):
     elif request.method != 'POST':
         form = AreaConhecimentoForm(instance=area)
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/area_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'area_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def area_new(request):
@@ -79,5 +79,5 @@ def area_new(request):
     elif request.method != 'POST':
         form = AreaConhecimentoForm()
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/area_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'area_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})

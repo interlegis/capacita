@@ -33,7 +33,7 @@ def necessidade(request):
 
         #Caso o orgão já tenha enviado o pedido para o orgão superior
         if (necessidade_orgao.estado == True):
-            return render(request, 'capacita/plano_fechado.html', { 'is_admin' : admin, 'is_gestor': gestor})
+            return render(request, 'plano_fechado.html', { 'is_admin' : admin, 'is_gestor': gestor})
         else:
             orgao_object = Orgao.objects.get(cod_orgao = orgao.orgao_id)
             superior = None
@@ -50,10 +50,10 @@ def necessidade(request):
 
             # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
             if(gestor):
-                return render(request, 'capacita/necessidade.html',
+                return render(request, 'necessidade.html',
                     {'necessidades' : necessidades, 'is_admin' : admin, 'is_gestor': gestor, 'subordinados': subordinados_status, 'superior': superior})
             else:
-                return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+                return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
@@ -69,9 +69,9 @@ def necessidade_show(request, pk):
         gestor_orgao = False
     if request.method == 'GET':
         if (gestor_orgao):
-            return render(request, 'capacita/necessidade_show.html', {'necessidade' : necessidade, 'is_admin' : admin, 'is_gestor': gestor})
+            return render(request, 'necessidade_show.html', {'necessidade' : necessidade, 'is_admin' : admin, 'is_gestor': gestor})
         else:
-            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
     elif request.method == 'POST' and gestor_orgao:
         necessidade = Necessidade.objects.get(cod_necessidade = pk)
         if request.POST['aprovado'] == 'True':
@@ -109,7 +109,7 @@ def necessidade_new(request):
                     if request.POST['treinamento'] == '-1' and request.POST['txt_descricao']:
                         necessidade.txt_descricao = request.POST['txt_descricao']
                     elif request.POST['treinamento'] == '-1':
-                        return render(request, 'capacita/necessidade_edit.html', {'form': form, 'erro_sugestao': "Preencha o campo de sugestão!"})
+                        return render(request, 'necessidade_edit.html', {'form': form, 'erro_sugestao': "Preencha o campo de sugestão!"})
                     #     treinamento_sugerido = Treinamento(cod_area_conhecimento = request.POST['area_conhecimento'], nome = request.POST['txt_descricao'], sugestao = True)
                     #     treinamento_sugerido.save()
                     else:
@@ -119,18 +119,18 @@ def necessidade_new(request):
                     return redirect('necessidade')
                 else:
                     print("FOI", form.errors)
-                return render(request, 'capacita/necessidade_edit.html', {'form': form})
+                return render(request, 'necessidade_edit.html', {'form': form})
             else:
                 form = NecessidadeForm()
 
                 if (gestor):
-                    return render(request, 'capacita/necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+                    return render(request, 'necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
                 else:
-                    return render(request, 'capacita/necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+                    return render(request, 'necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
         else:
-            return render(request, 'capacita/necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
     else:
-        #return render(request, 'capacita/necessidade_edit.html', {'form': form})
+        #return render(request, 'necessidade_edit.html', {'form': form})
         return redirect('error')
 
 
@@ -182,9 +182,9 @@ def necessidade_edit(request, pk):
                 return redirect('necessidade')
         else:
             form = NecessidadeForm(necessidade_updated, instance=necessidade)
-        return render(request, 'capacita/necessidade_edit.html', {'form': form, 'areas' : areas, 'planos_habilitados' : planos_habilitados, 'necessidade' : necessidade, 'treinamentos' : treinamentos, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'necessidade_edit.html', {'form': form, 'areas' : areas, 'planos_habilitados' : planos_habilitados, 'necessidade' : necessidade, 'treinamentos' : treinamentos, 'is_admin': admin, 'is_gestor': gestor})
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def necessidade_delete(request, pk):
@@ -202,7 +202,7 @@ def necessidade_delete(request, pk):
         necessidade.save()
         return redirect("necessidade")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 def necessidade_approve(request, pk):
     admin = is_admin(request)
@@ -213,7 +213,7 @@ def necessidade_approve(request, pk):
         necessidade.save()
         return redirect("necessidade")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 def necessidade_disapprove(request, pk):
     admin = is_admin(request)
@@ -224,7 +224,7 @@ def necessidade_disapprove(request, pk):
         necessidade.save()
         return redirect("necessidade")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 def necessidade_orgao_close(request, pk):
     admin = is_admin(request)
@@ -235,7 +235,7 @@ def necessidade_orgao_close(request, pk):
         necessidade_orgao.save()
         return redirect("necessidade")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 def importar_necessidade(request, pk, pk_atual):
     admin = is_admin(request)
@@ -255,4 +255,4 @@ def importar_necessidade(request, pk, pk_atual):
             necessidade_importada.save()
         return redirect("necessidade")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})

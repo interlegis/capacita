@@ -40,7 +40,7 @@ def is_gestor(request):
 def home(request):
     admin = is_admin(request)
     gestor = is_gestor(request)
-    return render(request, 'capacita/home.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'home.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def relatorio(request):
@@ -128,11 +128,11 @@ def relatorio(request):
 
         return response
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def error(request):
-    return render(request, 'capacita/error.html')
+    return render(request, 'error.html')
 
 # @login_required
 # def avaliacao_cursos(request):
@@ -150,6 +150,6 @@ def error(request):
 #         return redirect('avaliacao_cursos')
 #     elif request.method != "POST" and admin:
 #         cursos_necessidades = Necessidade.objects.exclude(txt_descricao = None).exclude(txt_descricao = '')
-#         return render(request, "capacita/avaliacao_cursos.html", {'necessidades' : cursos_necessidades, 'is_admin': admin, 'is_gestor': gestor})
+#         return render(request, "avaliacao_cursos.html", {'necessidades' : cursos_necessidades, 'is_admin': admin, 'is_gestor': gestor})
 #     else:
-#         return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+#         return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})

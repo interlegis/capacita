@@ -21,9 +21,9 @@ def tipos_treinamento(request):
     gestor = is_gestor(request)
     tipos = Tipo_Treinamento.objects.all()
     if admin:
-        return render(request, 'capacita/tipo_treinamento.html', {'tipos' : tipos, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'tipo_treinamento.html', {'tipos' : tipos, 'is_admin': admin, 'is_gestor': gestor})
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def tipo_treinamento_delete(request, pk):
@@ -37,7 +37,7 @@ def tipo_treinamento_delete(request, pk):
         print ("salvo!")
         return redirect("tipos_treinamento")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def tipo_treinamento_undelete(request, pk):
@@ -49,7 +49,7 @@ def tipo_treinamento_undelete(request, pk):
         tipo.save()
         return redirect("tipos_treinamento")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def tipo_treinamento_edit(request,id):
@@ -65,8 +65,8 @@ def tipo_treinamento_edit(request,id):
     elif request.method != 'POST':
         form = TipoTreinamentoForm(instance=tipo)
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/tipo_treinamento_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'tipo_treinamento_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def tipo_treinamento_new(request):
@@ -81,5 +81,5 @@ def tipo_treinamento_new(request):
     elif request.method != 'POST':
         form = TipoTreinamentoForm()
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/tipo_treinamento_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'tipo_treinamento_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})

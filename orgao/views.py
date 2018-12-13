@@ -32,9 +32,9 @@ def orgao(request):
                 orgaos = paginator.page(1)
             except EmptyPage:
                 orgaos = paginator.page(paginator.num_pages)
-            return render(request, 'capacita/orgao.html', {'orgaos' : orgaos, 'is_admin' : admin, 'is_gestor': gestor})
+            return render(request, 'orgao.html', {'orgaos' : orgaos, 'is_admin' : admin, 'is_gestor': gestor})
         else:
-            return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
     else:
         return redirect('error')
 
@@ -52,8 +52,8 @@ def orgao_edit(request, pk):
     elif request.method != "POST" and admin:
         form = OrgaoForm(instance=orgao)
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/orgao_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'orgao_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def orgao_new(request):
@@ -68,8 +68,8 @@ def orgao_new(request):
     elif request.method != "POST" and admin:
         form = OrgaoForm()
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
-    return render(request, 'capacita/orgao_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'orgao_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def orgao_delete(request, id):
@@ -79,7 +79,7 @@ def orgao_delete(request, id):
         orgao = Orgao.objects.filter(pk=id).update(ind_excluido=1)
         return redirect("orgao")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
 
 @login_required
 def orgao_undelete(request, id):
@@ -89,4 +89,4 @@ def orgao_undelete(request, id):
         orgao = Orgao.objects.filter(pk=id).update(ind_excluido=0)
         return redirect("orgao")
     else:
-        return render(request, 'capacita/error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
