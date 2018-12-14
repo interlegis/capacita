@@ -28,6 +28,18 @@ def is_gestor(request):
             return True
     return False
 
+def orgao_usuario(request):
+    orgao = Profile.objects.get(user=request.user).orgao_id
+    return orgao
+
+def orgaos_gestor(request):
+    orgaos_gestor = []
+    if(is_gestor(request)):
+        orgaos = Orgao.objects.all()
+        for orgao in orgaos:
+            if(orgao.user == request.user):
+                orgaos_gestor.append(orgao)
+    return orgaos_gestor
 
 @login_required
 def home(request):
