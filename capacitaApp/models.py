@@ -46,7 +46,7 @@ class Tipo_Treinamento(models.Model):
 
 class Treinamento(models.Model):
     cod_treinamento = models.AutoField(primary_key=True)
-    cod_area_conhecimento = models.ForeignKey('Area_Conhecimento', models.DO_NOTHING, default='0')
+    cod_area_conhecimento = models.ForeignKey('Area_Conhecimento', models.DO_NOTHING, db_column='cod_area_conhecimento', default='0')
     nome = models.CharField(max_length=900, unique=True)
     ind_excluido = models.NullBooleanField(null = False, default=False)
 
@@ -83,7 +83,7 @@ class Modalidade_Treinamento(models.Model):
 
 class Necessidade(models.Model):
     cod_necessidade = models.AutoField(primary_key=True)
-    cod_area_conhecimento = models.ForeignKey('area_conhecimento', models.DO_NOTHING)
+    cod_area_conhecimento = models.ForeignKey('area_conhecimento', models.DO_NOTHING, db_column='cod_area_conhecimento')
     cod_treinamento = models.ForeignKey('treinamento', models.DO_NOTHING, default='-1')
     txt_descricao = models.CharField(max_length=200, null=True)
     cod_modalidade = models.ForeignKey('modalidade_treinamento', models.DO_NOTHING)
@@ -141,7 +141,7 @@ class Plano_Capacitacao(models.Model):
     class Meta:
         db_table = 'plano_capacitacao'
         ordering = ['ano_plano_capacitacao']
-
+        
 class Prioridade(models.Model):
     cod_prioridade = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200, unique=True)
@@ -184,8 +184,7 @@ class Necessidade_Orgao(models.Model):
     estado = models.BooleanField(default=False)
     importado = models.BooleanField(default=False)
 
-    class Meta:
-        db_table = 'necessidade_orgao'
+
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)

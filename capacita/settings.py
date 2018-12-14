@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'cl7h5!4x-4nyu*9gv1n8voo@m4$=gmx%xh6sxu!8tuifob*vk!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -96,8 +96,11 @@ DATABASES = {
          'ENGINE': 'django.db.backends.postgresql_psycopg2',
          'NAME': 'capacita',
          'USER': 'capacita',
+        #  'USER' : 'postgres',
          'PASSWORD': os.environ['ADMIN_PASSWORD'],
+        #  'PASSWORD' : 'postgres',
          'HOST': 'capacitadb',
+        #  'HOST' : 'localhost',
          'PORT': '5432',
     }
 }
