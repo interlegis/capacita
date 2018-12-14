@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User, Group
 from capacitaApp.models import *
+from necessidade.models import *
 
 
 class NecessidadeForm(forms.ModelForm):
