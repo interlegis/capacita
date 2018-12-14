@@ -3,7 +3,10 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from django.http import JsonResponse
 from capacitaApp.views import is_admin, is_gestor
-
+from areas.models import *
+from treinamento.models import *
+from plano.models import *
+from tipo_treinamento.models import *
 
 @login_required
 def api_areas(request):
