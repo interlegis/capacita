@@ -1,8 +1,51 @@
 {% extends 'capacita/base.html' %}
 
 {% block content %}
-
-    {% if not necessidades %}
+  {% if subordinados %}
+    <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
+      <div class="content">
+        <h2 style="float: left;" class="ui header">Orgãos subordinados</td>
+        </h2>
+      </div>
+    </div>
+    <div style="padding-bottom:0%" class="table_div">
+      <br>
+      <table class="ui celled padded table">
+        <thead>
+          <tr class="center aligned">
+            <th>Orgão Subordinado</th>
+            <th>Estado de envio</th>
+            <th>Importar</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for subordinado in subordinados %}
+          <tr class="center aligned">
+              <td>{{subordinado.nome}}</td>
+              <td>
+                {% if subordinado.estado == True %}
+                <i class="check icon"></i>
+                {% else %}
+                <i class="delete icon"></i>
+                {% endif %}
+              </td>
+              <td>
+                {% if subordinado.importado == True %}
+                  Já foi importado!
+                {% elif subordinado.estado == True %}
+                  <a href="{% url 'importar_necessidade' pk=subordinado.cod_necessidade_orgao pk_atual=necessidades.first.cod_necessidade_orgao.cod_necessidade_orgao%}">Importar</a>
+                {% else %}
+                  Aguarde o envio
+                {% endif %}
+              </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      <br>
+    </div>
+  {% endif %}
+  {% if not necessidades %}
     <div style="padding-left: 5%; padding-bottom: 4%" class="table_div">
         <div class="content">
             <h2 style="float: left;" class="ui header">Treinamentos solicitados para {{user.profile.orgao.nome}}</h2>
@@ -20,66 +63,12 @@
     {% else %}
     <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
         <div class="content">
-            <h2 style="float: left;" class="ui header">PCASF {{necessidades.0.cod_plano_capacitacao}} - Treinamentos solicitados para {{user.profile.orgao.nome}}</td>
+            <h2 style="float: left;" class="ui header">PCASF {{necessidades.0.cod_necessidade_orgao.cod_plano_capacitacao}} - Treinamentos solicitados para {{user.profile.orgao.nome}}</td>
             </h2>
         </div>
     </div>
     <div style="padding-bottom:0%" class="table_div">
-        <!--
-        <div class="ui accordion field">
-            <div class="title">
-                <i class="dropdown icon"></i>
-                Filtro
-            </div>
-            <div class="content">
-                <form class="ui form" method="get">
-                    <div class="three fields">
-                        <div class="select_area field">
-                            <label>Área de Conhecimento</label>
-                            <select name="area" id="">
-                                <option value="">-------------</option>
-                                {% for area in areas %}
-                                <option value="{{area.cod_area_conhecimento}}">{{area.txt_descricao}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Nível</label>
-                            <select name="nivel" id="">
-                                <option value="">-------------</option>
-                                {% for nivel in niveis %}
-                                <option value="{{nivel.cod_nivel}}">{{nivel.nome}}</option>
-                                {% endfor %}
-                                </select>
-                        </div>
-                        <div class="field">
-                            <label>Plano de Capacitação</label>
-                            <select name="plano" id="">
-                                <option value="">-------------</option>
-                                {% for plano in planos %}
-                                <option value="{{plano.cod_plano_capacitacao}}">{{plano}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="three fields">
-                        <div class="field">
-                            <label>Quantidade aproximada de servidores</label>
-                            <input type="text" name="qtd_servidor">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <button class="ui button basic secondary" type="submit">Filtrar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        -->
         <br>
-
-        <div>
-            <h3 style="float: left;" class="ui dividing header">Necessidades</h3>
-        </div>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
@@ -92,6 +81,7 @@
                 <th>Prioridade</th>
                 <th>Ver</th>
                 {% if is_gestor%}
+                <th>Aprovado</th>
                 <th>Editar</th>
                 <th>Excluir</th>
                 {% endif %}
@@ -112,9 +102,15 @@
                         <td>{{necessidade.hor_duracao}}</td>
                         <td>{{necessidade.cod_modalidade}}</td>
                         <td>{{necessidade.cod_prioridade}}</td>
-
                         <td><a class="links" href="{% url 'necessidade_show' necessidade.cod_necessidade %}"><i class="search icon"></i></a></td>
                         {% if is_gestor %}
+                        <th>
+                          {% if necessidade.aprovado == True %}
+                          <a class="links" href="{% url 'necessidade_approve' necessidade.cod_necessidade %}"><i class="check icon"></i></a>
+                          {% else %}
+                          <a class="links" href="{% url 'necessidade_disapprove' necessidade.cod_necessidade %}"><i class="delete icon"></i></a>
+                          {% endif %}
+                        </th>
                         <td><a class="links" href="{% url 'necessidade_edit' necessidade.cod_necessidade %}"><i class="pencil icon"></i></a></td>
                         <td><a class="links" href="{% url 'necessidade_delete' necessidade.cod_necessidade %}"><i class="delete icon"></i></a></td>
                         {% endif %}
@@ -126,7 +122,17 @@
         <br>
     </div>
     <div class="table_div">
+      <h1>
+        {{necessidades.first.cod_necessidade.cod_necessidade_orgao}}
+      </h1>
         <a href="/necessidade/new/"><button class="ui button basic secondary">Novo</button></a>
+        <a href="{% url 'necessidade_orgao_close' necessidades.first.cod_necessidade_orgao.cod_necessidade_orgao %}"><button class="ui button basic secondary">Enviar para
+          {% if superior %}
+            {{ superior }}
+          {% else %}
+            Nome pessoa
+          {% endif %}
+        </button></a>
     </div>
     {% endif %}
     {% endblock %}

@@ -33,13 +33,13 @@ class NecessidadeForm(forms.ModelForm):
         self.fields['treinamento'] = forms.ChoiceField(
             choices= treinamentos
         )
-        self.fields['treinamento'].widget.attrs['onclick'] = 'selectSugestao(this)'
+        self.fields['treinamento'].widget.attrs['onChange'] = 'selectSugestao(this)'
 
         # areas_conhecimento
         self.fields['area_conhecimento'] = forms.ChoiceField(
             choices= areas_conhecimento
         )
-        self.fields['area_conhecimento'].widget.attrs['onclick'] = 'selectTreinamento(this)'
+        self.fields['area_conhecimento'].widget.attrs['onChange'] = 'selectTreinamento(this)'
 
         # objetivo_treinamento
         self.fields['objetivo_treinamento'] = forms.ChoiceField(
@@ -123,7 +123,7 @@ class SugestaoForm(forms.ModelForm):
     class Meta:
         model = Sugestao
         fields = ('nome', 'cod_orgao', 'cod_area_conhecimento', 'observacoes')
-        
+
 class TreinamentoForm(forms.ModelForm):
 
     class Meta:
