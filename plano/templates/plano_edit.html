@@ -1,0 +1,35 @@
+
+    {% extends 'base.html' %}
+
+    {% block content %}
+
+    <div class="ui container">
+        <form class="ui form" method="post">{% csrf_token %}
+
+            <h4 class="ui dividing header">Plano</h4>
+            <div class="two fields">
+                <div class="field">
+                  <div class="text-danger">
+                    {{ form.ano_plano_capacitacao.errors }}
+                  </div>
+                    <label>Ano</label>
+                    {{ form.ano_plano_capacitacao }}
+                </div>
+            </div>
+            <div class="three fields">
+                <div class="field">
+                  <div class="text-danger">
+                    {{ form.plano_habilitado.errors }}
+                  </div>
+                    <label>Habilitado</label>
+                    {{ form.plano_habilitado }}
+                </div>
+            </div>
+
+            <button class="ui primary button" type="submit">Salvar</button>
+            <a href="/plano/"><button class="ui button basic secondary">Voltar</button></a>
+
+        </form>
+    </div>
+
+    {% endblock %}

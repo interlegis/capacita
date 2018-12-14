@@ -1,111 +1,15 @@
 from django.db import models
-from django.db import models
-from django.utils import timezone
-from django.dispatch import receiver
-from django.db.models.signals import post_save
+
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator
+from plano.models import Plano_Capacitacao
+from orgao.models import Orgao
+from areas.models import Area_Conhecimento
+from tipo_treinamento.models import Tipo_Treinamento
+from treinamento.models import Treinamento
+from objetivos.models import Objetivo_Treinamento
+from modalidade.models import Modalidade_Treinamento
+
 from django import forms
-
-class Orgao(models.Model):
-    cod_orgao = models.AutoField(primary_key=True)
-    cod_superior = models.ForeignKey('Orgao', models.DO_NOTHING, null = True)
-    nome = models.CharField(max_length=200, unique=True)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
-
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        db_table = 'orgao'
-        ordering = ['nome']
-
-class Area_Conhecimento(models.Model):
-    cod_area_conhecimento = models.AutoField(primary_key=True)
-    txt_descricao = models.CharField(max_length=200, unique=True)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
-
-    def __str__(self):
-        return self.txt_descricao
-
-    class Meta:
-        db_table = 'area_conhecimento'
-        ordering = ['txt_descricao']
-
-class Tipo_Treinamento(models.Model):
-    cod_tipo_treinamento = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=900, unique=True)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
-
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        db_table = 'tipo_treinamento'
-        ordering = ['nome']
-
-class Treinamento(models.Model):
-    cod_treinamento = models.AutoField(primary_key=True)
-    cod_area_conhecimento = models.ForeignKey('Area_Conhecimento', models.DO_NOTHING, db_column='cod_area_conhecimento', default='0')
-    nome = models.CharField(max_length=900, unique=True)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
-
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        db_table = 'treinamento'
-        ordering = ['nome']
-
-class Objetivo_Treinamento(models.Model):
-    cod_objetivo_treinamento = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=150, unique=True)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
-
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        db_table = 'objetivo_treinamento'
-        ordering = ['nome']
-
-class Modalidade_Treinamento(models.Model):
-    cod_modalidade = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=50, unique=True)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
-
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        db_table = 'modalidade_treinamento'
-        ordering = ['nome']
-
-class Necessidade(models.Model):
-    cod_necessidade = models.AutoField(primary_key=True)
-    cod_area_conhecimento = models.ForeignKey('area_conhecimento', models.DO_NOTHING, db_column='cod_area_conhecimento')
-    cod_treinamento = models.ForeignKey('treinamento', models.DO_NOTHING, default='-1')
-    txt_descricao = models.CharField(max_length=200, null=True)
-    cod_modalidade = models.ForeignKey('modalidade_treinamento', models.DO_NOTHING)
-    cod_nivel = models.ForeignKey('nivel', models.DO_NOTHING)
-    hor_duracao = models.DecimalField(max_digits=3, decimal_places=0, validators=[MinValueValidator(0)], null=True)
-    cod_prioridade = models.ForeignKey('prioridade', models.DO_NOTHING)
-    qtd_servidor = models.DecimalField(max_digits=6, decimal_places=0, validators=[MinValueValidator(0)])
-    cod_objetivo_treinamento = models.ForeignKey('objetivo_treinamento', models.DO_NOTHING)
-    justificativa = models.CharField(max_length=300)
-    aprovado = models.NullBooleanField(null = False, default=False)
-    cod_usuario = models.ForeignKey(User,models.DO_NOTHING)
-    cod_tipo_treinamento = models.ForeignKey('tipo_treinamento', models.DO_NOTHING)
-    cod_necessidade_orgao = models.ForeignKey('Necessidade_Orgao', models.DO_NOTHING)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
-
-    def __str__(self):
-        return self.txt_descricao
-
-    class Meta:
-        db_table = 'necessidade'
-        ordering = ['cod_area_conhecimento','cod_treinamento']
-
 
 class Nivel(models.Model):
     cod_nivel = models.AutoField(primary_key=True)
@@ -122,26 +26,12 @@ class Nivel(models.Model):
 class Permissao(models.Model):
     cod_permissao = models.AutoField(primary_key=True)
     ano_plano_capacitacao = models.DecimalField(max_digits=4, decimal_places=0)
-    cod_orgao = models.ForeignKey('orgao', models.DO_NOTHING)
+    cod_orgao = models.ForeignKey('orgao.Orgao', models.DO_NOTHING)
 
     class Meta:
         db_table = 'permissao'
 
-class Plano_Capacitacao(models.Model):
-    cod_plano_capacitacao = models.AutoField(primary_key=True)
-#    data_inicio = models.DateField(null=True)
- #   data_fim = models.DateField(null=True)
-    ano_plano_capacitacao = models.DecimalField(max_digits=4, decimal_places=0, unique=True)
-    plano_habilitado = models.NullBooleanField(null = False)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
 
-    def __str__(self):
-        return str(str(self.ano_plano_capacitacao))
-
-    class Meta:
-        db_table = 'plano_capacitacao'
-        ordering = ['ano_plano_capacitacao']
-        
 class Prioridade(models.Model):
     cod_prioridade = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200, unique=True)
@@ -161,30 +51,6 @@ class Profile(models.Model):
 
     class Meta:
         db_table = 'capacita_profile'
-
-class Sugestao(models.Model):
-    cod_sugestao = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=60)
-    cod_orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE, db_column='cod_orgao')
-    cod_area_conhecimento = models.ForeignKey(Area_Conhecimento, null=True, on_delete=models.CASCADE, db_column='cod_area_conhecimento')
-    observacoes = models.CharField(max_length=200)
-    cod_usuario = models.ForeignKey(User, null=True, on_delete= models.CASCADE, db_column='cod_usuario')
-
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        db_table = 'sugestao'
-        ordering = ['nome']
-
-class Necessidade_Orgao(models.Model):
-    cod_necessidade_orgao = models.AutoField(primary_key=True)
-    cod_orgao = models.ForeignKey(Orgao, on_delete=models.CASCADE)
-    cod_plano_capacitacao = models.ForeignKey(Plano_Capacitacao, on_delete=models.CASCADE)
-    estado = models.BooleanField(default=False)
-    importado = models.BooleanField(default=False)
-
-
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)

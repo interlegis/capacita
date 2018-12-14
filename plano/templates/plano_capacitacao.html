@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="table_div">
+
+        <h4 class="ui dividing header">Planos de Capacitação</h4>
+        <p>Só pode existir um plano de capacitação habilitado</p>
+        <table class="ui celled padded table">
+            <thead>
+                <tr class="center aligned">
+                <th>Período</th>
+                <th>Habilitado</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Visível</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for plano in planos %}
+                    <tr class="center aligned">
+                        <td>{{plano.ano_plano_capacitacao}}</td>
+                        <td>{{plano.plano_habilitado}}</td>
+                        <td><a class="links" href="{% url 'plano_show' plano.cod_plano_capacitacao %}"><i class="search icon"></i></a></td>
+                        <td><a class="links" href="{% url 'plano_edit' plano.cod_plano_capacitacao %}"><i class="pencil icon"></i></a></td>
+                        {% if plano.ind_excluido == False %}
+                        <td><a class="links" href="{% url 'plano_delete' plano.cod_plano_capacitacao %}"><i class="eye icon"></i></a></td>
+                        {% else %}
+                        <td><a class="links" href="{% url 'plano_undelete' plano.cod_plano_capacitacao %}"><i class="eye slash icon"></i></a></td>
+                        {% endif %}
+
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        <br>
+        <a href="/plano/new/"><button class="ui button basic secondary">Novo</button></a>
+    </div>
+
+    <script>
+        $("#id_cod_orgao").on('change', function() {
+            $("form").submit();
+        });
+    </script>
+
+    {% endblock %}

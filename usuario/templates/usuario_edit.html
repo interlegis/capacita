@@ -1,0 +1,65 @@
+
+    {% extends 'base.html' %}
+
+    {% block content %}
+
+    <div class="ui container">
+        <h4 class="ui dividing header">Usuário</h4>
+        <form class="ui form" method="post">{% csrf_token %}
+
+            <div class="field">
+                {{ form.username.errors }}
+                <label>Login</label>
+                {{ form.username }}
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    {{ form.first_name.errors}}
+                    <label>Primeiro Nome</label>
+                    {{ form.first_name}}
+                </div>
+                <div class="field">
+                    {{ form.last_name.errors }}
+                    <label>Último Nome</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>Órgão</label>
+                    <select name="orgao" >
+                        <option></option>
+                        {% for orgao in orgaos %}
+                            {% if usuario %}
+                                {% if usuario.profile.orgao == orgao %}
+                                    <option selected value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
+                                {% else %}
+                                    <option value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Grupo</label>
+                    <select name="group" >
+                        <option>Sem grupo</option>
+                        {% for group in groups %}
+                            {% if usuario %}
+                                {% if group in usuario.groups.all %}
+                                    <option selected value="{{group.id}}">{{group.name}}</option>
+                                {% else %}
+                                    <option value="{{group.id}}">{{group.name}}</option>
+                                {% endif %}
+                            {% endif %}
+
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button class="ui primary button" type="submit">Salvar</button>
+            <a href="/usuarios/" class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
+        </form>
+    </div>
+
+    {% endblock %}

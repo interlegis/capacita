@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="table_div">
+
+        {% if necessidade.cod_treinamento %}
+        <h2 class="ui dividing header">{{ necessidade.cod_treinamento.nome }}</h2>
+        {% else %}
+        <h2 class="ui dividing header">{{ necessidade.txt_descricao }}</h2>
+        {% endif %}
+
+        <br>
+        <div class="ui three column very relaxed grid">
+            <div class="column">
+                <strong>Código da necessidade:</strong>
+                <p>{{ necessidade.cod_necessidade }}</p>
+                <strong>Descrição:</strong>
+                {% if necessidade.cod_treinamento.cod_treinamento != -1 %}
+                <p>{{ necessidade.cod_treinamento.nome }}</p>
+                {% else %}
+                <p>{{ necessidade.txt_descricao }}</p>
+                {% endif %}
+                <strong>Área de Conhecimento:</strong>
+                <p>{{ necessidade.cod_area_conhecimento }}</p>
+                <strong>Treinamento:</strong>
+                <p>{{ necessidade.cod_treinamento }}</p>
+            </div>
+            <div class="column">
+                <strong>Plano de Capacitação:</strong>
+                <p>{{ necessidade.cod_necessidade_orgao.cod_plano_capacitacao }}</p>
+                <strong>Modalidade de Treinamento</strong>
+                <p>{{ necessidade.cod_modalidade }}</p>
+                <strong>Nível:</strong>
+                <p>{{ necessidade.cod_nivel }}</p>
+                <strong>Carga Horária:</strong>
+                <p>{{ necessidade.hor_duracao }}</p>
+                <strong>Tipo de Treinamento:</strong>
+                <p>{{ necessidade.hor_duracao }}</p>
+                <strong>Prioridade:</strong>
+                <p>{{ necessidade.cod_prioridade }}</p>
+                <strong>Quantidade de Servidores:</strong>
+                <p>{{ necessidade.qtd_servidor }}</p>
+                <strong>Objetivo do Treinamento:</strong>
+                <p>{{ necessidade.cod_objetivo_treinamento }}</p>
+            </div>
+            <div class="column">
+                <strong>Usuário</strong>
+                <p>{{ necessidade.cod_usuario.username }}</p>
+                {% if is_admin %}
+                <strong>Aprovado</strong>
+                <form class="ui form" action="" method="POST">{% csrf_token %}
+                    <select style="width: 100px;" onchange="this.form.submit();" class="ui field" name="aprovado">
+                        {% if necessidade.aprovado == True %}
+                            <option value="True" selected>Sim</option>
+                            <option value="False">Não</option>
+                        {% endif %}
+                        {% if necessidade.aprovado == False %}
+                            <option value="True">Sim</option>
+                            <option value="False" selected>Não</option>
+                        {% endif %}
+                    </select>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        <a href="/necessidade/"><button class="ui button basic secondary">Voltar</button></a>
+    </div>
+
+    {% endblock %}

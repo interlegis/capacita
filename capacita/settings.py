@@ -40,7 +40,18 @@ INSTALLED_APPS = [ #components
     'django.contrib.staticfiles',
     'django_cas_ng',
     'capacita',
+    'plano',
     'capacitaApp',
+    'necessidade',
+    'treinamento',
+    'objetivos',
+    'orgao',
+    'tipo_treinamento',
+    'areas',
+    'usuario',
+    'modalidade',
+    'apis',
+    'sugestao',
 ]
 
 MIDDLEWARE = [
@@ -78,18 +89,11 @@ TEMPLATES = [
         },
     },
 ]
-#WSGI_APPLICATION = 'capacita.wsgi.application'
+# WSGI_APPLICATION = 'capacita.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-# DATABASES = {
-#     'default': config(
-#         'DATABASE_URL', default='sqlite://:memory:',
-#         cast=db_url,
-#     )
-# }
 
 DATABASES = {
      'default': {
@@ -104,24 +108,6 @@ DATABASES = {
          'PORT': '5432',
     }
 }
-
-#DATABASES = {
-#    'default': config(
-#        'DATABASE_URL', default='sqlite://:memory:',
-#        cast=db_url,
-#    )
-#}
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'teste2',
-#         'USER': 'teste2',
-#         'PASSWORD': 'teste2',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
 
 CACHES = {
     'default': {

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="table_div">
+        <h4 class="ui dividing header">Plano {{ plano.ano_plano_capacitacao }}</h4>
+        <div class="column">
+            <strong>Período:</strong>
+            <p>{{ plano.ano_plano_capacitacao }}</p>
+        </div>
+        <br>
+        <div class="column">
+            <strong>Habilitado:</strong>
+            <p>{{ plano.plano_habilitado }}</p>
+        </div>
+        
+        <br>
+        <a href="/plano/"><button class="ui button basic secondary">Voltar</button></a>
+    </div>
+
+    {% endblock %}

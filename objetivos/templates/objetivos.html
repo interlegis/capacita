@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="table_div">
+
+        <h4 class="ui dividing header">Objetivos de Treinamento</h4>
+        <table class="ui celled padded table">
+            <thead>
+                <tr class="center aligned">
+                    <th>Nome</th>
+                    <th>Editar</th>
+                    <th>Excluir</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for objetivo in objetivos %}
+                    <tr class="center aligned">
+                        <td>{{objetivo.nome}}</td>
+                        <td><a class="links" href="{% url 'objetivo_edit' objetivo.cod_objetivo_treinamento %}"><i class="pencil icon"></i></a></td>
+                        {% if objetivo.ind_excluido == False %}
+                        <td><a class="links" href="{% url 'objetivo_delete' objetivo.cod_objetivo_treinamento %}"><i class="eye icon"></i></a></td>
+                        {% else %}
+                        <td><a class="links" href="{% url 'objetivo_undelete' objetivo.cod_objetivo_treinamento %}"><i class="eye slash icon"></i></a></td>
+                        {% endif %}
+
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        <br>
+        <a href="/objetivo/new/"><button class="ui button basic secondary">Novo</button></a>
+    </div>
+
+    {% endblock %}

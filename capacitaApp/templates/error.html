@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if eh_necessidade %}
+    <div class="table_div">
+        <h1 class="ui header">Não há plano de capacitação aberto</h1>
+    </div>
+    {% endif %}
+    {% if eh_necessidade == None %} 
+    <div class="table_div">
+        <h1 class="ui header">Você não está autorizado a acessar essa página.</h1>
+    </div>
+    {% endif %}
+{% endblock %}
+
+
+

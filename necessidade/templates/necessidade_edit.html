@@ -1,0 +1,95 @@
+    {% extends 'base.html' %}
+
+    {% block content %}
+
+    <div class="section_container ui container">
+        <form class="ui form" method="post" >{% csrf_token %}
+
+            <h4 class="ui dividing header">Nova Necessidade</h4>
+            <div class="two fields">
+                <div class="field">
+                  <label> {{ form.area_conhecimento.label }}</label>
+                  {{ form.area_conhecimento }}
+                </div>
+                <div class="field">
+                  <label> {{ form.treinamento.label }}</label>
+                  {{ form.treinamento }}
+                  </select>
+                </div>
+            </div>
+            {% if erro_sugestao %}
+            <small class="text-danger">
+              {{ erro_sugestao }}
+            </small>
+            <div class="field" id="sugestao">
+            {% else %}
+            <div class="field" id="sugestao" style="display: none">
+            {% endif %}
+              <label>Sugestão de treinamento</label>
+              {% if necessidade == None %}
+              <input type="text" name="txt_descricao" id="descricao_necessidade">
+              {% elif necessidade.txt_descricao != None %}
+              <input type="text" name="txt_descricao" value="{{necessidade.txt_descricao}}" id="descricao_necessidade">
+              {% else %}
+              <input type="text" name="txt_descricao" id="descricao_necessidade">
+              {% endif %}
+            </div>
+            <div class="four fields">
+                <div class="field">
+                    {{ form.modalidade.errors  }}
+                    <label>Modalidade de Treinamento</label>
+                    {{ form.modalidade }}
+                </div>
+                <div class="field">
+                    {{ form.nivel.errors  }}
+                    <label>Nível</label>
+                    {{ form.nivel  }}
+                </div>
+                <div class="field">
+                    <label>Carga Horária</label>
+                    {{ form.hor_duracao }}
+                    <small class="text-danger">
+                      {{ form.hor_duracao.errors }}
+                    </small>
+                </div>
+                <div class="field">
+                    <label>Tipo de Treinamento</label>
+                    {{ form.tipo_treinamento }}
+                    <small class="text-danger">
+                      {{ form.tipo_treinamento.errors }}
+                    </small>
+                </div>
+            </div>
+            <div class="three fields">
+                <div class="field">
+                    <label>Prioridade</label>
+                    {{ form.cod_prioridade }}
+                    <small class="text-danger">
+                      {{ form.cod_prioridade.errors }}
+                    </small>
+                </div>
+                <div class="field">
+                    <label>Quantidade de Servidores</label>
+                    {{ form.qtd_servidor}}
+                    <small class="text-danger">
+                      {{ form.qtd_servidor.errors }}
+                    </small>
+                </div>
+                <div class="field">
+                  <label> {{ form.objetivo_treinamento.label }}</label>
+                  {{ form.objetivo_treinamento }}
+                </div>
+            </div>
+            <div class="field">
+                <label>Justificativa</label>
+                {{ form.justificativa }}
+                <small class="text-danger">
+                  {{ form.justificativa.errors }}
+                </small>
+            </div>
+            <button class="ui primary button" type="submit">Salvar</button>
+            <a href="/necessidade/"  class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
+        </form>
+    </div>
+
+    {% endblock %}

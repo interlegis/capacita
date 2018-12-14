@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="table_div">
+
+        <h4 class="ui dividing header">Treinamentos</h4>
+        <table class="ui celled padded table">
+            <thead>
+                <tr class="center aligned">
+                <th>Nome</th>
+                <th>Editar</th>
+                <th>Visível</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for treinamento in treinamentos %}
+                    <tr class="center aligned">
+                        <td>{{treinamento.nome}}</td>
+                        <td><a class="links" href="{% url 'treinamento_edit' treinamento.cod_treinamento %}"><i class="pencil icon"></i></a></td>
+
+                        {% if treinamento.ind_excluido == False %}
+                        <td><a class="links" href="{% url 'treinamento_delete' treinamento.cod_treinamento %}"><i class="eye icon"></i></a></td>
+                        {% else %}
+                        <td><a class="links" href="{% url 'treinamento_undelete' treinamento.cod_treinamento %}"><i class="eye slash icon"></i></a></td>
+                        {% endif %}
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+            <!--<tfoot>
+                <tr><th colspan="7">
+                    <div class="ui right floated pagination menu">
+                    {% if orgaos.has_previous %}
+                    <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ orgaos.previous_page_number }}">&laquo;</a>
+                    {% endif %}
+                    {% for i in orgaos.paginator.page_range %}
+                    {% if orgaos.number == i %}
+                        <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ i }}"><strong>{{ i }}</strong></a>
+                    {% else %}
+                        <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ i }}">{{ i }}</a>
+                    {% endif %}
+                    {% endfor %}
+                    {% if orgaos.has_next %}
+                    <a class="item" href="?cod_area_conhecimento_id={{area_filtrada}}&page={{ orgaos.next_page_number }}">&raquo;</a>
+                    {% else %}
+                    <span class="item">&raquo;</span>
+                    {% endif %}
+                    </div>
+                </th>
+                </tr>
+            </tfoot>
+            -->
+        </table>
+        <br>
+        <a href="/treinamento/new/"><button class="ui button basic secondary">Novo</button></a>
+    </div>
+
+    {% endblock %}
