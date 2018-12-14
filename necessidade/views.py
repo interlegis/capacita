@@ -1,25 +1,10 @@
-# -*- coding: utf-8 -*-
-
 from django.shortcuts import render, redirect,get_object_or_404
-from django.db.models import Avg, Max, Count, Sum
 from django.contrib.auth.decorators import login_required
-
-import xlsxwriter
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 from .models import *
 from .forms import *
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.http import JsonResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.decorators.csrf import csrf_exempt
-
-from capacitaApp.views import *
-from plano.views import *
-
-# Para importação
-from copy import deepcopy
+from capacitaApp.views import is_gestor, is_admin
+from copy import deepcopy  # Para importação
 
 @login_required
 def necessidade(request):

@@ -1,18 +1,9 @@
-from django.shortcuts import render, redirect,get_object_or_404
-from django.db.models import Avg, Max, Count, Sum
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-
-import xlsxwriter
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 from .models import *
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
 from django.http import JsonResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.decorators.csrf import csrf_exempt
+from capacitaApp.views import is_admin, is_gestor
 
-from capacitaApp.views import *
 
 @login_required
 def api_areas(request):
