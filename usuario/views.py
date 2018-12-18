@@ -6,7 +6,7 @@ from .models import *
 from .forms import *
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from capacitaApp.views import is_gestor, is_admin
+from capacita.template_context_processors import is_admin
 
 
 @login_required
@@ -21,7 +21,6 @@ def usuarios(request):
             if (User.objects.get(id = profile.user_id) != request.user):
                 users.append(User.objects.get(id = profile.user_id))
         admin = is_admin(request)
-        gestor = is_gestor(request)
         group = Group.objects.get(name='gestor')
         group2 = Group.objects.get(name='admin')
 
@@ -49,12 +48,12 @@ def usuarios(request):
                 if (User.objects.get(id = profile.user_id) != request.user):
                     users.append(User.objects.get(id = profile.user_id))
 
-        return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'orgaos' : orgaos, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'orgaos' : orgaos})
     else:
         if ((group in request.user.groups.all())):
-            return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao})
         else:
-            return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'error.html')
 
 @csrf_exempt
 def usuarios_permissao(request):
@@ -71,7 +70,6 @@ def usuarios_permissao(request):
 @login_required
 def usuario_new(request):
     admin = is_admin(request)
-    gestor = is_gestor(request)
     if request.method == 'POST' and admin:
         form = UserForm(request.POST)
         id_group = request.POST['group']
@@ -86,30 +84,29 @@ def usuario_new(request):
                 profile.save()
                 usuario.save()
             else:
-                return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True, 'is_admin': admin, 'is_gestor': gestor})
+                return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
 
             return redirect("usuarios")
         else:
-            return render(request, 'usuario_edit.html', {'form' : form, 'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'usuario_edit.html', {'form' : form})
     elif request.method != 'POST':
         form = UserForm()
         orgaos = Orgao.objects.all()
         groups = Group.objects.all()
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
 
     orgaos = Orgao.objects.all()
     groups = Group.objects.all()
 
     if(admin):
-        return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
     else:
         return redirect('error')
 
 @login_required
 def usuario_edit(request, pk):
     admin = is_admin(request)
-    gestor = is_gestor(request)
     usuario = get_object_or_404(User, pk=pk)
 
     if request.method == "POST":
@@ -136,6 +133,6 @@ def usuario_edit(request, pk):
     groups = Group.objects.all()
     orgaos = Orgao.objects.all()
     if(admin):
-        return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario})
     else:
         return redirect('error')

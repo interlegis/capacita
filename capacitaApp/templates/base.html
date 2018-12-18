@@ -61,6 +61,14 @@
                 {{ user.username }}
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                {% for orgao in profile.orgaos_vinculados.all %}
+                  {% if orgao.nome == profile.orgao.nome %}
+                    <a class="dropdown-item" style="font-weight:bolder; color: #01305c;" href="{% url 'mudanca_orgao' pk=orgao.cod_orgao %}">{{orgao.nome}}*</a>
+                  {% else %}
+                    <a class="dropdown-item" href="{% url 'mudanca_orgao' pk=orgao.cod_orgao %}">{{orgao.nome}}</a>
+                  {% endif %}
+                {% endfor %}
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/logout/">Sair</a>
             </div>
             {% endif %}

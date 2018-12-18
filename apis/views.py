@@ -15,7 +15,7 @@ def api_areas(request):
         areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True).values()
         areas = list(areas)
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
     return JsonResponse(areas, safe=False)
 
 @login_required
@@ -25,7 +25,7 @@ def api_cursos(request):
         treinamentos = Treinamento.objects.all().exclude(ind_excluido = True).values()
         treinamentos = list(treinamentos)
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
     return JsonResponse(treinamentos, safe=False)
 
 @login_required
@@ -35,7 +35,7 @@ def api_tipos_treinamento(request):
         tipos = Tipo_Treinamento.objects.all().exclude(ind_excluido = True).values()
         tipos = list(tipos)
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
     return JsonResponse(tipos, safe=False)
 
 @login_required
@@ -45,5 +45,5 @@ def api_planos(request):
         planos = Plano_Capacitacao.objects.all().exclude(ind_excluido = True).values()
         planos = list(planos)
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
     return JsonResponse(planos, safe=False)

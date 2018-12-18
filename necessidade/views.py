@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import *
 from .forms import *
-from capacitaApp.views import is_gestor, is_admin
+from capacita.template_context_processors import is_gestor, is_admin
 from copy import deepcopy  # Para importação
 
 @login_required
@@ -14,11 +14,10 @@ def necessidade(request):
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
         necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao.orgao_id)
         gestor = is_gestor(request)
-        admin = is_admin(request)
 
         #Caso o orgão já tenha enviado o pedido para o orgão superior
         if (necessidade_orgao.estado == True):
-            return render(request, 'plano_fechado.html', { 'is_admin' : admin, 'is_gestor': gestor})
+            return render(request, 'plano_fechado.html')
         else:
             orgao_object = Orgao.objects.get(cod_orgao = orgao.orgao_id)
             superior = None
@@ -26,6 +25,7 @@ def necessidade(request):
                 superior = Orgao.objects.get(cod_orgao = orgao_object.cod_superior.cod_orgao)
 
             subordinados = Orgao.objects.all().filter(cod_superior = orgao.orgao_id)
+            print("AQUIIII = ", subordinados, planos_habilitados[0].cod_plano_capacitacao)
             necessidade_subordinados = Necessidade_Orgao.objects.all().filter(cod_orgao__in = subordinados, cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao)
             subordinados_status = []
             for subordinado in subordinados:
@@ -36,9 +36,9 @@ def necessidade(request):
             # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
             if(gestor):
                 return render(request, 'necessidade.html',
-                    {'necessidades' : necessidades, 'is_admin' : admin, 'is_gestor': gestor, 'subordinados': subordinados_status, 'superior': superior})
+                    {'necessidades' : necessidades, 'subordinados': subordinados_status, 'superior': superior})
             else:
-                return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+                return render(request, 'error.html')
     else:
         return redirect('error')
 
@@ -46,7 +46,6 @@ def necessidade(request):
 def necessidade_show(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
     gestor = is_gestor(request)
-    admin = is_admin(request)
     gestor_orgao = True
     usuario = User.objects.get(id = request.user.id)
     orgao = Profile.objects.get(user=usuario).orgao_id
@@ -54,9 +53,9 @@ def necessidade_show(request, pk):
         gestor_orgao = False
     if request.method == 'GET':
         if (gestor_orgao):
-            return render(request, 'necessidade_show.html', {'necessidade' : necessidade, 'is_admin' : admin, 'is_gestor': gestor})
+            return render(request, 'necessidade_show.html', {'necessidade' : necessidade})
         else:
-            return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'error.html')
     elif request.method == 'POST' and gestor_orgao:
         necessidade = Necessidade.objects.get(cod_necessidade = pk)
         if request.POST['aprovado'] == 'True':
@@ -69,7 +68,6 @@ def necessidade_show(request, pk):
 @login_required
 def necessidade_new(request):
     if (hasattr(request.user, 'profile')):
-        admin = is_admin(request)
         gestor= is_gestor(request)
         usuario = User.objects.get(id = request.user.id)
         orgao = Profile.objects.get(user=usuario).orgao_id
@@ -136,7 +134,6 @@ def necessidade_edit(request, pk):
     }
     treinamentos = Treinamento.objects.all().exclude(ind_excluido = True)
     usuario = User.objects.get(id = request.user.id)
-    admin = is_admin(request)
     gestor = is_gestor(request)
     gestor_orgao = True
     areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True)
@@ -169,7 +166,7 @@ def necessidade_edit(request, pk):
             form = NecessidadeForm(necessidade_updated, instance=necessidade)
         return render(request, 'necessidade_edit.html', {'form': form, 'areas' : areas, 'planos_habilitados' : planos_habilitados, 'necessidade' : necessidade, 'treinamentos' : treinamentos, 'is_admin': admin, 'is_gestor': gestor})
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
 
 @login_required
 def necessidade_delete(request, pk):
@@ -180,51 +177,46 @@ def necessidade_delete(request, pk):
     if orgao != necessidade.cod_necessidade_orgao.cod_orgao.cod_orgao:
         gestor_orgao = False
 
-    admin = is_admin(request)
     gestor = is_gestor(request)
     if gestor_orgao:
         necessidade.ind_excluido = 1
         necessidade.save()
         return redirect("necessidade")
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
 
 def necessidade_approve(request, pk):
     admin = is_admin(request)
-    gestor = is_gestor(request)
     if (admin):
         necessidade = get_object_or_404(Necessidade, pk=pk)
         necessidade.aprovado = False
         necessidade.save()
         return redirect("necessidade")
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
 
 def necessidade_disapprove(request, pk):
     admin = is_admin(request)
-    gestor = is_gestor(request)
     if (admin):
         necessidade = get_object_or_404(Necessidade, pk=pk)
         necessidade.aprovado = True
         necessidade.save()
         return redirect("necessidade")
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
 
 def necessidade_orgao_close(request, pk):
     admin = is_admin(request)
-    gestor = is_gestor(request)
     if (admin):
         necessidade_orgao = get_object_or_404(Necessidade_Orgao, pk=pk)
         necessidade_orgao.estado = True
         necessidade_orgao.save()
         return redirect("necessidade")
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
 
 def importar_necessidade(request, pk, pk_atual):
     admin = is_admin(request)
-    gestor = is_gestor(request)
     if (admin):
         necessidade_orgao = get_object_or_404(Necessidade_Orgao, pk=pk)
         necessidade_orgao.importado = True
@@ -240,4 +232,4 @@ def importar_necessidade(request, pk, pk_atual):
             necessidade_importada.save()
         return redirect("necessidade")
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
