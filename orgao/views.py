@@ -33,6 +33,10 @@ def orgao_edit(request, pk):
     admin = is_admin(request)
     gestor = is_gestor(request)
     orgao = get_object_or_404(Orgao, pk=pk)
+    # orgao_updated = {
+    #     'nome': orgao.nome,
+    #     'superior': orgao.cod_superior,
+    # }
     if request.method == "POST" and admin:
         form = OrgaoForm(request.POST, instance=orgao)
         if form.is_valid():
@@ -40,6 +44,7 @@ def orgao_edit(request, pk):
             orgao.save()
             return redirect('orgao')
     elif request.method != "POST" and admin:
+        # form = OrgaoForm(orgao_updated, instance=orgao)
         form = OrgaoForm(instance=orgao)
     else:
         return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
