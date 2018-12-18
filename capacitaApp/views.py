@@ -7,25 +7,10 @@ from .models import *
 from necessidade.models import *
 from .forms import *
 from django.http import HttpResponse
+from capacita.template_context_processors import is_gestor, is_admin
 
 # Para importação
 from copy import deepcopy
-
-def is_admin(request):
-    user = User.objects.get(id = request.user.id)
-    relacoes = AuthUserGroups.objects.all()
-    for relacao in relacoes:
-        if relacao.user_id == user.id and relacao.group_id == 1:
-            return True
-    return False
-
-def is_gestor(request):
-    user = User.objects.get(id = request.user.id)
-    relacoes = AuthUserGroups.objects.all()
-    for relacao in relacoes:
-        if relacao.user_id == user.id and relacao.group_id == 2:
-            return True
-    return False
 
 def orgao_usuario(request):
     orgao = Profile.objects.get(user=request.user).orgao_id
@@ -50,13 +35,11 @@ def mudanca_orgao(request, pk):
 @login_required
 def home(request):
     admin = is_admin(request)
-    gestor = is_gestor(request)
-    return render(request, 'home.html', {'is_admin': admin, 'is_gestor': gestor})
+    return render(request, 'home.html')
 
 @login_required
 def relatorio(request):
     admin = is_admin(request)
-    gestor = is_gestor(request)
 
     if admin:
         # Create a workbook and add a worksheet.
@@ -139,7 +122,7 @@ def relatorio(request):
 
         return response
     else:
-        return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'error.html')
 
 @login_required
 def error(request):
@@ -148,7 +131,7 @@ def error(request):
 # @login_required
 # def avaliacao_cursos(request):
 #     admin = is_admin(request)
-#     gestor = is_gestor(request)
+#
 #     gestor_or_adm = is_gestor(request) or admin
 #     if request.method == "POST" and gestor_or_adm:
 #         necessidade = Necessidade.objects.get(cod_necessidade = request.POST['cod_necessidade'])
@@ -163,4 +146,4 @@ def error(request):
 #         cursos_necessidades = Necessidade.objects.exclude(txt_descricao = None).exclude(txt_descricao = '')
 #         return render(request, "avaliacao_cursos.html", {'necessidades' : cursos_necessidades, 'is_admin': admin, 'is_gestor': gestor})
 #     else:
-#         return render(request, 'error.html', {'is_admin': admin, 'is_gestor': gestor})
+#         return render(request, 'error.html')
