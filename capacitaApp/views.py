@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-
 import xlsxwriter
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
@@ -40,6 +39,13 @@ def orgaos_gestor(request):
             if(orgao.user == request.user):
                 orgaos_gestor.append(orgao)
     return orgaos_gestor
+
+@login_required
+def mudanca_orgao(request, pk):
+    profile = Profile.objects.get(user=request.user)
+    profile.orgao_id = pk
+    profile.save()
+    return redirect('/')
 
 @login_required
 def home(request):

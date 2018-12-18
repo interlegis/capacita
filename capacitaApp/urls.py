@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^callback/$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'),
     url(r'^relatorio/$', views.relatorio, name='relatorio'),
    # url(r'^avaliacao_cursos/$', views.avaliacao_cursos, name='avaliacao_cursos'),
-    url(r'^error/$', views.error, name='error')
+    url(r'^error/$', views.error, name='error'),
+    url(r'^orgao/(?P<pk>\d+)/mudanca/$', views.mudanca_orgao, name='mudanca_orgao'),
 ]
