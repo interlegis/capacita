@@ -17,11 +17,22 @@
                 </tr>
             </thead>
             <tbody>
-                
+
                 {% for plano in planos %}
-                    <tr class="center aligned">
-                        <td>{{plano.ano_plano_capacitacao}}</td>
-                        <td>{{plano.plano_habilitado}}</td>
+                    <tr class="center aligned"
+                    {% if plano.plano_habilitado%}
+                      style="font-weight:bolder;  background-color: #c3e2ffc4;"
+                    {% endif %}
+                    >
+                        <td
+                        >{{plano.ano_plano_capacitacao}}</td>
+                        <td>
+                          {% if plano.plano_habilitado%}
+                            <i class="check icon"></i>
+                          {% else %}
+                            <i class="delete icon"></i>
+                          {% endif %}
+                        </td>
                         <td><a class="links" href="{% url 'plano_show' plano.cod_plano_capacitacao %}"><i class="search icon"></i></a></td>
                         <td><a class="links" href="{% url 'plano_edit' plano.cod_plano_capacitacao %}"><i class="pencil icon"></i></a></td>
                         {% if plano.ind_excluido == False %}
