@@ -86,6 +86,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'capacita.template_context_processors.include_profile',
+                'capacita.template_context_processors.is_admin',
+                'capacita.template_context_processors.is_gestor',
             ],
         },
     },

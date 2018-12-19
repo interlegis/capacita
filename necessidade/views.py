@@ -107,11 +107,11 @@ def necessidade_new(request):
                 form = NecessidadeForm()
 
                 if (gestor):
-                    return render(request, 'necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+                    return render(request, 'necessidade_edit.html', {'form': form})
                 else:
-                    return render(request, 'necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+                    return render(request, 'necessidade_edit.html', {'form': form})
         else:
-            return render(request, 'necessidade_edit.html', {'form': form, 'is_admin': admin, 'is_gestor': gestor})
+            return render(request, 'necessidade_edit.html', {'form': form})
     else:
         #return render(request, 'necessidade_edit.html', {'form': form})
         return redirect('error')
@@ -164,7 +164,7 @@ def necessidade_edit(request, pk):
                 return redirect('necessidade')
         else:
             form = NecessidadeForm(necessidade_updated, instance=necessidade)
-        return render(request, 'necessidade_edit.html', {'form': form, 'areas' : areas, 'planos_habilitados' : planos_habilitados, 'necessidade' : necessidade, 'treinamentos' : treinamentos, 'is_admin': admin, 'is_gestor': gestor})
+        return render(request, 'necessidade_edit.html', {'form': form, 'areas' : areas, 'planos_habilitados' : planos_habilitados, 'necessidade' : necessidade, 'treinamentos' : treinamentos})
     else:
         return render(request, 'error.html')
 
