@@ -25,7 +25,6 @@ def necessidade(request):
                 superior = Orgao.objects.get(cod_orgao = orgao_object.cod_superior.cod_orgao)
 
             subordinados = Orgao.objects.all().filter(cod_superior = orgao.orgao_id)
-            print("AQUIIII = ", subordinados, planos_habilitados[0].cod_plano_capacitacao)
             necessidade_subordinados = Necessidade_Orgao.objects.all().filter(cod_orgao__in = subordinados, cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao)
             subordinados_status = []
             for subordinado in subordinados:
@@ -101,8 +100,7 @@ def necessidade_new(request):
                     necessidade.save()
                     return redirect('necessidade')
                 else:
-                    print("FOI", form.errors)
-                return render(request, 'necessidade_edit.html', {'form': form})
+                    return render(request, 'necessidade_edit.html', {'form': form})
             else:
                 form = NecessidadeForm()
 
@@ -221,9 +219,6 @@ def importar_necessidade(request, pk, pk_atual):
         necessidade_orgao = get_object_or_404(Necessidade_Orgao, pk=pk)
         necessidade_orgao.importado = True
         necessidade_orgao.save()
-        print("ORGAO = ", necessidade_orgao.importado)
-        print("ORGAO = ", necessidade_orgao.cod_necessidade_orgao)
-
         necessidades = Necessidade.objects.all().filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
         for necessidade in necessidades:
             necessidade_importada = deepcopy(necessidade)

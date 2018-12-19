@@ -19,9 +19,7 @@ def tipo_treinamento_delete(request, pk):
     if admin:
         tipo = get_object_or_404(Tipo_Treinamento, pk=pk)
         tipo.ind_excluido = 1
-        print (tipo.ind_excluido)
         tipo.save()
-        print ("salvo!")
         return redirect("tipos_treinamento")
     else:
         return render(request, 'error.html')
