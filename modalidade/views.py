@@ -1,16 +1,14 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-
 from .models import *
 from .forms import *
 from capacita.template_context_processors import is_admin
 
 @login_required
 def modalidade(request):
-    admin = is_admin(request)
-    if (hasattr(request.user, 'profile')):
+    if (hasattr(request.user, 'profile') and is_admin(request)):
         modalidades = Modalidade_Treinamento.objects.all()
-        return render(request, 'modalidades.html', {'modalidades' : modalidades, 'permissao' : admin})
+        return render(request, 'modalidades.html', {'modalidades' : modalidades})
     else:
         return redirect('error')
 
@@ -21,18 +19,15 @@ def modalidade_edit(request, pk):
     if request.method == "POST" and admin:
         form = ModalidadeForm(request.POST, instance=modalidade)
         if form.is_valid():
-            modalidade = form.save(commit=False)
-            modalidade.save()
+            modalidade = form.save()
             return redirect('modalidade')
+        else:
+            return render(request, 'modalidade_edit.html', {'form': form})
     elif request.method != "POST" and admin:
         form = ModalidadeForm(instance=modalidade)
-    else:
-        return render(request, 'error.html')
-
-    if(admin):
         return render(request, 'modalidade_edit.html', {'form': form})
     else:
-        return redirect('error')
+        return render(request, 'error.html')
 
 @login_required
 def modalidade_new(request):
@@ -40,33 +35,28 @@ def modalidade_new(request):
     if request.method == "POST" and admin:
         form = ModalidadeForm(request.POST)
         if form.is_valid():
-            modalidade = form.save(commit=False)
-            modalidade.save()
+            modalidade = form.save()
             return redirect('modalidade')
+        else:
+            return render(request, 'modalidade_edit.html', {'form': form})
     elif request.method != "POST" and admin:
         form = ModalidadeForm()
+        return render(request, 'modalidade_edit.html', {'form': form})
     else:
         return render(request, 'error.html')
-    return render(request, 'modalidade_edit.html', {'form': form})
 
 @login_required
 def modalidade_delete(request, pk):
-    admin = is_admin(request)
-    if (admin):
-        modalidade = get_object_or_404(Modalidade_Treinamento, pk=pk)
-        modalidade.ind_excluido = True
-        modalidade.save()
+    if is_admin(request):
+        Modalidade_Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("modalidade")
     else:
         return redirect('error')
 
 @login_required
 def modalidade_undelete(request, pk):
-    admin = is_admin(request)
-    if (admin):
-        modalidade = get_object_or_404(Modalidade_Treinamento, pk=pk)
-        modalidade.ind_excluido = False
-        modalidade.save()
+    if is_admin(request):
+        Modalidade_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("modalidade")
     else:
         return redirect('error')

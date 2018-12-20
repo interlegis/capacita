@@ -6,31 +6,24 @@ from capacita.template_context_processors import is_admin
 
 @login_required
 def tipos_treinamento(request):
-    admin = is_admin(request)
     tipos = Tipo_Treinamento.objects.all()
-    if admin:
+    if is_admin(request):
         return render(request, 'tipo_treinamento.html', {'tipos' : tipos})
     else:
         return render(request, 'error.html')
 
 @login_required
 def tipo_treinamento_delete(request, pk):
-    admin = is_admin(request)
-    if admin:
-        tipo = get_object_or_404(Tipo_Treinamento, pk=pk)
-        tipo.ind_excluido = 1
-        tipo.save()
+    if is_admin(request):
+        Tipo_Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("tipos_treinamento")
     else:
         return render(request, 'error.html')
 
 @login_required
 def tipo_treinamento_undelete(request, pk):
-    admin = is_admin(request)
-    if admin:
-        tipo = get_object_or_404(Tipo_Treinamento, pk=pk)
-        tipo.ind_excluido = 0
-        tipo.save()
+    if is_admin(request):
+        Tipo_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("tipos_treinamento")
     else:
         return render(request, 'error.html')
@@ -42,26 +35,28 @@ def tipo_treinamento_edit(request,id):
     if request.method == 'POST' and admin:
         form = TipoTreinamentoForm(request.POST, instance=tipo, initial={'ind_excluido' : 0})
         if form.is_valid():
-            tipo = form.save(commit=False)
-            tipo.save()
+            tipo = form.save()
             return redirect("tipos_treinamento")
-    elif request.method != 'POST':
+        else:
+            return render(request, 'tipo_treinamento_edit.html', {'form' : form})
+    elif request.method != 'POST' and admin:
         form = TipoTreinamentoForm(instance=tipo)
+        return render(request, 'tipo_treinamento_edit.html', {'form' : form})
     else:
         return render(request, 'error.html')
-    return render(request, 'tipo_treinamento_edit.html', {'form' : form})
 
 @login_required
 def tipo_treinamento_new(request):
     admin = is_admin(request)
-    if request.method == 'POST':
+    if request.method == 'POST' and admin:
         form = TipoTreinamentoForm(request.POST)
         if form.is_valid():
-            tipo = form.save(commit=False)
-            tipo.save()
+            tipo = form.save()
             return redirect("tipos_treinamento")
-    elif request.method != 'POST':
+        else:
+            return render(request, 'tipo_treinamento_edit.html', {'form' : form})
+    elif request.method != 'POST' and admin:
         form = TipoTreinamentoForm()
+        return render(request, 'tipo_treinamento_edit.html', {'form' : form})
     else:
         return render(request, 'error.html')
-    return render(request, 'tipo_treinamento_edit.html', {'form' : form})

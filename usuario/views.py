@@ -99,14 +99,13 @@ def usuario_new(request):
     orgaos = Orgao.objects.all()
     groups = Group.objects.all()
 
-    if(admin):
+    if admin:
         return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
     else:
         return redirect('error')
 
 @login_required
 def usuario_edit(request, pk):
-    admin = is_admin(request)
     usuario = get_object_or_404(User, pk=pk)
 
     if request.method == "POST":
@@ -132,7 +131,8 @@ def usuario_edit(request, pk):
 
     groups = Group.objects.all()
     orgaos = Orgao.objects.all()
-    if(admin):
+
+    if is_admin(request):
         return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario})
     else:
         return redirect('error')

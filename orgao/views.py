@@ -33,15 +33,15 @@ def orgao_edit(request, pk):
     if request.method == "POST" and admin:
         form = OrgaoForm(request.POST, instance=orgao)
         if form.is_valid():
-            orgao = form.save(commit=False)
-            orgao.save()
+            orgao = form.save()
             return redirect('orgao')
+        else:
+            return render(request, 'orgao_edit.html', {'form': form})
     elif request.method != "POST" and admin:
-        # form = OrgaoForm(orgao_updated, instance=orgao)
         form = OrgaoForm(instance=orgao)
+        return render(request, 'orgao_edit.html', {'form': form})
     else:
         return render(request, 'error.html')
-    return render(request, 'orgao_edit.html', {'form': form})
 
 @login_required
 def orgao_new(request):
@@ -49,20 +49,21 @@ def orgao_new(request):
     if request.method == "POST" and admin:
         form = OrgaoForm(request.POST)
         if form.is_valid():
-            orgao = form.save(commit=False)
-            orgao.save()
+            orgao = form.save()
             return redirect('orgao')
+        else:
+            return render(request, 'orgao_edit.html', {'form': form})
     elif request.method != "POST" and admin:
         form = OrgaoForm()
+        return render(request, 'orgao_edit.html', {'form': form})
     else:
         return render(request, 'error.html')
-    return render(request, 'orgao_edit.html', {'form': form})
 
 @login_required
 def orgao_delete(request, id):
     admin = is_admin(request)
     if admin:
-        orgao = Orgao.objects.filter(pk=id).update(ind_excluido=1)
+        Orgao.objects.filter(pk=id).update(ind_excluido=1)
         return redirect("orgao")
     else:
         return render(request, 'error.html')
@@ -71,7 +72,7 @@ def orgao_delete(request, id):
 def orgao_undelete(request, id):
     admin = is_admin(request)
     if admin:
-        orgao = Orgao.objects.filter(pk=id).update(ind_excluido=0)
+        Orgao.objects.filter(pk=id).update(ind_excluido=0)
         return redirect("orgao")
     else:
         return render(request, 'error.html')

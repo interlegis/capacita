@@ -6,8 +6,7 @@ from capacitaApp.views import is_admin, is_gestor
 
 @login_required
 def areas(request):
-    admin = is_admin(request)
-    if admin:
+    if is_admin(request):
         areas = Area_Conhecimento.objects.all();
         return render(request, 'areas.html', { 'areas' : areas })
     else:
@@ -15,22 +14,16 @@ def areas(request):
 
 @login_required
 def area_delete(request, pk):
-    admin = is_admin(request)
-    if admin:
-        area = get_object_or_404(Area_Conhecimento, pk=pk)
-        area.ind_excluido = 1
-        area.save()
+    if is_admin(request):
+        Area_Conhecimento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("areas")
     else:
         return render(request, 'error.html')
 
 @login_required
 def area_undelete(request, pk):
-    admin = is_admin(request)
-    if admin:
-        area = get_object_or_404(Area_Conhecimento, pk=pk)
-        area.ind_excluido = 0
-        area.save()
+    if is_admin(request):
+        Modalidade_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("areas")
     else:
         return render(request, 'error.html')
@@ -40,16 +33,17 @@ def area_edit(request,id):
     admin = is_admin(request)
     area = get_object_or_404(Area_Conhecimento, pk=id)
     if request.method == 'POST' and admin:
-        form = AreaConhecimentoForm(request.POST, instance=area, initial={'ind_excluido' : 0})
+        form = AreaConhecimentoForm(request.POST, instance=area, initial={'ind_excluido' : False})
         if form.is_valid():
-            area = form.save(commit=False)
-            area.save()
+            area = form.save()
             return redirect("areas")
-    elif request.method != 'POST':
+        else:
+            return render(request, 'area_edit.html', {'form' : form})
+    elif request.method != 'POST' and admin:
         form = AreaConhecimentoForm(instance=area)
+        return render(request, 'area_edit.html', {'form' : form})
     else:
         return render(request, 'error.html')
-    return render(request, 'area_edit.html', {'form' : form})
 
 @login_required
 def area_new(request):
@@ -57,11 +51,12 @@ def area_new(request):
     if request.method == 'POST' and admin:
         form = AreaConhecimentoForm(request.POST)
         if form.is_valid():
-            area = form.save(commit=False)
-            area.save()
+            area = form.save()
             return redirect("areas")
-    elif request.method != 'POST':
+        else:
+            return render(request, 'area_edit.html', {'form' : form})
+    elif request.method != 'POST' and admin:
         form = AreaConhecimentoForm()
+        return render(request, 'area_edit.html', {'form' : form})
     else:
         return render(request, 'error.html')
-    return render(request, 'area_edit.html', {'form' : form})

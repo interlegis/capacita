@@ -6,8 +6,7 @@ from capacitaApp.views import is_admin
 
 @login_required
 def objetivos(request):
-    admin = is_admin(request)
-    if admin:
+    if is_admin(request):
         objetivos = Objetivo_Treinamento.objects.all()
         return render(request, 'objetivos.html', {'objetivos' : objetivos})
     else:
@@ -20,14 +19,15 @@ def objetivo_edit(request, pk):
     if request.method == "POST" and admin:
         form = ObjetivoTreinamentoForm(request.POST, instance=objetivo)
         if form.is_valid():
-            objetivo = form.save(commit=False)
-            objetivo.save()
+            objetivo = form.save()
             return redirect('objetivos')
+        else:
+            return render(request, 'objetivo_edit.html', {'form': form})
     elif request.method != "POST" and admin:
         form = ObjetivoTreinamentoForm(instance=objetivo)
+        return render(request, 'objetivo_edit.html', {'form': form})
     else:
         return render(request, 'error.html')
-    return render(request, 'objetivo_edit.html', {'form': form})
 
 @login_required
 def objetivo_new(request):
@@ -35,22 +35,21 @@ def objetivo_new(request):
     if request.method == "POST" and admin:
         form = ObjetivoTreinamentoForm(request.POST)
         if form.is_valid():
-            objetivo = form.save(commit=False)
-            objetivo.save()
+            objetivo = form.save()
             return redirect('objetivos')
+        else:
+            return render(request, 'objetivo_edit.html', {'form': form})
     elif request.method != "POST" and admin:
         form = ObjetivoTreinamentoForm()
+        return render(request, 'objetivo_edit.html', {'form': form})
     else:
         return render(request, 'error.html')
-    return render(request, 'objetivo_edit.html', {'form': form})
 
 @login_required
 def objetivo_delete(request, pk):
     admin = is_admin(request)
     if admin:
-        objetivo = get_object_or_404(Objetivo_Treinamento, pk=pk)
-        objetivo.ind_excluido = 1
-        objetivo.save()
+        Objetivo_Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("objetivos")
     else:
         return render(request, 'error.html')
@@ -59,9 +58,7 @@ def objetivo_delete(request, pk):
 def objetivo_undelete(request, pk):
     admin = is_admin(request)
     if admin:
-        objetivo = get_object_or_404(Objetivo_Treinamento, pk=pk)
-        objetivo.ind_excluido = 0
-        objetivo.save()
+        Objetivo_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("objetivos")
     else:
         return render(request, 'error.html')

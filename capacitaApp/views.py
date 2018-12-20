@@ -18,7 +18,7 @@ def orgao_usuario(request):
 
 def orgaos_gestor(request):
     orgaos_gestor = []
-    if(is_gestor(request)):
+    if is_gestor(request):
         orgaos = Orgao.objects.all()
         for orgao in orgaos:
             if(orgao.user == request.user):
@@ -34,14 +34,11 @@ def mudanca_orgao(request, pk):
 
 @login_required
 def home(request):
-    admin = is_admin(request)
     return render(request, 'home.html')
 
 @login_required
 def relatorio(request):
-    admin = is_admin(request)
-
-    if admin:
+    if is_admin(request):
         # Create a workbook and add a worksheet.
         workbook = xlsxwriter.Workbook('Necessidades.xlsx')
         worksheet = workbook.add_worksheet()
