@@ -4,7 +4,6 @@ from .models import *
 
 class OrgaoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        emptyField = [('', '---------')]
         super(OrgaoForm, self).__init__(*args, **kwargs)
         self.fields['cod_superior'].queryset = Orgao.objects.all()
 

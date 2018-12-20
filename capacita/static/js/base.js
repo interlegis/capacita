@@ -38,7 +38,7 @@ function selectTreinamento(){
     $.getJSON("/api/treinamentos/", function(data){
         var treinamento = null;
         areas = data;
-        if ($("#id_area_conhecimento").val() == ''){
+        if ($("#id_cod_area_conhecimento").val() == ''){
           $("#id_treinamento option").each(function(){
             $(this).show();
           });
@@ -46,9 +46,8 @@ function selectTreinamento(){
 
         else {
           for(var i = 0; i < data.length; i++){
-            if(data[i].cod_area_conhecimento_id == $("#id_area_conhecimento").val() ){
+            if(data[i].cod_area_conhecimento_id == $("#id_cod_area_conhecimento").val() ){
               treinamento = data[i].cod_treinamento;
-              console.log("TREINO == ", data[i].nome);
               $('#id_treinamento option[value="' + treinamento + '"]').show();
             }
           }
@@ -59,18 +58,19 @@ function selectTreinamento(){
 
 function selectSugestao(select){
   treinamento = $("#id_treinamento").val()
-  console.log("TREINAMENTO = ", $("#id_treinamento").val());
   if($('#id_treinamento').val() == -1)
     $('#sugestao').css({'display': 'block'})
   else
     $('#sugestao').css({'display': 'none'})
 
+    console.log($("#id_cod_area_conhecimento").val());
   $.getJSON("/api/treinamentos/", function(data){
     for(var i = 0; i < data.length; i++){
       if(data[i].cod_treinamento == treinamento ){
-        if (data[i].cod_area_conhecimento != $("#id_area_conhecimento").val())
+        if (data[i].cod_area_conhecimento != $("#id_cod_area_conhecimento").val())
           if ($("#id_treinamento").val() != -1) {
-            $("#id_area_conhecimento").val(data[i].cod_area_conhecimento_id)
+            console.log(data[i].cod_area_conhecimento_id);
+            $("#id_cod_area_conhecimento").val(data[i].cod_area_conhecimento_id)
           }
           break
       }

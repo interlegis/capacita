@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from .models import *
 from .forms import *
 from capacita.template_context_processors import is_gestor, is_admin
-from copy import deepcopy  # Para importação
 
 @login_required
 def necessidade(request):
@@ -78,105 +77,87 @@ def necessidade_new(request):
                 form = NecessidadeForm(request.POST)
                 if form.is_valid():
                     necessidade = form.save(commit=False)
-                    necessidade.cod_tipo_treinamento = Tipo_Treinamento.objects.get(cod_tipo_treinamento = request.POST['tipo_treinamento'])
-                    necessidade.cod_modalidade = Modalidade_Treinamento.objects.get(cod_modalidade = request.POST['modalidade'])
-                    necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
-                    necessidade.treinamento = Treinamento.objects.get(cod_treinamento = request.POST.get('treinamento'))
-                    necessidade.txt_descricao = request.POST.get('txt_descricao', None)
-                    necessidade.cod_usuario = usuario
-                    necessidade.cod_area_conhecimento = Area_Conhecimento.objects.get(pk=request.POST['area_conhecimento'])
-                    necessidade.cod_objetivo_treinamento = Objetivo_Treinamento.objects.get(pk=request.POST['objetivo_treinamento'])
-                    necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
-                    necessidade.cod_necessidade_orgao = necessidade_orgao
                     if request.POST['treinamento'] == '-1' and request.POST['txt_descricao']:
                         necessidade.txt_descricao = request.POST['txt_descricao']
                     elif request.POST['treinamento'] == '-1':
                         return render(request, 'necessidade_edit.html', {'form': form, 'erro_sugestao': "Preencha o campo de sugestão!"})
-                    #     treinamento_sugerido = Treinamento(cod_area_conhecimento = request.POST['area_conhecimento'], nome = request.POST['txt_descricao'], sugestao = True)
-                    #     treinamento_sugerido.save()
                     else:
                         necessidade.cod_treinamento = Treinamento.objects.get(pk=request.POST['treinamento'])
 
+                    necessidade.cod_usuario = usuario
+                    necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
+                    necessidade.cod_necessidade_orgao = necessidade_orgao
                     necessidade.save()
                     return redirect('necessidade')
                 else:
                     return render(request, 'necessidade_edit.html', {'form': form})
             else:
                 form = NecessidadeForm()
-
-                if (gestor):
-                    return render(request, 'necessidade_edit.html', {'form': form})
-                else:
-                    return render(request, 'necessidade_edit.html', {'form': form})
+                return render(request, 'necessidade_edit.html', {'form': form})
         else:
             return render(request, 'necessidade_edit.html', {'form': form})
     else:
-        #return render(request, 'necessidade_edit.html', {'form': form})
         return redirect('error')
 
 
 @login_required
 def necessidade_edit(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
-    necessidade_updated = {
-        'treinamento': necessidade.cod_treinamento.cod_treinamento,
-        'nivel': necessidade.cod_nivel.cod_nivel,
-        'area_conhecimento': necessidade.cod_area_conhecimento.cod_area_conhecimento,
-        'modalidade': necessidade.cod_modalidade.cod_modalidade,
-        'hor_duracao': necessidade.hor_duracao,
-        'tipo_treinamento': necessidade.cod_tipo_treinamento.cod_tipo_treinamento,
-        'cod_prioridade': necessidade.cod_prioridade.cod_prioridade,
-        'qtd_servidor': necessidade.qtd_servidor,
-        'objetivo_treinamento': necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento,
-        'justificativa': necessidade.justificativa
-    }
-    treinamentos = Treinamento.objects.all().exclude(ind_excluido = True)
     usuario = User.objects.get(id = request.user.id)
     gestor = is_gestor(request)
-    gestor_orgao = True
-    areas = Area_Conhecimento.objects.all().exclude(ind_excluido = True)
     orgao = Profile.objects.get(user=usuario).orgao_id
+    planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True);
+    necessidade_updated = {
+        'treinamento': necessidade.cod_treinamento.cod_treinamento,
+        'cod_nivel': necessidade.cod_nivel.cod_nivel,
+        'cod_area_conhecimento': necessidade.cod_area_conhecimento.cod_area_conhecimento,
+        'cod_modalidade': necessidade.cod_modalidade.cod_modalidade,
+        'hor_duracao': necessidade.hor_duracao,
+        'cod_tipo_treinamento': necessidade.cod_tipo_treinamento.cod_tipo_treinamento,
+        'cod_prioridade': necessidade.cod_prioridade.cod_prioridade,
+        'qtd_servidor': necessidade.qtd_servidor,
+        'cod_objetivo_treinamento': necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento,
+        'justificativa': necessidade.justificativa
+    }
+
+    gestor_orgao = True #Começa considerando que é o usuário é do mesmo orgão que a necessidade
     if orgao != necessidade.cod_necessidade_orgao.cod_orgao.cod_orgao:
         gestor_orgao = False
 
-    planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True);
-
-    if (gestor_orgao):
+    if (gestor_orgao and gestor):
         if request.method == "POST":
             form = NecessidadeForm(request.POST, instance=necessidade)
             if form.is_valid():
                 necessidade = form.save(commit=False)
-                necessidade.cod_tipo_treinamento = Tipo_Treinamento.objects.get(cod_tipo_treinamento = request.POST['tipo_treinamento'])
-                necessidade.cod_modalidade = Modalidade_Treinamento.objects.get(cod_modalidade = request.POST['modalidade'])
-                necessidade.cod_nivel = Nivel.objects.get(cod_nivel = request.POST['nivel'])
-                necessidade.cod_treinamento = Treinamento.objects.get(cod_treinamento = request.POST['treinamento'])
-                necessidade.txt_descricao = request.POST.get('txt_descricao', None)
+                if request.POST['treinamento'] == '-1' and request.POST['txt_descricao']:
+                    necessidade.txt_descricao = request.POST['txt_descricao']
+                elif request.POST['treinamento'] == '-1':
+                    return render(request, 'necessidade_edit.html', {'form': form, 'erro_sugestao': "Preencha o campo de sugestão!"})
+                else:
+                    necessidade.cod_treinamento = Treinamento.objects.get(pk=request.POST['treinamento'])
                 necessidade.cod_usuario = usuario
                 necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
                 necessidade.cod_necessidade_orgao = necessidade_orgao
-                necessidade.cod_area_conhecimento = Area_Conhecimento.objects.get(pk=request.POST['area_conhecimento'])
-                necessidade.cod_objetivo_treinamento = Objetivo_Treinamento.objects.get(pk=request.POST['objetivo_treinamento'])
-                if request.POST['treinamento'] == '-1' and request.POST['txt_descricao']:
-                    necessidade.txt_descricao = request.POST['txt_descricao']
                 necessidade.save()
                 return redirect('necessidade')
         else:
             form = NecessidadeForm(necessidade_updated, instance=necessidade)
-        return render(request, 'necessidade_edit.html', {'form': form, 'areas' : areas, 'planos_habilitados' : planos_habilitados, 'necessidade' : necessidade, 'treinamentos' : treinamentos})
+            return render(request, 'necessidade_edit.html', {'form': form})
     else:
         return render(request, 'error.html')
 
 @login_required
 def necessidade_delete(request, pk):
     necessidade = get_object_or_404(Necessidade, pk=pk)
-    gestor_orgao = True
     usuario = User.objects.get(id = request.user.id)
     orgao = Profile.objects.get(user=usuario).orgao_id
+    gestor = is_gestor(request)
+
+    gestor_orgao = True
     if orgao != necessidade.cod_necessidade_orgao.cod_orgao.cod_orgao:
         gestor_orgao = False
 
-    gestor = is_gestor(request)
-    if gestor_orgao:
+    if gestor_orgao and gestor:
         necessidade.ind_excluido = 1
         necessidade.save()
         return redirect("necessidade")
@@ -221,7 +202,7 @@ def importar_necessidade(request, pk, pk_atual):
         necessidade_orgao.save()
         necessidades = Necessidade.objects.all().filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
         for necessidade in necessidades:
-            necessidade_importada = deepcopy(necessidade)
+            necessidade_importada = necessidade
             necessidade_importada.cod_necessidade = None
             necessidade_importada.cod_necessidade_orgao = Necessidade_Orgao.objects.get(cod_necessidade_orgao = pk_atual)
             necessidade_importada.save()

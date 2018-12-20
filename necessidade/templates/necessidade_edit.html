@@ -8,8 +8,8 @@
             <h4 class="ui dividing header">Nova Necessidade</h4>
             <div class="two fields">
                 <div class="field">
-                  <label> {{ form.area_conhecimento.label }}</label>
-                  {{ form.area_conhecimento }}
+                  <label> {{ form.cod_area_conhecimento.label }}</label>
+                  {{ form.cod_area_conhecimento }}
                 </div>
                 <div class="field">
                   <label> {{ form.treinamento.label }}</label>
@@ -36,14 +36,14 @@
             </div>
             <div class="four fields">
                 <div class="field">
-                    {{ form.modalidade.errors  }}
+                    {{ form.cod_modalidade.errors  }}
                     <label>Modalidade de Treinamento</label>
-                    {{ form.modalidade }}
+                    {{ form.cod_modalidade }}
                 </div>
                 <div class="field">
-                    {{ form.nivel.errors  }}
+                    {{ form.cod_nivel.errors  }}
                     <label>Nível</label>
-                    {{ form.nivel  }}
+                    {{ form.cod_nivel  }}
                 </div>
                 <div class="field">
                     <label>Carga Horária</label>
@@ -54,9 +54,9 @@
                 </div>
                 <div class="field">
                     <label>Tipo de Treinamento</label>
-                    {{ form.tipo_treinamento }}
+                    {{ form.cod_tipo_treinamento }}
                     <small class="text-danger">
-                      {{ form.tipo_treinamento.errors }}
+                      {{ form.cod_tipo_treinamento.errors }}
                     </small>
                 </div>
             </div>
@@ -76,8 +76,8 @@
                     </small>
                 </div>
                 <div class="field">
-                  <label> {{ form.objetivo_treinamento.label }}</label>
-                  {{ form.objetivo_treinamento }}
+                  <label> {{ form.cod_objetivo_treinamento.label }}</label>
+                  {{ form.cod_objetivo_treinamento }}
                 </div>
             </div>
             <div class="field">
