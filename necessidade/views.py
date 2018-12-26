@@ -183,7 +183,7 @@ def necessidade_disapprove(request, pk):
 def necessidade_orgao_close(request, pk):
     admin = is_admin(request)
     if (admin):
-        Necessidade.objects.filter(pk=pk).update(estado=True)
+        Necessidade_Orgao.objects.filter(pk=pk).update(estado=True)
         return redirect("necessidade")
     else:
         return render(request, 'error.html')
