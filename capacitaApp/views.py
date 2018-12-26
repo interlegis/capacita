@@ -38,7 +38,12 @@ def home(request):
 
 @login_required
 def relatorio(request):
-    if is_admin(request):
+    orgao_id = Profile.objects.get(user=request.user).orgao_id
+    orgao = Orgao.objects.get(pk = orgao_id)
+    orgao_superior = orgao.cod_superior
+    plano_habilitado = Plano_Capacitacao.objects.filter(plano_habilitado = True)
+    necessidade_orgao = Necessidade_Orgao.objects.get(cod_orgao = orgao, cod_plano_capacitacao = plano_habilitado[0])
+    if is_admin(request) and not orgao_superior:
         # Create a workbook and add a worksheet.
         workbook = xlsxwriter.Workbook('Necessidades.xlsx')
         worksheet = workbook.add_worksheet()
@@ -50,7 +55,7 @@ def relatorio(request):
         center = workbook.add_format({'center_across' : True})
 
 
-        necessidades = Necessidade.objects.all().exclude(ind_excluido = True)
+        necessidades = Necessidade.objects.all().filter(ind_excluido = False, cod_necessidade_orgao = necessidade_orgao)
         # .values('treinamento', 'txt_descricao', 'aprovado').annotate(
         #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'),
         #     hor_duracao= Avg('hor_duracao'),cod_prioridade=Avg('cod_prioridade_id'),
