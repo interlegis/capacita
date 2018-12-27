@@ -55,18 +55,6 @@ def usuarios(request):
         else:
             return render(request, 'error.html')
 
-@csrf_exempt
-def usuarios_permissao(request):
-    if request.method == "POST":
-        profile = Profile.objects.filter(user_id=request.POST.get("usuario_id", "")).update(permissao_necessidade=request.POST.get("data", ""))
-        if (request.POST.get("data", "") == 'True'):
-            profile = Profile.objects.filter(user_id=request.POST.get("usuario_id", "")).update(permissao_necessidade=True)
-        if (request.POST.get("data", "") == 'False'):
-            profile = Profile.objects.filter(user_id=request.POST.get("usuario_id", "")).update(permissao_necessidade=False)
-    else:
-        return redirect("/")
-    return HttpResponseRedirect('/usuarios/')
-
 @login_required
 def usuario_new(request):
     admin = is_admin(request)
@@ -78,7 +66,7 @@ def usuario_new(request):
             user_check = User.objects.filter(username='zequinha').count()
             if(user_check == 0):
                 usuario = form.save()
-                profile = Profile.objects.create(permissao_necessidade = False, orgao_id = request.POST['orgao'], user_id = usuario.id)
+                profile = Profile.objects.create(orgao_id = request.POST['orgao'], user_id = usuario.id)
                 usuario.is_active = True
                 usuario.groups.add(my_group)
                 profile.save()

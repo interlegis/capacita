@@ -81,9 +81,7 @@
                 <th>Prioridade</th>
                 <th>Ver</th>
                 {% if is_gestor%}
-                {% if profile.permissao_necessidade%}
                 <th>Aprovado</th>
-                {% endif %}
                 <th>Editar</th>
                 <th>Excluir</th>
                 {% endif %}
@@ -106,7 +104,6 @@
                         <td>{{necessidade.cod_prioridade}}</td>
                         <td><a class="links" href="{% url 'necessidade_show' necessidade.cod_necessidade %}"><i class="search icon"></i></a></td>
                         {% if is_gestor %}
-                        {% if profile.permissao_necessidade%}
                         <th>
                           {% if necessidade.aprovado == True %}
                           <a class="links" href="{% url 'necessidade_approve' necessidade.cod_necessidade %}"><i class="check icon"></i></a>
@@ -114,7 +111,6 @@
                           <a class="links" href="{% url 'necessidade_disapprove' necessidade.cod_necessidade %}"><i class="delete icon"></i></a>
                           {% endif %}
                         </th>
-                        {% endif %}
                         <td><a class="links" href="{% url 'necessidade_edit' necessidade.cod_necessidade %}"><i class="pencil icon"></i></a></td>
                         <td><a class="links" href="{% url 'necessidade_delete' necessidade.cod_necessidade %}"><i class="delete icon"></i></a></td>
                         {% endif %}
@@ -130,7 +126,6 @@
         {{necessidades.first.cod_necessidade.cod_necessidade_orgao}}
       </h1>
         <a href="/necessidade/new/"><button class="ui button basic secondary">Novo</button></a>
-        {% if profile.permissao_necessidade%}
         <button class="ui button basic secondary" data-toggle="modal" data-target="#confirm-submit">Enviar para
           {% if superior %}
             {{ superior }}
@@ -168,5 +163,4 @@
       </div>
       {% endif %}
     </div>
-    {% endif %}
     {% endblock %}

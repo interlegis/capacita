@@ -48,7 +48,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE, related_name='orgao_id') #Orgao atual
     orgaos_vinculados = models.ManyToManyField(Orgao, related_name='orgaos_vinculados')
-    permissao_necessidade = models.NullBooleanField(null = True, default=False)
 
     class Meta:
         db_table = 'capacita_profile'
