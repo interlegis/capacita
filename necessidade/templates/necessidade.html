@@ -48,11 +48,11 @@
   {% if not necessidades %}
     <div style="padding-left: 5%; padding-bottom: 4%" class="table_div">
         <div class="content">
-            <h2 style="float: left;" class="ui header">Treinamentos solicitados para {{user.profile.orgao.nome}}</h2>
+            <h2 style="float: left;" class="ui header">Treinamentos solicitados para {{user.profile.orgao_ativo}}</h2>
         </div>
     </div>
     <div style="padding-left: 5%; padding-bottom: 0%">
-        <div style="width:80%" class="ui warning message">Ainda não foi solicitado nenhum treinamento para {{user.profile.orgao.nome}}.
+        <div style="width:80%" class="ui warning message">Ainda não foi solicitado nenhum treinamento para {{user.profile.orgao_ativo}}.
         <br><br>
         Clique no botão abaixo para realizar um pedido de treinamento
         </div>
@@ -63,7 +63,7 @@
     {% else %}
     <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
         <div class="content">
-            <h2 style="float: left;" class="ui header">PCASF {{necessidades.0.cod_necessidade_orgao.cod_plano_capacitacao}} - Treinamentos solicitados para {{user.profile.orgao.nome}}</td>
+            <h2 style="float: left;" class="ui header">PCASF {{necessidades.0.cod_necessidade_orgao.cod_plano_capacitacao}} - Treinamentos solicitados para {{user.profile.orgao_ativo}}</td>
             </h2>
         </div>
     </div>
@@ -112,7 +112,7 @@
                           {% endif %}
                         </th>
                         <td><a class="links" href="{% url 'necessidade_edit' necessidade.cod_necessidade %}"><i class="pencil icon"></i></a></td>
-                        <td><a class="links" href="{% url 'necessidade_delete' necessidade.cod_necessidade %}"><i class="delete icon"></i></a></td>
+                        <td><a class="links" href="{% url 'necessidade_delete' necessidade.cod_necessidade %}"><i class="trash icon"></i></a></td>
                         {% endif %}
                     </tr>
                 {% endfor %}

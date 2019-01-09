@@ -12,25 +12,16 @@ from capacita.template_context_processors import is_gestor, is_admin
 # Para importação
 from copy import deepcopy
 
-def orgao_usuario(request):
-    orgao = Profile.objects.get(user=request.user).orgao_id
-    return orgao
-
-def orgaos_gestor(request):
-    orgaos_gestor = []
-    if is_gestor(request):
-        orgaos = Orgao.objects.all()
-        for orgao in orgaos:
-            if(orgao.user == request.user):
-                orgaos_gestor.append(orgao)
-    return orgaos_gestor
-
 @login_required
 def mudanca_orgao(request, pk):
     profile = Profile.objects.get(user=request.user)
-    profile.orgao_id = pk
-    profile.save()
-    return redirect('/')
+    if profile.orgaos.get(orgao_id = pk, grupo_id = 2):
+        profile.orgao_ativo = Orgao.objects.get(cod_orgao = pk)
+        profile.save()
+        return redirect('/')
+    else:
+        return render(request, 'error.html')
+
 
 @login_required
 def home(request):
@@ -38,7 +29,7 @@ def home(request):
 
 @login_required
 def relatorio(request):
-    orgao_id = Profile.objects.get(user=request.user).orgao_id
+    orgao_id = Profile.objects.get(user=request.user).orgao_ativo_id
     orgao = Orgao.objects.get(pk = orgao_id)
     orgao_superior = orgao.cod_superior
     plano_habilitado = Plano_Capacitacao.objects.filter(plano_habilitado = True)
@@ -56,11 +47,6 @@ def relatorio(request):
 
 
         necessidades = Necessidade.objects.all().filter(ind_excluido = False, cod_necessidade_orgao = necessidade_orgao)
-        # .values('treinamento', 'txt_descricao', 'aprovado').annotate(
-        #     cod_necessidade=Max('cod_necessidade'),qtd_servidor=Sum('qtd_servidor'),
-        #     hor_duracao= Avg('hor_duracao'),cod_prioridade=Avg('cod_prioridade_id'),
-        #     cod_plano_capacitacao=Avg('cod_plano_capacitacao_id'),  cod_usuario=Avg('cod_usuario_id'),
-        # )
 
         necessidades = necessidades.filter(ind_excluido = 0)
 
@@ -129,23 +115,3 @@ def relatorio(request):
 @login_required
 def error(request):
     return render(request, 'error.html')
-
-# @login_required
-# def avaliacao_cursos(request):
-#     admin = is_admin(request)
-#
-#     gestor_or_adm = is_gestor(request) or admin
-#     if request.method == "POST" and gestor_or_adm:
-#         necessidade = Necessidade.objects.get(cod_necessidade = request.POST['cod_necessidade'])
-#         necessidade.txt_descricao = None
-#         treinamento = Treinamento.objects.create(nome = request.POST['txt'], cod_area_conhecimento = necessidade.cod_area_conhecimento)
-#         treinamento.save()
-#         necessidade.treinamento = treinamento
-#         necessidade.save()
-#
-#         return redirect('avaliacao_cursos')
-#     elif request.method != "POST" and admin:
-#         cursos_necessidades = Necessidade.objects.exclude(txt_descricao = None).exclude(txt_descricao = '')
-#         return render(request, "avaliacao_cursos.html", {'necessidades' : cursos_necessidades, 'is_admin': admin, 'is_gestor': gestor})
-#     else:
-#         return render(request, 'error.html')

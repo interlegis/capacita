@@ -23,15 +23,6 @@ class Nivel(models.Model):
         db_table = 'nivel'
         ordering = ['nome']
 
-class Permissao(models.Model):
-    cod_permissao = models.AutoField(primary_key=True)
-    ano_plano_capacitacao = models.DecimalField(max_digits=4, decimal_places=0)
-    cod_orgao = models.ForeignKey('orgao.Orgao', models.DO_NOTHING)
-
-    class Meta:
-        db_table = 'permissao'
-
-
 class Prioridade(models.Model):
     cod_prioridade = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200, unique=True)
@@ -44,13 +35,6 @@ class Prioridade(models.Model):
         db_table = 'prioridade'
         ordering = ['nome']
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE, related_name='orgao_id') #Orgao atual
-    orgaos_vinculados = models.ManyToManyField(Orgao, related_name='orgaos_vinculados')
-
-    class Meta:
-        db_table = 'capacita_profile'
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)
@@ -59,6 +43,21 @@ class AuthGroup(models.Model):
         managed = False
         db_table = 'auth_group'
 
+class OrgaoPermissao(models.Model):
+    orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE, related_name='orgao_id')
+    grupo = models.ForeignKey(AuthGroup, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'orgao_permissao'
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_admin = models.BooleanField(default=False)
+    orgao_ativo = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE)
+    orgaos = models.ManyToManyField(OrgaoPermissao, related_name='orgao_permissao')
+
+    class Meta:
+        db_table = 'capacita_profile'
 
 class AuthGroupPermissions(models.Model):
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)

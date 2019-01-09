@@ -29,13 +29,15 @@
             <thead>
                 <tr class="center aligned">
                 <th>Nome</th>
+                <th>Orgao</th>
                 </tr>
             </thead>
             <tbody>
 
-                {% for user in users %}
+                {% for profile in profiles %}
                     <tr class="center aligned">
-                        <td> <a style="color: black;" href="/usuarios/{{user.id}}/edit/">{{user.username}}</a></td>
+                        <td> <a style="color: black;" href="/usuarios/{{profile.id}}/edit/">{{profile.user.username}}</a></td>
+                        <td> <a style="color: black;" href="/usuarios/{{profile.id}}/orgao/"> <i class="pencil icon"></i> </a></td>
                     </tr>
                 {% endfor %}
 

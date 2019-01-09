@@ -1,0 +1,80 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+<div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
+    <div class="content">
+      <div class="row">
+        <h2 style="float: left;" class="ui header">Orgãos geridos - {{profile_user.user.username}}<br></h2>
+      </div>
+      <div class="row">
+        <small style="margin-left: 5px;">
+          {% if profile_user.user.last_login %}
+          Último login: {{profile_user.user.last_login}}
+          {% endif%}
+        </small>
+      </div>
+    </div>
+</div>
+
+{% if orgaos_usuario %}
+<div style="padding-bottom:0%" class="table_div">
+  <table class="ui celled padded table">
+    <thead>
+      <tr class="center aligned">
+        <th>Orgão</th>
+        <th>Remover gestão</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for orgao in orgaos_usuario %}
+      <tr class="center aligned">
+          <td>{{orgao.orgao.nome}}</td>
+          <td>
+              <a href="{% url 'usuario_orgao_deletar' pk=profile_user.id orgao=orgao.orgao.cod_orgao %}"><i class="delete icon"></i></a>
+          </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <br>
+</div>
+{% else %}
+<div style="padding-left: 5%; padding-bottom: 0%; padding-top: 2%; margin-bottom: 80px;">
+    <div style="width:80%" class="ui warning message">Ainda não foi atribuído nenhum papel de gestor ao {{profile_user.user.username}}.
+    <br><br>
+    Clique no botão abaixo para atribuir um papel de gestor ao usuário
+    </div>
+</div>
+{% endif %}
+
+<div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
+    <div class="content">
+      <div class="row">
+        <h2 style="float: left;" class="ui header">Adicionar orgão<br></h2>
+      </div>
+    </div>
+</div>
+
+<div style="padding-left: 15%; padding-bottom: 0%; padding-right: 15%; margin-bottom: 80px;" class="table_div">
+    <form class="ui form" method="post" >{% csrf_token %}
+          <div class="field">
+            <label>Função</label>
+            <select name="funcao">
+                    <option value="2">Gestor</option>
+                    <option value="3">Solicitante</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Orgão</label>
+            <select name="orgao">
+              {% for orgao in orgaos%}
+                    <option value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        <button class="ui primary button" type="submit">Adicionar Orgão</button>
+    </form>
+</div>
+
+{% endblock %}
