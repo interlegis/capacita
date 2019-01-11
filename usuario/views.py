@@ -12,10 +12,17 @@ from capacita.template_context_processors import is_admin
 @login_required
 def usuarios(request):
     if (hasattr(request.user, 'profile')):
+        try:
+            orgao_escolhido = int(request.POST['orgao'])
+            permissao = OrgaoPermissao.objects.get(orgao_id = request.POST['orgao'], grupo_id = 2)
+            profiles = Profile.objects.filter(orgaos = permissao)
+        except Exception as e:
+            orgao_escolhido = ''
+            profiles = Profile.objects.all()
+
         users = User.objects.all()
-        profiles = Profile.objects.all()
         orgaos = Orgao.objects.all()
-        return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgaos' : orgaos})
+        return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgaos' : orgaos, 'orgao_escolhido': orgao_escolhido})
     else:
         return render(request, 'error.html')
 
@@ -90,24 +97,18 @@ def usuario_orgao_deletar(request, pk, orgao):
 
 @login_required
 def usuario_edit(request, pk):
-    usuario = get_object_or_404(User, pk=pk)
-    profile = Profile.objects.get(user_id = usuario.id)
+    profile = get_object_or_404(Profile, id = pk)
+    usuario = get_object_or_404(User, pk=profile.user_id)
 
     if request.method == "POST":
         form = UserForm(request.POST, instance=usuario)
         if form.is_valid():
             usuario = form.save(commit=False)
-            usuario.groups.clear()
-            profile.orgao_id = request.POST['orgao']
-            profile.save()
             usuario.is_active = True
             usuario.save()
-
             return redirect("usuarios")
     else:
         form = UserForm(instance=usuario)
-        orgaos = Orgao.objects.all()
-        groups = Group.objects.all()
 
     groups = Group.objects.all()
     orgaos = Orgao.objects.all()
@@ -117,3 +118,19 @@ def usuario_edit(request, pk):
         return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario, 'orgaos_usuario' : orgaos_usuario})
     else:
         return redirect('error')
+
+def admin_approve(request, pk):
+    admin = is_admin(request)
+    if (admin):
+        Profile.objects.filter(pk=pk).update(is_admin=True)
+        return redirect("usuarios")
+    else:
+        return render(request, 'error.html')
+
+def admin_disapprove(request, pk):
+    admin = is_admin(request)
+    if (admin):
+        Profile.objects.filter(pk=pk).update(is_admin=False)
+        return redirect("usuarios")
+    else:
+        return render(request, 'error.html')

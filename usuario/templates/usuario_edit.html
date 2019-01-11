@@ -12,25 +12,6 @@
                 <label>Login</label>
                 {{ form.username }}
             </div>
-            <div class="field">
-                <label>Órgão</label>
-                <select name="orgao" >
-                    <option></option>
-                    {% for orgao in orgaos %}
-                        {% if usuario %}
-                            {% if usuario.profile.orgao == orgao %}
-                                <option selected value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
-                            {% else %}
-                                <option value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="field">
-                <label>Admin</label>
-                <input type="checkbox" name="" {% if profile.is_admin == True %}checked {% endif %}><br>
-            </div>
             <button class="ui primary button" type="submit">Salvar</button>
             <a href="/usuarios/" class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
         </form>

@@ -3,48 +3,65 @@
 {% block content %}
 
     <div class="table_div">
-        {% if orgao != '' %}
+        {% if orgao %}
         <h2 class="ui dividing header">Usuários da {{orgao}}</h2>
         {% else %}
         <h2 class="ui dividing header">Usuários do Sistema</h2>
         {% endif %}
 
         <p>As permissões indicadas na tabela indicam se o Usuário tem permissão para inserir necessidades e editá-las. Tal usuário possui essa permissão se for um Gestor, Admin ou um Solicitante com permissão concedida</p>
-        <form class="ui form" method="get">
+        <form class="ui form" method="post">{% csrf_token %}
             <div class="two fields">
                 <div class="select_orgao field">
-                    <label>Secretaria</label>
+                    <label>Filtrar por orgão</label>
                     <select name="orgao" id="" onchange="this.form.submit()">
-                        <option value="">----------</option>
-                        <option value="">Todos</option>
+                        <option value="">---------</option>
                         {% for orgao in orgaos %}
-                            <option value="{{orgao.cod_orgao}}">{{orgao}}</option>
+                            <option value="{{orgao.cod_orgao}}" {% if orgao.cod_orgao == orgao_escolhido %} selected {% endif %}>{{orgao}}</option>
                         {% endfor %}
                     </select>
                 </div>
             </div>
         </form>
 
-        <table class="ui celled padded table">
-            <thead>
-                <tr class="center aligned">
-                <th>Nome</th>
-                <th>Orgao</th>
-                </tr>
-            </thead>
-            <tbody>
+        {% if profiles %}
+          <table class="ui celled padded table">
+              <thead>
+                  <tr class="center aligned">
+                  <th>Nome</th>
+                  <th>Admin</th>
+                  <th>Orgao</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for profile in profiles %}
+                      <tr class="center aligned">
+                          <td> <a style="color: black;" href="/usuarios/{{profile.id}}/edit/">{{profile.user.username}}</a></td>
+                          <td>
+                            {% if profile.is_admin == True %}
+                            <a href="{% url 'admin_disapprove' profile.id %}"><i class="check icon"></i></a>
+                            {% else %}
+                            <a href="{% url 'admin_approve' profile.id %}"><i class="delete icon"></i></a>
+                            {% endif %}
+                          </td>
+                          <td> <a style="color: black;" href="/usuarios/{{profile.id}}/orgao/"> <i class="pencil icon"></i> </a></td>
 
-                {% for profile in profiles %}
-                    <tr class="center aligned">
-                        <td> <a style="color: black;" href="/usuarios/{{profile.id}}/edit/">{{profile.user.username}}</a></td>
-                        <td> <a style="color: black;" href="/usuarios/{{profile.id}}/orgao/"> <i class="pencil icon"></i> </a></td>
-                    </tr>
-                {% endfor %}
+                      </tr>
+                  {% endfor %}
 
-            </tbody>
-        </table>
+              </tbody>
+          </table>
+        {% else %}
+          <div style="padding-left: 5%; padding-bottom: 0%; padding-top: 4%; margin-bottom: 0px;">
+              <div style="width:90%" class="ui warning message">
+                Não existem gestores para este orgão!<br><br>
+                Para adicionar um gestor ao orgão, clique no ícone de um lápis no usuário requerido e em seguida adicione um novo orgão.
+              </div>
+              <br><br>
+          </div>
+        {% endif%}
         <br>
-        <a href="/usuarios/new/"><button class="ui button basic secondary">Novo</button></a>
+        <a href="/usuarios/new/"><button class="ui button basic secondary">Novo usuário</button></a>
     </div>
 
     {% endblock %}

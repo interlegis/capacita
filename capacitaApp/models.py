@@ -57,6 +57,7 @@ class Profile(models.Model):
     orgaos = models.ManyToManyField(OrgaoPermissao, related_name='orgao_permissao')
 
     class Meta:
+        ordering = ['user']
         db_table = 'capacita_profile'
 
 class AuthGroupPermissions(models.Model):

@@ -12,4 +12,6 @@ urlpatterns = [
     url(r'^usuarios/(?P<pk>\d+)/edit/$', views.usuario_edit, name='usuario_edit'),
     url(r'^usuarios/(?P<pk>\d+)/orgao/$', views.usuario_orgao_adicionar, name='usuario_orgao_adicionar'),
     url(r'^usuarios/(?P<pk>\d+)/(?P<orgao>\d+)/orgao/$', views.usuario_orgao_deletar, name='usuario_orgao_deletar'),
+    url(r'^usuarios/(?P<pk>\d+)/admin_approve$', views.admin_approve, name='admin_approve'),
+    url(r'^usuarios/(?P<pk>\d+)/admin_disapprove$', views.admin_disapprove, name='admin_disapprove'),
 ]
