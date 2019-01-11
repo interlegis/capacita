@@ -6,7 +6,7 @@ from capacitaApp.views import is_admin
 
 @login_required
 def objetivos(request):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         objetivos = Objetivo_Treinamento.objects.all()
         return render(request, 'objetivos.html', {'objetivos' : objetivos})
     else:
@@ -14,7 +14,7 @@ def objetivos(request):
 
 @login_required
 def objetivo_edit(request, pk):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     objetivo = get_object_or_404(Objetivo_Treinamento, pk=pk)
     if request.method == "POST" and admin:
         form = ObjetivoTreinamentoForm(request.POST, instance=objetivo)
@@ -31,7 +31,7 @@ def objetivo_edit(request, pk):
 
 @login_required
 def objetivo_new(request):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == "POST" and admin:
         form = ObjetivoTreinamentoForm(request.POST)
         if form.is_valid():
@@ -47,7 +47,7 @@ def objetivo_new(request):
 
 @login_required
 def objetivo_delete(request, pk):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if admin:
         Objetivo_Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("objetivos")
@@ -56,7 +56,7 @@ def objetivo_delete(request, pk):
 
 @login_required
 def objetivo_undelete(request, pk):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if admin:
         Objetivo_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("objetivos")

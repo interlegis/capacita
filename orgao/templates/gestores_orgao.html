@@ -18,7 +18,9 @@
                       <tr class="center aligned">
                           <td> <a style="color: black;" href="/usuarios/{{profile_orgao.id}}/edit/">{{profile_orgao.user.username}}</a></td>
                           <td>
-                            {% if profile_orgao.is_admin == True %}
+                            {% if profile_orgao.user.username == profile.user.username%}
+                            <i class="check icon" style="color: #4183c4"></i>
+                            {% elif profile_orgao.is_admin == True %}
                             <a href="{% url 'usuario:admin_disapprove' profile_orgao.id %}"><i class="check icon"></i></a>
                             {% else %}
                             <a href="{% url 'usuario:admin_approve' profile_orgao.id %}"><i class="delete icon"></i></a>

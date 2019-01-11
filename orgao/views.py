@@ -18,7 +18,7 @@ def orgao(request):
         paginator = Paginator(orgaos_list, 10)
         permissao = False
         paginator = Paginator(orgaos_list, 6)
-        if is_admin(request):
+        if is_admin(request)['is_admin']:
             try:
                 orgaos = paginator.page(page)
             except PageNotAnInteger:
@@ -33,7 +33,7 @@ def orgao(request):
 
 @login_required
 def orgao_edit(request, pk):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     orgao = get_object_or_404(Orgao, pk=pk)
     if request.method == "POST" and admin:
         form = OrgaoForm(request.POST, instance=orgao)
@@ -50,7 +50,7 @@ def orgao_edit(request, pk):
 
 @login_required
 def orgao_new(request):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == "POST" and admin:
         form = OrgaoForm(request.POST)
         if form.is_valid():
@@ -66,7 +66,7 @@ def orgao_new(request):
 
 @login_required
 def orgao_delete(request, id):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if admin:
         Orgao.objects.filter(pk=id).update(ind_excluido=1)
         return redirect("orgao")
@@ -75,7 +75,7 @@ def orgao_delete(request, id):
 
 @login_required
 def orgao_undelete(request, id):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if admin:
         Orgao.objects.filter(pk=id).update(ind_excluido=0)
         return redirect("orgao")
@@ -84,7 +84,7 @@ def orgao_undelete(request, id):
 
 @login_required
 def gestores_orgao(request, pk):
-    if (hasattr(request.user, 'profile')):
+    if (hasattr(request.user, 'profile')) and is_admin(request)['is_admin']:
         orgao_escolhido = Orgao.objects.get(pk=pk)
         permissao = OrgaoPermissao.objects.get(orgao_id = pk, grupo_id = 2)
         if request.method == "POST":

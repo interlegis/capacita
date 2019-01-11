@@ -8,14 +8,14 @@ from capacita.template_context_processors import is_admin
 def plano(request):
     planos = Plano_Capacitacao.objects.all()
     form = PlanoForm()
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         return render(request, 'plano_capacitacao.html', {'planos' : planos, 'form' : form})
     else:
         return render(request, 'error.html')
 
 @login_required
 def plano_delete(request, id):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         plano = get_object_or_404(Plano_Capacitacao, pk=id)
         plano.ind_excluido = 1
         plano.save()
@@ -25,7 +25,7 @@ def plano_delete(request, id):
 
 @login_required
 def plano_undelete(request, id):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         plano = get_object_or_404(Plano_Capacitacao, pk=id)
         plano.ind_excluido = 0
         plano.save()
@@ -37,14 +37,14 @@ def plano_undelete(request, id):
 @login_required
 def plano_show(request, id):
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         return render(request, 'plano_show.html', {'plano' : plano})
     else:
         return redirect('error')
 
 @login_required
 def plano_new(request):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == "POST" and admin:
         form = PlanoForm(request.POST)
         if form.is_valid():
@@ -61,7 +61,7 @@ def plano_new(request):
 
 @login_required
 def plano_edit(request, id):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
     if request.method == "POST" and admin:
         form = PlanoForm(request.POST, instance=plano)

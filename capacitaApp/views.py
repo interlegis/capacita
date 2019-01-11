@@ -34,7 +34,7 @@ def relatorio(request):
     orgao_superior = orgao.cod_superior
     plano_habilitado = Plano_Capacitacao.objects.filter(plano_habilitado = True)
     necessidade_orgao = Necessidade_Orgao.objects.get(cod_orgao = orgao, cod_plano_capacitacao = plano_habilitado[0])
-    if is_admin(request) and not orgao_superior:
+    if is_admin(request)['is_admin'] and not orgao_superior:
         # Create a workbook and add a worksheet.
         workbook = xlsxwriter.Workbook('Necessidades.xlsx')
         worksheet = workbook.add_worksheet()

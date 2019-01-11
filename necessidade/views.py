@@ -166,7 +166,7 @@ def necessidade_delete(request, pk):
         return render(request, 'error.html')
 
 def necessidade_approve(request, pk):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if (admin):
         Necessidade.objects.filter(pk=pk).update(aprovado=False)
         return redirect("necessidade")
@@ -174,7 +174,7 @@ def necessidade_approve(request, pk):
         return render(request, 'error.html')
 
 def necessidade_disapprove(request, pk):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if (admin):
         Necessidade.objects.filter(pk=pk).update(aprovado=True)
         return redirect("necessidade")
@@ -182,7 +182,7 @@ def necessidade_disapprove(request, pk):
         return render(request, 'error.html')
 
 def necessidade_orgao_close(request, pk):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if (admin):
         Necessidade_Orgao.objects.filter(pk=pk).update(estado=True)
         return redirect("necessidade")
@@ -190,7 +190,7 @@ def necessidade_orgao_close(request, pk):
         return render(request, 'error.html')
 
 def importar_necessidade(request, pk, pk_atual):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if (admin):
         necessidade_orgao = get_object_or_404(Necessidade_Orgao, pk=pk)
         necessidade_orgao.importado = True

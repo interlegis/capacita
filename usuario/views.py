@@ -11,7 +11,7 @@ from capacita.template_context_processors import is_admin
 
 @login_required
 def usuarios(request):
-    if (hasattr(request.user, 'profile')):
+    if hasattr(request.user, 'profile') and is_admin(request)['is_admin']:
         try:
             orgao_escolhido = int(request.POST['orgao'])
             permissao = OrgaoPermissao.objects.get(orgao_id = request.POST['orgao'], grupo_id = 2)
@@ -28,7 +28,7 @@ def usuarios(request):
 
 @login_required
 def usuario_new(request):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == 'POST' and admin:
         form = UserForm(request.POST)
         id_group = request.POST['group']
@@ -66,69 +66,60 @@ def usuario_new(request):
 @login_required
 def usuario_orgao_adicionar(request, pk):
     profile = Profile.objects.get(pk = pk)
-
-    if request.method == "POST":
+    if request.method == "POST" and is_admin(request)['is_admin']:
         if profile.orgao_ativo == request.POST['orgao']:
             profile.orgao_ativo = null
         permissao = OrgaoPermissao.objects.get(orgao_id = request.POST['orgao'], grupo_id = 2)
         profile.orgaos.add(permissao)
+    elif not is_admin(request)['is_admin']:
+        return redirect('error')
 
     groups = Group.objects.all()
     orgaos_usuario = profile.orgaos.filter(grupo_id = 2)
     orgaos = Orgao.objects.all().exclude(cod_orgao__in = [orgao.orgao_id for orgao in orgaos_usuario])
-    if is_admin(request):
-        return render(request, 'usuario_orgao.html', {'profile_user': profile, 'orgaos' : orgaos, 'groups' : groups, 'orgaos_usuario' : orgaos_usuario})
-    else:
-        return redirect('error')
+    return render(request, 'usuario_orgao.html', {'profile_user': profile, 'orgaos' : orgaos, 'groups' : groups, 'orgaos_usuario' : orgaos_usuario})
 
 @login_required
 def usuario_orgao_deletar(request, pk, orgao):
     profile = Profile.objects.get(pk = pk)
-    if profile.orgao_ativo == orgao:
+    if profile.orgao_ativo == orgao and is_admin(request)['is_admin']:
         profile.orgao_ativo = null
+    elif not is_admin(request)['is_admin']:
+        return redirect('error')
     permissao = OrgaoPermissao.objects.get(orgao_id = orgao, grupo_id = 2)
     profile.orgaos.remove(permissao)
-    if is_admin(request):
-        return redirect(request.META['HTTP_REFERER'])
-    else:
-        return redirect('error')
+    return redirect(request.META['HTTP_REFERER'])
 
 
 @login_required
 def usuario_edit(request, pk):
     profile = get_object_or_404(Profile, id = pk)
     usuario = get_object_or_404(User, pk=profile.user_id)
-
-    if request.method == "POST":
+    if request.method == "POST" and is_admin(request)['is_admin']:
         form = UserForm(request.POST, instance=usuario)
         if form.is_valid():
             usuario = form.save(commit=False)
             usuario.is_active = True
             usuario.save()
             return redirect(request.META['HTTP_REFERER'])
-    else:
+    elif request.method != "POST":
         form = UserForm(instance=usuario)
-
+    else:
+        return redirect('error')
     groups = Group.objects.all()
     orgaos = Orgao.objects.all()
     orgaos_usuario = profile.orgaos.filter(grupo_id = 2)
-
-    if is_admin(request):
-        return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario, 'orgaos_usuario' : orgaos_usuario})
-    else:
-        return redirect('error')
+    return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario, 'orgaos_usuario' : orgaos_usuario})
 
 def admin_approve(request, pk):
-    admin = is_admin(request)
-    if (admin):
+    if is_admin(request)['is_admin']:
         Profile.objects.filter(pk=pk).update(is_admin=True)
         return redirect(request.META['HTTP_REFERER'])
     else:
         return render(request, 'error.html')
 
 def admin_disapprove(request, pk):
-    admin = is_admin(request)
-    if (admin):
+    if is_admin(request)['is_admin']:
         Profile.objects.filter(pk=pk).update(is_admin=False)
         return redirect(request.META['HTTP_REFERER'])
     else:
