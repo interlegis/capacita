@@ -31,7 +31,7 @@
       <tr class="center aligned">
           <td>{{orgao.orgao.nome}}</td>
           <td>
-              <a href="{% url 'usuario_orgao_deletar' pk=profile_user.id orgao=orgao.orgao.cod_orgao %}"><i class="delete icon"></i></a>
+              <a href="{% url 'usuario:usuario_orgao_deletar' pk=profile_user.id orgao=orgao.orgao.cod_orgao %}"><i class="trash icon"></i></a>
           </td>
       </tr>
     {% endfor %}

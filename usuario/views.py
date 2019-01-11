@@ -45,7 +45,7 @@ def usuario_new(request):
             else:
                 return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
 
-            return redirect("usuarios")
+            return redirect(request.META['HTTP_REFERER'])
         else:
             return render(request, 'usuario_edit.html', {'form' : form})
     elif request.method != 'POST':
@@ -67,7 +67,6 @@ def usuario_new(request):
 def usuario_orgao_adicionar(request, pk):
     profile = Profile.objects.get(pk = pk)
 
-    print("PERMISSAO = ", profile)
     if request.method == "POST":
         if profile.orgao_ativo == request.POST['orgao']:
             profile.orgao_ativo = null
@@ -90,7 +89,7 @@ def usuario_orgao_deletar(request, pk, orgao):
     permissao = OrgaoPermissao.objects.get(orgao_id = orgao, grupo_id = 2)
     profile.orgaos.remove(permissao)
     if is_admin(request):
-        return redirect("usuario_orgao_adicionar", pk=pk)
+        return redirect(request.META['HTTP_REFERER'])
     else:
         return redirect('error')
 
@@ -106,7 +105,7 @@ def usuario_edit(request, pk):
             usuario = form.save(commit=False)
             usuario.is_active = True
             usuario.save()
-            return redirect("usuarios")
+            return redirect(request.META['HTTP_REFERER'])
     else:
         form = UserForm(instance=usuario)
 
@@ -123,7 +122,7 @@ def admin_approve(request, pk):
     admin = is_admin(request)
     if (admin):
         Profile.objects.filter(pk=pk).update(is_admin=True)
-        return redirect("usuarios")
+        return redirect(request.META['HTTP_REFERER'])
     else:
         return render(request, 'error.html')
 
@@ -131,6 +130,6 @@ def admin_disapprove(request, pk):
     admin = is_admin(request)
     if (admin):
         Profile.objects.filter(pk=pk).update(is_admin=False)
-        return redirect("usuarios")
+        return redirect(request.META['HTTP_REFERER'])
     else:
         return render(request, 'error.html')

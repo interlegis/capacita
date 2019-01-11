@@ -13,6 +13,7 @@
                 <th>Editar</th>
                 <th>Visível</th>
                 {% endif %}
+                <th>Gestores</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,14 +22,14 @@
                     <tr class="center aligned">
                         <td>{{orgao.nome}}</td>
                         {% if is_admin == True %}
-                        <td><a class="links" href="{% url 'orgao_edit' orgao.cod_orgao %}"><i class="pencil icon"></i></a></td>
+                        <td><a  href="{% url 'orgao_edit' orgao.cod_orgao %}"><i class="pencil icon"></i></a></td>
 
                         {% if orgao.ind_excluido == False %}
-                        <td><a class="links" href="{% url 'orgao_delete' orgao.cod_orgao %}"><i class="eye icon"></i></a></td>
+                        <td><a  href="{% url 'orgao_delete' orgao.cod_orgao %}"><i class="eye icon"></i></a></td>
                         {% else %}
-                        <td><a class="links" href="{% url 'orgao_undelete' orgao.cod_orgao %}"><i class="eye slash icon"></i></a></td>
+                        <td><a  href="{% url 'orgao_undelete' orgao.cod_orgao %}"><i class="eye slash icon"></i></a></td>
                         {% endif %}
-
+                        <td><a  href="{% url 'gestores_orgao' orgao.cod_orgao %}"><i class="users icon"></i></a></td>
                         {% endif %}
                     </tr>
                 {% endfor %}

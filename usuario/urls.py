@@ -6,6 +6,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import LogoutView
 import django_cas_ng.views
 
+app_name = "usuario";
+
 urlpatterns = [
     url(r'^usuarios/$', views.usuarios, name='usuarios'),
     url(r'^usuarios/new/$', views.usuario_new, name='usuario_new'),

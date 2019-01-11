@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^orgao/(?P<id>\d+)/delete$', views.orgao_delete, name='orgao_delete'),
     url(r'^orgao/(?P<id>\d+)/undelete$', views.orgao_undelete, name='orgao_undelete'),
     url(r'^orgao/new/$', views.orgao_new, name='orgao_new'),
+    url(r'^orgao/(?P<pk>\d+)/gestores_orgao/$', views.gestores_orgao, name='gestores_orgao'),
 ]

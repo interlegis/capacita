@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="table_div">
+        <h2 class="ui dividing header">Usuários do {{orgao_escolhido.nome}}</h2>
+        {% if profiles_orgao %}
+          <table class="ui celled padded table">
+              <thead>
+                  <tr class="center aligned">
+                  <th>Nome</th>
+                  <th>Admin</th>
+                  <th>Remover Gestor</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for profile_orgao in profiles_orgao %}
+                      <tr class="center aligned">
+                          <td> <a style="color: black;" href="/usuarios/{{profile_orgao.id}}/edit/">{{profile_orgao.user.username}}</a></td>
+                          <td>
+                            {% if profile_orgao.is_admin == True %}
+                            <a href="{% url 'usuario:admin_disapprove' profile_orgao.id %}"><i class="check icon"></i></a>
+                            {% else %}
+                            <a href="{% url 'usuario:admin_approve' profile_orgao.id %}"><i class="delete icon"></i></a>
+                            {% endif %}
+                          </td>
+                          <td>
+                              <a href="{% url 'usuario:usuario_orgao_deletar' pk=profile_orgao.id orgao=orgao_escolhido.cod_orgao %}"><i class="trash icon"></i></a>
+                          </td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+        {% else %}
+        <div style="padding-left: 5%; padding-bottom: 0%; padding-top: 2%; margin-bottom: 0px;">
+            <div style="width:90%" class="ui warning message">
+              Não existem gestores para este orgão!<br><br>
+            </div>
+        </div>
+        {% endif%}
+        <br>
+        <div style="padding-left: 1%; padding-bottom: 0%" class="table_div">
+          <div class="content">
+            <div class="row">
+              <h2 style="float: left;" class="ui header">Adicionar gestor<br></h2>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding-left: 15%; padding-bottom: 0%; padding-right: 15%; margin-bottom: 80px;" class="table_div">
+          <form class="ui form" method="post" >{% csrf_token %}
+            <div class="field">
+              <label>Usuário</label>
+              <select name="usuario">
+                {% for profile in profiles%}
+                <option value="{{profile.id}}">{{profile.user.username}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button class="ui primary button" type="submit">Adicionar Gestor</button>
+          </form>
+        </div>
+    </div>
+
+    {% endblock %}

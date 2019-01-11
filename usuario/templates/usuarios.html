@@ -4,12 +4,10 @@
 
     <div class="table_div">
         {% if orgao %}
-        <h2 class="ui dividing header">Usuários da {{orgao}}</h2>
+        <h2 class="ui dividing header">Usuários do {{orgao}}</h2>
         {% else %}
         <h2 class="ui dividing header">Usuários do Sistema</h2>
         {% endif %}
-
-        <p>As permissões indicadas na tabela indicam se o Usuário tem permissão para inserir necessidades e editá-las. Tal usuário possui essa permissão se for um Gestor, Admin ou um Solicitante com permissão concedida</p>
         <form class="ui form" method="post">{% csrf_token %}
             <div class="two fields">
                 <div class="select_orgao field">
@@ -30,7 +28,7 @@
                   <tr class="center aligned">
                   <th>Nome</th>
                   <th>Admin</th>
-                  <th>Orgao</th>
+                  <th>Orgãos</th>
                   </tr>
               </thead>
               <tbody>
@@ -39,12 +37,12 @@
                           <td> <a style="color: black;" href="/usuarios/{{profile.id}}/edit/">{{profile.user.username}}</a></td>
                           <td>
                             {% if profile.is_admin == True %}
-                            <a href="{% url 'admin_disapprove' profile.id %}"><i class="check icon"></i></a>
+                            <a href="{% url 'usuario:admin_disapprove' profile.id %}"><i class="check icon"></i></a>
                             {% else %}
-                            <a href="{% url 'admin_approve' profile.id %}"><i class="delete icon"></i></a>
+                            <a href="{% url 'usuario:admin_approve' profile.id %}"><i class="delete icon"></i></a>
                             {% endif %}
                           </td>
-                          <td> <a style="color: black;" href="/usuarios/{{profile.id}}/orgao/"> <i class="pencil icon"></i> </a></td>
+                          <td> <a href="/usuarios/{{profile.id}}/orgao/"> <i class="university icon"></i> </a></td>
 
                       </tr>
                   {% endfor %}
@@ -52,12 +50,15 @@
               </tbody>
           </table>
         {% else %}
-          <div style="padding-left: 5%; padding-bottom: 0%; padding-top: 4%; margin-bottom: 0px;">
+          <div style="padding-left: 5%; padding-bottom: 2%; padding-top: 2%; margin-bottom: 0px;">
               <div style="width:90%" class="ui warning message">
                 Não existem gestores para este orgão!<br><br>
-                Para adicionar um gestor ao orgão, clique no ícone de um lápis no usuário requerido e em seguida adicione um novo orgão.
+                Para adicionar um ou mais gestores ao orgão, clique no botão abaixo.
+                <br><br>
+                <div class="center aligned">
+                  <a href="{% url 'gestores_orgao' orgao_escolhido %}"><button class="ui primary button">Adicionar gestores</button></a>
+                </div>
               </div>
-              <br><br>
           </div>
         {% endif%}
         <br>
