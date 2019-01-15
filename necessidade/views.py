@@ -10,9 +10,12 @@ def necessidade(request):
     if (hasattr(request.user, 'profile')):
         usuario = User.objects.get(id = request.user.id)
         orgao = Profile.objects.get(user=usuario).orgao_ativo
-        print(orgao)
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
-        necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
+        try:
+            necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
+        except Exception as e:
+            return redirect('error')
+
         gestor = is_gestor(request)
 
         #Caso o orgão já tenha enviado o pedido para o orgão superior
