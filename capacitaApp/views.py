@@ -30,11 +30,10 @@ def home(request):
 @login_required
 def relatorio(request):
     orgao_id = Profile.objects.get(user=request.user).orgao_ativo_id
-    orgao = Orgao.objects.get(pk = orgao_id)
-    orgao_superior = orgao.cod_superior
+    orgao = Orgao.objects.get(nome = "ILB")
     plano_habilitado = Plano_Capacitacao.objects.filter(plano_habilitado = True)
     necessidade_orgao = Necessidade_Orgao.objects.get(cod_orgao = orgao, cod_plano_capacitacao = plano_habilitado[0])
-    if is_admin(request)['is_admin'] and not orgao_superior:
+    if is_admin(request)['is_admin']:
         # Create a workbook and add a worksheet.
         workbook = xlsxwriter.Workbook('Necessidades.xlsx')
         worksheet = workbook.add_worksheet()
