@@ -64,6 +64,8 @@ def plano_edit(request, id):
     admin = is_admin(request)['is_admin']
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
     if request.method == "POST" and admin:
+        if request.POST['plano_habilitado']:
+            Plano_Capacitacao.objects.filter(plano_habilitado=True).update(plano_habilitado=False)
         form = PlanoForm(request.POST, instance=plano)
         if form.is_valid():
             plano = form.save()
