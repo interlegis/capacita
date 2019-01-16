@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
+from orgao.models import *
+from necessidade.models import *
 from capacita.template_context_processors import is_admin
 
 @login_required
@@ -51,8 +53,9 @@ def plano_new(request):
             plano = form.save()
             for orgao in Orgao.objects.all(): #Cria uma necessidade orgão em todos os orgãos
                 Necessidade_Orgao.objects.create(cod_orgao = orgao, cod_plano_capacitacao = plano, estado = False)
-
             return redirect('plano')
+        else:
+            return render(request, 'plano_edit.html', {'form': form})
     elif admin:
         form = PlanoForm()
         return render(request, 'plano_edit.html', {'form': form})
