@@ -37,14 +37,14 @@
                           <td> <a style="color: black;" href="/usuarios/{{profile_.id}}/edit/">{{profile_.user.username}}</a></td>
                           <td>
                             {% if profile_.user.username == profile.user.username%}
-                            <i class="check icon" style="color: #4183c4"></i>
+                            <i class="check icon" style="color: black"></i>
                             {% elif profile_.is_admin == True %}
-                            <a href="{% url 'usuario:admin_disapprove' profile_.id %}"><i class="check icon"></i></a>
+                            <a class="links" href="{% url 'usuario:admin_disapprove' profile_.id %}"><i class="check icon"></i></a>
                             {% else %}
-                            <a href="{% url 'usuario:admin_approve' profile_.id %}"><i class="delete icon"></i></a>
+                            <a class="links" href="{% url 'usuario:admin_approve' profile_.id %}"><i class="delete icon"></i></a>
                             {% endif %}
                           </td>
-                          <td> <a href="/usuarios/{{profile_.id}}/orgao/"> <i class="university icon"></i> </a></td>
+                          <td> <a class="links" href="/usuarios/{{profile_.id}}/orgao/"> <i class="university icon"></i> </a></td>
 
                       </tr>
                   {% endfor %}
