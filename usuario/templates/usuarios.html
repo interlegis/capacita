@@ -3,46 +3,68 @@
 {% block content %}
 
     <div class="table_div">
-        {% if orgao != '' %}
-        <h2 class="ui dividing header">Usuários da {{orgao}}</h2>
+        {% if orgao %}
+        <h2 class="ui dividing header">Usuários do {{orgao}}</h2>
         {% else %}
         <h2 class="ui dividing header">Usuários do Sistema</h2>
         {% endif %}
-
-        <p>As permissões indicadas na tabela indicam se o Usuário tem permissão para inserir necessidades e editá-las. Tal usuário possui essa permissão se for um Gestor, Admin ou um Solicitante com permissão concedida</p>
-        <form class="ui form" method="get">
+        <form class="ui form" method="post">{% csrf_token %}
             <div class="two fields">
                 <div class="select_orgao field">
-                    <label>Secretaria</label>
+                    <label>Filtrar por orgão</label>
                     <select name="orgao" id="" onchange="this.form.submit()">
-                        <option value="">----------</option>
-                        <option value="">Todos</option>
+                        <option value="">---------</option>
                         {% for orgao in orgaos %}
-                            <option value="{{orgao.cod_orgao}}">{{orgao}}</option>
+                            <option value="{{orgao.cod_orgao}}" {% if orgao.cod_orgao == orgao_escolhido %} selected {% endif %}>{{orgao}}</option>
                         {% endfor %}
                     </select>
                 </div>
             </div>
         </form>
 
-        <table class="ui celled padded table">
-            <thead>
-                <tr class="center aligned">
-                <th>Nome</th>
-                </tr>
-            </thead>
-            <tbody>
+        {% if profiles %}
+          <table class="ui celled padded table">
+              <thead>
+                  <tr class="center aligned">
+                  <th>Nome</th>
+                  <th>Admin</th>
+                  <th>Orgãos</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for profile_ in profiles %}
+                      <tr class="center aligned">
+                          <td> <a style="color: black;" href="/usuarios/{{profile_.id}}/edit/">{{profile_.user.username}}</a></td>
+                          <td>
+                            {% if profile_.user.username == profile.user.username%}
+                            <i class="check icon" style="color: black"></i>
+                            {% elif profile_.is_admin == True %}
+                            <a class="links" href="{% url 'usuario:admin_disapprove' profile_.id %}"><i class="check icon"></i></a>
+                            {% else %}
+                            <a class="links" href="{% url 'usuario:admin_approve' profile_.id %}"><i class="delete icon"></i></a>
+                            {% endif %}
+                          </td>
+                          <td> <a class="links" href="/usuarios/{{profile_.id}}/orgao/"> <i class="university icon"></i> </a></td>
 
-                {% for user in users %}
-                    <tr class="center aligned">
-                        <td> <a style="color: black;" href="/usuarios/{{user.id}}/edit/">{{user.username}}</a></td>
-                    </tr>
-                {% endfor %}
+                      </tr>
+                  {% endfor %}
 
-            </tbody>
-        </table>
+              </tbody>
+          </table>
+        {% else %}
+          <div style="padding-left: 5%; padding-bottom: 2%; padding-top: 2%; margin-bottom: 0px;">
+              <div style="width:90%" class="ui warning message">
+                Não existem gestores para este orgão!<br><br>
+                Para adicionar um ou mais gestores ao orgão, clique no botão abaixo.
+                <br><br>
+                <div class="center aligned">
+                  <a href="{% url 'gestores_orgao' orgao_escolhido %}"><button class="ui primary button">Adicionar gestores</button></a>
+                </div>
+              </div>
+          </div>
+        {% endif%}
         <br>
-        <a href="/usuarios/new/"><button class="ui button basic secondary">Novo</button></a>
+        <a href="/usuarios/new/"><button class="ui button basic secondary">Novo usuário</button></a>
     </div>
 
     {% endblock %}

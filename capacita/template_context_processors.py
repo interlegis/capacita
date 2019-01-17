@@ -9,13 +9,20 @@ def include_profile(request):
     return {'profile': profile}
 
 def is_admin(request):
-    if AuthUserGroups.objects.filter(user_id = request.user.id).filter(group_id = 1).exists():
-        return {'is_admin': True}
-    else:
+    try:
+        admin = Profile.objects.get(user=request.user).is_admin
+        return {'is_admin': admin}
+    except Exception as e:
         return {'is_admin': False}
 
+
 def is_gestor(request):
-    if AuthUserGroups.objects.filter(user_id = request.user.id).filter(group_id = 2).exists():
-        return {'is_gestor': True}
-    else:
+    try:
+        profile = Profile.objects.get(user=request.user)
+        orgaos = profile.orgaos
+        if orgaos.filter(grupo_id = 2).filter(orgao = profile.orgao_ativo).exists():
+            return {'is_gestor': True}
+        else:
+            return {'is_gestor': False}
+    except Exception as e:
         return {'is_gestor': False}

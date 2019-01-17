@@ -7,8 +7,8 @@ from capacitaApp.models import *
 class UserForm(forms.ModelForm):
 
     username = forms.CharField(max_length=100)
-    first_name = forms.CharField(max_length=40)
-    last_name = forms.CharField(max_length=40)
+    first_name = ""
+    last_name = ""
     is_staff = False
     is_active = True
     is_superuser = False

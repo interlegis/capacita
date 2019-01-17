@@ -4,17 +4,17 @@
 
     <div class="table_div">
 
-        <h4 class="ui dividing header">Objetivos de Treinamento</h4>
+        <h2 class="ui dividing header">Objetivos de Treinamento</h2>
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
                     <th>Nome</th>
                     <th>Editar</th>
-                    <th>Excluir</th>
+                    <th>Visível</th>
                 </tr>
             </thead>
             <tbody>
-                
+
                 {% for objetivo in objetivos %}
                     <tr class="center aligned">
                         <td>{{objetivo.nome}}</td>

@@ -6,7 +6,7 @@ from capacitaApp.views import is_admin, is_gestor
 
 @login_required
 def areas(request):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         areas = Area_Conhecimento.objects.all();
         return render(request, 'areas.html', { 'areas' : areas })
     else:
@@ -14,7 +14,7 @@ def areas(request):
 
 @login_required
 def area_delete(request, pk):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         Area_Conhecimento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("areas")
     else:
@@ -22,7 +22,7 @@ def area_delete(request, pk):
 
 @login_required
 def area_undelete(request, pk):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         Modalidade_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("areas")
     else:
@@ -30,7 +30,7 @@ def area_undelete(request, pk):
 
 @login_required
 def area_edit(request,id):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     area = get_object_or_404(Area_Conhecimento, pk=id)
     if request.method == 'POST' and admin:
         form = AreaConhecimentoForm(request.POST, instance=area, initial={'ind_excluido' : False})
@@ -47,7 +47,7 @@ def area_edit(request,id):
 
 @login_required
 def area_new(request):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == 'POST' and admin:
         form = AreaConhecimentoForm(request.POST)
         if form.is_valid():

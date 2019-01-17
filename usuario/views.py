@@ -11,53 +11,24 @@ from capacita.template_context_processors import is_admin
 
 @login_required
 def usuarios(request):
-    if (hasattr(request.user, 'profile')):
-        orgao_id = request.user.profile.orgao_id
-        orgao = Orgao.objects.get(cod_orgao = orgao_id).nome
-        profiles = Profile.objects.filter(orgao_id = orgao_id)
-        users = []
+    if hasattr(request.user, 'profile') and is_admin(request)['is_admin']:
+        try:
+            orgao_escolhido = int(request.POST['orgao'])
+            permissao = OrgaoPermissao.objects.get(orgao_id = request.POST['orgao'], grupo_id = 2)
+            profiles = Profile.objects.filter(orgaos = permissao)
+        except Exception as e:
+            orgao_escolhido = ''
+            profiles = Profile.objects.all()
 
-        for profile in profiles:
-            if (User.objects.get(id = profile.user_id) != request.user):
-                users.append(User.objects.get(id = profile.user_id))
-        admin = is_admin(request)
-        group = Group.objects.get(name='gestor')
-        group2 = Group.objects.get(name='admin')
-
-    else:
-        profiles = Profile.objects.all().exclude(ind_excluido = True)
-        orgao = ""
-        group2 = group = None
-
-        if ((group2 in request.user.groups.all())):
-            users = User.objects.exclude(id = request.user.id)
-
-    if (group2 in request.user.groups.all()):
-        users = User.objects.exclude(id = request.user.id)
+        users = User.objects.all()
         orgaos = Orgao.objects.all()
-        orgao = ''
-
-        if request.GET.get('orgao', ''):
-
-            user_orgao = request.GET.get('orgao', '')
-
-            profiles = Profile.objects.filter(orgao_id = user_orgao)
-            users = []
-
-            for profile in profiles:
-                if (User.objects.get(id = profile.user_id) != request.user):
-                    users.append(User.objects.get(id = profile.user_id))
-
-        return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao, 'orgaos' : orgaos})
+        return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgaos' : orgaos, 'orgao_escolhido': orgao_escolhido})
     else:
-        if ((group in request.user.groups.all())):
-            return render(request, 'usuarios.html', {'users' : users, 'profiles' : profiles, 'orgao' : orgao})
-        else:
-            return render(request, 'error.html')
+        return render(request, 'error.html')
 
 @login_required
 def usuario_new(request):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == 'POST' and admin:
         form = UserForm(request.POST)
         id_group = request.POST['group']
@@ -74,7 +45,7 @@ def usuario_new(request):
             else:
                 return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
 
-            return redirect("usuarios")
+            return redirect(request.META['HTTP_REFERER'])
         else:
             return render(request, 'usuario_edit.html', {'form' : form})
     elif request.method != 'POST':
@@ -93,34 +64,63 @@ def usuario_new(request):
         return redirect('error')
 
 @login_required
-def usuario_edit(request, pk):
-    usuario = get_object_or_404(User, pk=pk)
-
-    if request.method == "POST":
-        form = UserForm(request.POST, instance=usuario)
-        id_group = request.POST['group']
-        my_group = Group.objects.get(id=id_group)
-        if form.is_valid():
-            usuario = form.save(commit=False)
-            usuario.groups.clear()
-            profile = Profile.objects.get(user_id = usuario.id)
-            profile.orgao_id = request.POST['orgao']
-            profile.save()
-            my_group = Group.objects.get(id=id_group)
-            usuario.groups.add(my_group)
-            usuario.is_active = True
-            usuario.save()
-
-            return redirect("usuarios")
-    else:
-        form = UserForm(instance=usuario)
-        orgaos = Orgao.objects.all()
-        groups = Group.objects.all()
+def usuario_orgao_adicionar(request, pk):
+    profile = Profile.objects.get(pk = pk)
+    if request.method == "POST" and is_admin(request)['is_admin']:
+        if profile.orgao_ativo == request.POST['orgao']:
+            profile.orgao_ativo = null
+        permissao = OrgaoPermissao.objects.get(orgao_id = request.POST['orgao'], grupo_id = 2)
+        profile.orgaos.add(permissao)
+    elif not is_admin(request)['is_admin']:
+        return redirect('error')
 
     groups = Group.objects.all()
-    orgaos = Orgao.objects.all()
+    orgaos_usuario = profile.orgaos.filter(grupo_id = 2)
+    orgaos = Orgao.objects.all().exclude(cod_orgao__in = [orgao.orgao_id for orgao in orgaos_usuario])
+    return render(request, 'usuario_orgao.html', {'profile_user': profile, 'orgaos' : orgaos, 'groups' : groups, 'orgaos_usuario' : orgaos_usuario})
 
-    if is_admin(request):
-        return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario})
+@login_required
+def usuario_orgao_deletar(request, pk, orgao):
+    profile = Profile.objects.get(pk = pk)
+    if profile.orgao_ativo == orgao and is_admin(request)['is_admin']:
+        profile.orgao_ativo = null
+    elif not is_admin(request)['is_admin']:
+        return redirect('error')
+    permissao = OrgaoPermissao.objects.get(orgao_id = orgao, grupo_id = 2)
+    profile.orgaos.remove(permissao)
+    return redirect(request.META['HTTP_REFERER'])
+
+
+@login_required
+def usuario_edit(request, pk):
+    profile = get_object_or_404(Profile, id = pk)
+    usuario = get_object_or_404(User, pk=profile.user_id)
+    if request.method == "POST" and is_admin(request)['is_admin']:
+        form = UserForm(request.POST, instance=usuario)
+        if form.is_valid():
+            usuario = form.save(commit=False)
+            usuario.is_active = True
+            usuario.save()
+            return redirect(request.META['HTTP_REFERER'])
+    elif request.method != "POST":
+        form = UserForm(instance=usuario)
     else:
         return redirect('error')
+    groups = Group.objects.all()
+    orgaos = Orgao.objects.all()
+    orgaos_usuario = profile.orgaos.filter(grupo_id = 2)
+    return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario, 'orgaos_usuario' : orgaos_usuario})
+
+def admin_approve(request, pk):
+    if is_admin(request)['is_admin']:
+        Profile.objects.filter(pk=pk).update(is_admin=True)
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        return render(request, 'error.html')
+
+def admin_disapprove(request, pk):
+    if is_admin(request)['is_admin']:
+        Profile.objects.filter(pk=pk).update(is_admin=False)
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        return render(request, 'error.html')

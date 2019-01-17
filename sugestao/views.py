@@ -8,14 +8,14 @@ from capacita.template_context_processors import is_gestor, is_admin
 @login_required
 def sugestao(request):
     sugestoes = Sugestao.objects.all()
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         return render(request, 'sugestao.html', {'sugestoes' : sugestoes})
     else:
         return render(request, 'error.html')
 
 @login_required
 def sugestao_new(request):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == "POST" and admin:
         form = SugestaoForm(request.POST)
         if form.is_valid():

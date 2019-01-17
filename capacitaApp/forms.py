@@ -8,7 +8,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('orgao', )
+        fields = ('orgaos', )
 
 class GroupForm(forms.ModelForm):
 

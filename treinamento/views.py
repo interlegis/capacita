@@ -8,7 +8,7 @@ from capacita.template_context_processors import is_admin
 @login_required
 def treinamentos(request):
     treinamentos = Treinamento.objects.all().exclude(pk=-1)
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         return render(request, 'treinamento.html', {'treinamentos' : treinamentos})
     else:
         return render(request, 'error.html')
@@ -16,7 +16,7 @@ def treinamentos(request):
 @login_required
 def treinamento_edit(request, pk):
     treinamento = get_object_or_404(Treinamento, pk=pk)
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == "POST" and admin:
         form = TreinamentoForm(request.POST, instance=treinamento)
         if form.is_valid():
@@ -32,7 +32,7 @@ def treinamento_edit(request, pk):
 
 @login_required
 def treinamento_new(request):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == "POST" and admin:
         form = TreinamentoForm(request.POST)
         if form.is_valid():
@@ -48,7 +48,7 @@ def treinamento_new(request):
 
 @login_required
 def treinamento_delete(request, pk):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("treinamentos")
     else:
@@ -56,7 +56,7 @@ def treinamento_delete(request, pk):
 
 @login_required
 def treinamento_undelete(request, pk):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("treinamentos")
     else:

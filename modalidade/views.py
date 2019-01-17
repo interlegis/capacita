@@ -6,7 +6,7 @@ from capacita.template_context_processors import is_admin
 
 @login_required
 def modalidade(request):
-    if (hasattr(request.user, 'profile') and is_admin(request)):
+    if (hasattr(request.user, 'profile') and is_admin(request)['is_admin']):
         modalidades = Modalidade_Treinamento.objects.all()
         return render(request, 'modalidades.html', {'modalidades' : modalidades})
     else:
@@ -14,7 +14,7 @@ def modalidade(request):
 
 @login_required
 def modalidade_edit(request, pk):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     modalidade = get_object_or_404(Modalidade_Treinamento, pk=pk)
     if request.method == "POST" and admin:
         form = ModalidadeForm(request.POST, instance=modalidade)
@@ -31,7 +31,7 @@ def modalidade_edit(request, pk):
 
 @login_required
 def modalidade_new(request):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == "POST" and admin:
         form = ModalidadeForm(request.POST)
         if form.is_valid():
@@ -47,7 +47,7 @@ def modalidade_new(request):
 
 @login_required
 def modalidade_delete(request, pk):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         Modalidade_Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("modalidade")
     else:
@@ -55,7 +55,7 @@ def modalidade_delete(request, pk):
 
 @login_required
 def modalidade_undelete(request, pk):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         Modalidade_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("modalidade")
     else:

@@ -7,14 +7,14 @@ from capacita.template_context_processors import is_admin
 @login_required
 def tipos_treinamento(request):
     tipos = Tipo_Treinamento.objects.all()
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         return render(request, 'tipo_treinamento.html', {'tipos' : tipos})
     else:
         return render(request, 'error.html')
 
 @login_required
 def tipo_treinamento_delete(request, pk):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         Tipo_Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("tipos_treinamento")
     else:
@@ -22,7 +22,7 @@ def tipo_treinamento_delete(request, pk):
 
 @login_required
 def tipo_treinamento_undelete(request, pk):
-    if is_admin(request):
+    if is_admin(request)['is_admin']:
         Tipo_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("tipos_treinamento")
     else:
@@ -31,7 +31,7 @@ def tipo_treinamento_undelete(request, pk):
 @login_required
 def tipo_treinamento_edit(request,id):
     tipo = get_object_or_404(Tipo_Treinamento, pk=id)
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == 'POST' and admin:
         form = TipoTreinamentoForm(request.POST, instance=tipo, initial={'ind_excluido' : 0})
         if form.is_valid():
@@ -47,7 +47,7 @@ def tipo_treinamento_edit(request,id):
 
 @login_required
 def tipo_treinamento_new(request):
-    admin = is_admin(request)
+    admin = is_admin(request)['is_admin']
     if request.method == 'POST' and admin:
         form = TipoTreinamentoForm(request.POST)
         if form.is_valid():
