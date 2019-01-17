@@ -4,7 +4,7 @@
 
 
 <div class="table_div">
-  <h2 class="ui dividing header">Orgãos geridos - {{profile_user.user.username}}</h2>
+  <h2 class="ui dividing header">Orgãos geridos pelo usuário "{{profile_user.user.username}}"</h2>
   {% if orgaos_usuario %}
   <table class="ui celled padded table">
     <thead>
@@ -37,20 +37,13 @@
   <div style="padding-left: 1%; padding-bottom: 0%" class="table_div">
       <div class="content">
         <div class="row">
-          <h2 style="float: left;" class="ui header">Adicionar orgão<br></h2>
+          <h2 style="float: left;" class="ui header">Adicionar gestão de orgão<br></h2>
         </div>
       </div>
   </div>
 
   <div style="padding-left: 15%; padding-bottom: 0%; padding-right: 15%; margin-bottom: 80px;" class="table_div">
       <form class="ui form" method="post" >{% csrf_token %}
-            <div class="field">
-              <label>Função</label>
-              <select name="funcao">
-                      <option value="2">Gestor</option>
-                      <option value="3">Solicitante</option>
-              </select>
-            </div>
             <div class="field">
               <label>Orgão</label>
               <select name="orgao">
