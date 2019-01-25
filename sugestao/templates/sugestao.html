@@ -5,11 +5,11 @@
     {% if not sugestoes %}
     <div style="padding-left: 5%; padding-bottom: 4%" class="table_div">
         <div class="content">
-            <h2 style="float: left;" class="ui header">Sugestões solicitadas para {{profile.orgao.nome}}</h2>
+            <h2 style="float: left;" class="ui header">Sugestões solicitadas para {{profile.orgao_ativo}}</h2>
         </div>
     </div>
     <div style="padding-left: 5%; padding-bottom: 0%">
-        <div style="width:80%" class="ui warning message">Ainda não foi solicitado nenhuma sugestão para {{profile.orgao.nome}}.
+        <div style="width:80%" class="ui warning message">Ainda não foi solicitado nenhuma sugestão para {{profile.orgao_ativo}}.
         <br><br>
         Clique no botão abaixo para realizar uma sugestão
         </div>
@@ -20,7 +20,7 @@
     {% else %}
     <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
         <div class="content">
-            <h2 style="float: left;" class="ui header">PCASF {{sugestoes.0.cod_plano_capacitacao}} - Sugestões de Treinamento solicitadas para {{profile.orgao.nome}}</td>
+            <h2 style="float: left;" class="ui header">PCASF {{sugestoes.0.cod_plano_capacitacao}} - Sugestões de Treinamento solicitadas para {{profile.orgao_ativo}}</td>
             </h2>
         </div>
     </div>
