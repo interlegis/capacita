@@ -33,7 +33,7 @@
                 {% if subordinado.importado == True %}
                   Já foi importado!
                 {% elif subordinado.estado == True %}
-                  <a href="{% url 'importar_necessidade' pk=subordinado.cod_necessidade_orgao pk_atual=necessidades.first.cod_necessidade_orgao.cod_necessidade_orgao%}">Importar</a>
+                  <a href="{% url 'importar_necessidade' pk=subordinado.cod_necessidade_orgao pk_atual=cod_necessidade_orgao%}">Importar</a>
                 {% else %}
                   Aguarde o envio
                 {% endif %}

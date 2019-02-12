@@ -38,7 +38,7 @@ def necessidade(request):
             # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
             if(gestor):
                 return render(request, 'necessidade.html',
-                    {'necessidades' : necessidades, 'subordinados': subordinados_status, 'superior': superior})
+                    {'necessidades' : necessidades, 'cod_necessidade_orgao': necessidade_orgao.cod_necessidade_orgao, subordinados': subordinados_status, 'superior': superior})
             else:
                 return render(request, 'error.html')
     else:
