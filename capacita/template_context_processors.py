@@ -19,8 +19,7 @@ def is_admin(request):
 def is_gestor(request):
     try:
         profile = Profile.objects.get(user=request.user)
-        orgaos = profile.orgaos
-        if orgaos.filter(grupo_id = 2).filter(orgao = profile.orgao_ativo).exists():
+        if  profile.orgaos.get(pk = profile.orgao_ativo_id):
             return {'is_gestor': True}
         else:
             return {'is_gestor': False}

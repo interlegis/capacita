@@ -14,7 +14,7 @@ def usuarios(request):
     if hasattr(request.user, 'profile') and is_admin(request)['is_admin']:
         try:
             orgao_escolhido = int(request.POST['orgao'])
-            permissao = OrgaoPermissao.objects.get(orgao_id = request.POST['orgao'], grupo_id = 2)
+            permissao = Profile.orgaos.objects.get(orgao_id = request.POST['orgao'])
             profiles = Profile.objects.filter(orgaos = permissao)
         except Exception as e:
             orgao_escolhido = ''
@@ -69,14 +69,13 @@ def usuario_orgao_adicionar(request, pk):
     if request.method == "POST" and is_admin(request)['is_admin']:
         if profile.orgao_ativo == request.POST['orgao']:
             profile.orgao_ativo = null
-        permissao = OrgaoPermissao.objects.get(orgao_id = request.POST['orgao'], grupo_id = 2)
-        profile.orgaos.add(permissao)
+        profile.orgaos.add(request.POST['orgao'])
     elif not is_admin(request)['is_admin']:
         return redirect('error')
 
     groups = Group.objects.all()
-    orgaos_usuario = profile.orgaos.filter(grupo_id = 2)
-    orgaos = Orgao.objects.all().exclude(cod_orgao__in = [orgao.orgao_id for orgao in orgaos_usuario])
+    orgaos_usuario = profile.orgaos.filter()
+    orgaos = Orgao.objects.all().exclude(cod_orgao__in = [orgao.pk for orgao in orgaos_usuario])
     return render(request, 'usuario_orgao.html', {'profile_user': profile, 'orgaos' : orgaos, 'groups' : groups, 'orgaos_usuario' : orgaos_usuario})
 
 @login_required
@@ -86,8 +85,7 @@ def usuario_orgao_deletar(request, pk, orgao):
         profile.orgao_ativo = null
     elif not is_admin(request)['is_admin']:
         return redirect('error')
-    permissao = OrgaoPermissao.objects.get(orgao_id = orgao, grupo_id = 2)
-    profile.orgaos.remove(permissao)
+    profile.orgaos.remove(orgao)
     return redirect(request.META['HTTP_REFERER'])
 
 
@@ -108,7 +106,7 @@ def usuario_edit(request, pk):
         return redirect('error')
     groups = Group.objects.all()
     orgaos = Orgao.objects.all()
-    orgaos_usuario = profile.orgaos.filter(grupo_id = 2)
+    orgaos_usuario = profile.orgaos
     return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario, 'orgaos_usuario' : orgaos_usuario})
 
 def admin_approve(request, pk):

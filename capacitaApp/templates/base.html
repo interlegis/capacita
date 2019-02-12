@@ -62,10 +62,10 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 {% for orgao in profile.orgaos.all %}
-                  {% if orgao.orgao == profile.orgao_ativo and orgao.grupo_id == 2%}
-                    <a class="dropdown-item" style="font-weight:bolder; color: #01305c;" href="{% url 'mudanca_orgao' pk=orgao.orgao.cod_orgao %}">{{orgao.orgao.nome}}*</a>
-                  {% elif orgao.grupo_id == 2 %}
-                    <a class="dropdown-item" href="{% url 'mudanca_orgao' pk=orgao.orgao.cod_orgao %}">{{orgao.orgao.nome}}</a>
+                  {% if orgao == profile.orgao_ativo%}
+                    <a class="dropdown-item" style="font-weight:bolder; color: #01305c;" href="{% url 'mudanca_orgao' pk=orgao.cod_orgao %}">{{orgao.nome}}*</a>
+                  {% else %}
+                    <a class="dropdown-item" href="{% url 'mudanca_orgao' pk=orgao.cod_orgao %}">{{orgao.nome}}</a>
                   {% endif %}
                 {% endfor %}
                 <div class="dropdown-divider"></div>

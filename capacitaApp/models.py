@@ -43,18 +43,11 @@ class AuthGroup(models.Model):
         managed = False
         db_table = 'auth_group'
 
-class OrgaoPermissao(models.Model):
-    orgao = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE, related_name='orgao_id')
-    grupo = models.ForeignKey(AuthGroup, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'orgao_permissao'
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_admin = models.BooleanField(default=False)
     orgao_ativo = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE)
-    orgaos = models.ManyToManyField(OrgaoPermissao, related_name='orgao_permissao')
+    orgaos = models.ManyToManyField(Orgao, related_name='orgao_gestor')
 
     class Meta:
         ordering = ['user']

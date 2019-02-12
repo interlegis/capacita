@@ -16,9 +16,9 @@
     <tbody>
       {% for orgao in orgaos_usuario %}
       <tr class="center aligned">
-          <td>{{orgao.orgao.nome}}</td>
+          <td>{{orgao.nome}}</td>
           <td>
-              <a class="links" href="{% url 'usuario:usuario_orgao_deletar' pk=profile_user.id orgao=orgao.orgao.cod_orgao %}"><i class="trash icon"></i></a>
+              <a class="links" href="{% url 'usuario:usuario_orgao_deletar' pk=profile_user.id orgao=orgao.cod_orgao %}"><i class="trash icon"></i></a>
           </td>
       </tr>
     {% endfor %}

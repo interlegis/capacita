@@ -86,13 +86,12 @@ def orgao_undelete(request, id):
 def gestores_orgao(request, pk):
     if (hasattr(request.user, 'profile')) and is_admin(request)['is_admin']:
         orgao_escolhido = Orgao.objects.get(pk=pk)
-        permissao = OrgaoPermissao.objects.get(orgao_id = pk, grupo_id = 2)
         if request.method == "POST":
             profile = Profile.objects.get(pk = request.POST['usuario'])
-            profile.orgaos.add(permissao)
+            profile.orgaos.add(pk)
 
-        profiles_orgao = Profile.objects.filter(orgaos = permissao)
-        profiles = Profile.objects.exclude(orgaos = permissao)
+        profiles_orgao = Profile.objects.filter(orgaos = pk)
+        profiles = Profile.objects.exclude(orgaos = pk)
         users = User.objects.all()
         return render(request, 'gestores_orgao.html', {'users' : users, 'profiles' : profiles, 'profiles_orgao' : profiles_orgao, 'orgao_escolhido': orgao_escolhido})
     else:
