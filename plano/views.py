@@ -51,7 +51,7 @@ def plano_new(request):
         form = PlanoForm(request.POST)
         if form.is_valid():
             plano = form.save()
-            for orgao in Orgao.objects.all(): #Cria uma necessidade orgão em todos os orgãos
+            for orgao in Orgao.objects.all(): #Cria uma necessidade orgão em todos os órgãos
                 Necessidade_Orgao.objects.create(cod_orgao = orgao, cod_plano_capacitacao = plano, estado = False)
             return redirect('plano')
         else:

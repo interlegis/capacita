@@ -8,14 +8,12 @@ from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from capacita.template_context_processors import is_admin
 
-
 @login_required
 def usuarios(request):
     if hasattr(request.user, 'profile') and is_admin(request)['is_admin']:
         try:
             orgao_escolhido = int(request.POST['orgao'])
-            permissao = Profile.orgaos.objects.get(orgao_id = request.POST['orgao'])
-            profiles = Profile.objects.filter(orgaos = permissao)
+            profiles = Profile.objects.filter(orgaos__pk = orgao_escolhido)
         except Exception as e:
             orgao_escolhido = ''
             profiles = Profile.objects.all()
@@ -31,21 +29,18 @@ def usuario_new(request):
     admin = is_admin(request)['is_admin']
     if request.method == 'POST' and admin:
         form = UserForm(request.POST)
-        id_group = request.POST['group']
-        my_group = Group.objects.get(id=id_group)
         if form.is_valid():
-            user_check = User.objects.filter(username='zequinha').count()
+            user_check = User.objects.filter(username=form.fields['username']).count()
             if(user_check == 0):
                 usuario = form.save()
-                profile = Profile.objects.create(orgao_id = request.POST['orgao'], user_id = usuario.id)
+                profile = Profile.objects.create(user_id = usuario.id)
                 usuario.is_active = True
-                usuario.groups.add(my_group)
                 profile.save()
                 usuario.save()
+                return redirect('usuario:usuarios')
             else:
                 return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
 
-            return redirect(request.META['HTTP_REFERER'])
         else:
             return render(request, 'usuario_edit.html', {'form' : form})
     elif request.method != 'POST':
@@ -56,10 +51,9 @@ def usuario_new(request):
         return render(request, 'error.html')
 
     orgaos = Orgao.objects.all()
-    groups = Group.objects.all()
 
     if admin:
-        return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
+        return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'usuario' : True})
     else:
         return redirect('error')
 
@@ -67,8 +61,9 @@ def usuario_new(request):
 def usuario_orgao_adicionar(request, pk):
     profile = Profile.objects.get(pk = pk)
     if request.method == "POST" and is_admin(request)['is_admin']:
-        if profile.orgao_ativo == request.POST['orgao']:
-            profile.orgao_ativo = null
+        if not profile.orgao_ativo:
+            profile.orgao_ativo = Orgao.objects.get(pk=request.POST['orgao'])
+            profile.save()
         profile.orgaos.add(request.POST['orgao'])
     elif not is_admin(request)['is_admin']:
         return redirect('error')
@@ -81,11 +76,16 @@ def usuario_orgao_adicionar(request, pk):
 @login_required
 def usuario_orgao_deletar(request, pk, orgao):
     profile = Profile.objects.get(pk = pk)
-    if profile.orgao_ativo == orgao and is_admin(request)['is_admin']:
-        profile.orgao_ativo = null
+    profile.orgaos.remove(orgao)
+    if profile.orgao_ativo == Orgao.objects.get(pk=orgao) and is_admin(request)['is_admin']:
+        if profile.orgaos.count() == 0:
+            profile.orgao_ativo = None
+            profile.save()
+        else:
+            profile.orgao_ativo = profile.orgaos.first()
+            profile.save()
     elif not is_admin(request)['is_admin']:
         return redirect('error')
-    profile.orgaos.remove(orgao)
     return redirect(request.META['HTTP_REFERER'])
 
 
@@ -99,7 +99,7 @@ def usuario_edit(request, pk):
             usuario = form.save(commit=False)
             usuario.is_active = True
             usuario.save()
-            return redirect(request.META['HTTP_REFERER'])
+            return redirect('usuario:usuarios')
     elif request.method != "POST":
         form = UserForm(instance=usuario)
     else:

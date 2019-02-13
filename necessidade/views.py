@@ -19,28 +19,27 @@ def necessidade(request):
         gestor = is_gestor(request)
 
         #Caso o orgão já tenha enviado o pedido para o orgão superior
-        if (necessidade_orgao.estado == True):
-            return render(request, 'plano_fechado.html')
+        # if (necessidade_orgao.estado == True):
+        #     return render(request, 'plano_fechado.html')
+        # else:
+        orgao_object = Orgao.objects.get(nome = orgao)
+        superior = None
+        if orgao_object.cod_superior:
+            superior = Orgao.objects.get(cod_orgao = orgao_object.cod_superior.cod_orgao)
+
+        subordinados = Orgao.objects.all().filter(cod_superior = orgao_object.cod_orgao)
+        necessidade_subordinados = Necessidade_Orgao.objects.all().filter(cod_orgao__in = subordinados, cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao)
+        subordinados_status = []
+        for subordinado in subordinados:
+            necessidade_subordinado = necessidade_subordinados.get(cod_orgao = subordinado)
+            subordinados_status.append({'nome': subordinado.nome, 'estado': necessidade_subordinado.estado, 'cod_necessidade_orgao': necessidade_subordinado.cod_necessidade_orgao, 'importado': necessidade_subordinado.importado})
+        necessidades = Necessidade.objects.all().exclude(ind_excluido = True).filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
+        total_necessidade = necessidades.filter(aprovado=False).count
+        # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
+        if(gestor):
+            return render(request, 'necessidade.html', {'estado': necessidade_orgao.estado,'necessidades' : necessidades, 'total_necessidade': total_necessidade, 'cod_necessidade_orgao': necessidade_orgao.cod_necessidade_orgao, 'subordinados': subordinados_status, 'superior': superior})
         else:
-            orgao_object = Orgao.objects.get(nome = orgao)
-            superior = None
-            if orgao_object.cod_superior:
-                superior = Orgao.objects.get(cod_orgao = orgao_object.cod_superior.cod_orgao)
-
-            subordinados = Orgao.objects.all().filter(cod_superior = orgao_object.cod_orgao)
-            necessidade_subordinados = Necessidade_Orgao.objects.all().filter(cod_orgao__in = subordinados, cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao)
-            subordinados_status = []
-            for subordinado in subordinados:
-                necessidade_subordinado = necessidade_subordinados.get(cod_orgao = subordinado)
-                subordinados_status.append({'nome': subordinado.nome, 'estado': necessidade_subordinado.estado, 'cod_necessidade_orgao': necessidade_subordinado.cod_necessidade_orgao, 'importado': necessidade_subordinado.importado})
-            necessidades = Necessidade.objects.all().exclude(ind_excluido = True).filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
-
-            # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
-            if(gestor):
-                return render(request, 'necessidade.html',
-                    {'necessidades' : necessidades, 'cod_necessidade_orgao': necessidade_orgao.cod_necessidade_orgao, subordinados': subordinados_status, 'superior': superior})
-            else:
-                return render(request, 'error.html')
+            return render(request, 'error.html')
     else:
         return redirect('error')
 
@@ -198,9 +197,10 @@ def importar_necessidade(request, pk, pk_atual):
         necessidade_orgao = get_object_or_404(Necessidade_Orgao, pk=pk)
         necessidade_orgao.importado = True
         necessidade_orgao.save()
-        necessidades = Necessidade.objects.all().filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
+        necessidades = Necessidade.objects.all().filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao, aprovado=True)
         for necessidade in necessidades:
             necessidade_importada = necessidade
+            necessidade_importada.aprovado = False
             necessidade_importada.cod_necessidade = None
             necessidade_importada.cod_necessidade_orgao = Necessidade_Orgao.objects.get(cod_necessidade_orgao = pk_atual)
             necessidade_importada.save()

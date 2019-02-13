@@ -57,6 +57,9 @@
         {% endif %}
         <div class="right menu dropdown show">
             {% if user.is_authenticated %}
+            <div class="ui item">
+              {{ profile.orgao_ativo }}
+            </div>
             <a class="ui item dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ user.username }}
             </a>

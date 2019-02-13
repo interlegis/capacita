@@ -29,11 +29,20 @@ def home(request):
 
 @login_required
 def relatorio(request):
-    orgao_id = Profile.objects.get(user=request.user).orgao_ativo_id
-    orgao = Orgao.objects.get(nome = "ILB")
     plano_habilitado = Plano_Capacitacao.objects.filter(plano_habilitado = True)
-    necessidade_orgao = Necessidade_Orgao.objects.get(cod_orgao = orgao, cod_plano_capacitacao = plano_habilitado[0])
-    if is_admin(request)['is_admin']:
+    orgao_id = Profile.objects.get(user=request.user).orgao_ativo_id
+    orgaos = Orgao.objects.filter(cod_superior=None)
+    necessidades = Necessidade.objects.none()
+    # for orgao in orgaos:
+    #     try:
+    #         necessidade_orgao = Necessidade_Orgao.objects.get(cod_orgao = orgao, cod_plano_capacitacao = plano_habilitado[0], estado=True)
+    #         necessidades = necessidades | Necessidade.objects.all().filter(ind_excluido = False, cod_necessidade_orgao = necessidade_orgao, aprovado=True)
+    #     except Exception as e:
+    #         print(e)
+
+    if not necessidades:
+        return render(request, 'tabelaErro.html')
+    elif is_admin(request)['is_admin']:
         # Create a workbook and add a worksheet.
         workbook = xlsxwriter.Workbook('Necessidades.xlsx')
         worksheet = workbook.add_worksheet()
@@ -44,12 +53,6 @@ def relatorio(request):
         bold = workbook.add_format({'bold': True, 'center_across' : True})
         center = workbook.add_format({'center_across' : True})
 
-
-        necessidades = Necessidade.objects.all().filter(ind_excluido = False, cod_necessidade_orgao = necessidade_orgao)
-
-        necessidades = necessidades.filter(ind_excluido = 0)
-
-
         row = 0
         col = 0
 
@@ -57,14 +60,14 @@ def relatorio(request):
         worksheet.write(row, col + 1,     "Órgão", bold)
         worksheet.write(row, col + 2,     "Área de Conhecimento", bold)
         worksheet.write(row, col + 3,     "Treinamento", bold)
-        worksheet.write(row, col + 5,     "Modalidade", bold)
-        worksheet.write(row, col + 6,     "Nível", bold)
-        worksheet.write(row, col + 7,     "Carga Horária", bold)
-        worksheet.write(row, col + 8,     "Tipo de Treinamento", bold)
-        worksheet.write(row, col + 9,     "Prioridade", bold)
-        worksheet.write(row, col + 10,     "Quantidade de Servidores", bold)
-        worksheet.write(row, col + 11,     "Objetivo", bold)
-        worksheet.write(row, col + 12,     "Justificativa", bold)
+        worksheet.write(row, col + 4,     "Modalidade", bold)
+        worksheet.write(row, col + 5,     "Nível", bold)
+        worksheet.write(row, col + 6,     "Carga Horária", bold)
+        worksheet.write(row, col + 7,     "Tipo de Treinamento", bold)
+        worksheet.write(row, col + 8,     "Prioridade", bold)
+        worksheet.write(row, col + 9,     "Quantidade de Servidores", bold)
+        worksheet.write(row, col + 10,     "Objetivo", bold)
+        worksheet.write(row, col + 11,     "Justificativa", bold)
 
         row += 1
 
@@ -81,14 +84,14 @@ def relatorio(request):
             worksheet.write(row, col + 1, necessidade.cod_necessidade_orgao.cod_orgao.nome, center)
             worksheet.write(row, col + 2, necessidade.cod_area_conhecimento.txt_descricao, center)
             worksheet.write(row, col + 3, treinamento, center)
-            worksheet.write(row, col + 5, necessidade.cod_modalidade.nome, center)
-            worksheet.write(row, col + 6, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
-            worksheet.write(row, col + 7, necessidade.hor_duracao, center)
-            worksheet.write(row, col + 8, necessidade.cod_tipo_treinamento.cod_tipo_treinamento, center)
-            worksheet.write(row, col + 9, Prioridade.objects.get(cod_prioridade=necessidade.cod_prioridade.cod_prioridade).nome, center)
-            worksheet.write(row, col + 10, necessidade.qtd_servidor, center)
-            worksheet.write(row, col + 11, Objetivo_Treinamento.objects.get(cod_objetivo_treinamento=necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento).nome, center)
-            worksheet.write(row, col + 12, necessidade.justificativa, center)
+            worksheet.write(row, col + 4, necessidade.cod_modalidade.nome, center)
+            worksheet.write(row, col + 5, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
+            worksheet.write(row, col + 6, necessidade.hor_duracao, center)
+            worksheet.write(row, col + 7, necessidade.cod_tipo_treinamento.cod_tipo_treinamento, center)
+            worksheet.write(row, col + 8, Prioridade.objects.get(cod_prioridade=necessidade.cod_prioridade.cod_prioridade).nome, center)
+            worksheet.write(row, col + 9, necessidade.qtd_servidor, center)
+            worksheet.write(row, col + 10, Objetivo_Treinamento.objects.get(cod_objetivo_treinamento=necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento).nome, center)
+            worksheet.write(row, col + 11, necessidade.justificativa, center)
 
         #    if (necessidade['aprovado'] == 0):
         #        worksheet.write(row, col + 8, 'Sim', center)

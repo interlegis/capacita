@@ -7,7 +7,7 @@ from necessidade.models import *
 class NecessidadeForm(forms.ModelForm):
     # Adicionando forms
     justificativa = forms.CharField(widget=forms.Textarea)
-    hor_duracao = forms.CharField(required=False)
+    hor_duracao = forms.DecimalField(required=False)
     treinamento = forms.ChoiceField()
 
     def __init__(self, *args, **kwargs):
@@ -16,7 +16,7 @@ class NecessidadeForm(forms.ModelForm):
         super(NecessidadeForm, self).__init__(*args, **kwargs)
 
         # treinamento
-        treinamentos = emptyField + [(treinamento.pk, treinamento) for treinamento in Treinamento.objects.all().exclude(cod_treinamento = -1)] + treinamento_outro
+        treinamentos = emptyField + treinamento_outro + [(treinamento.pk, treinamento) for treinamento in Treinamento.objects.all().exclude(cod_treinamento = -1)]
         self.fields['treinamento'] = forms.ChoiceField(choices= treinamentos)
         self.fields['treinamento'].widget.attrs['onChange'] = 'selectSugestao(this)'
 

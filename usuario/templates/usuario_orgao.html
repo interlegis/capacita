@@ -4,12 +4,12 @@
 
 
 <div class="table_div">
-  <h2 class="ui dividing header">Orgãos geridos pelo usuário "{{profile_user.user.username}}"</h2>
+  <h2 class="ui dividing header">Órgãos geridos pelo usuário "{{profile_user.user.username}}"</h2>
   {% if orgaos_usuario %}
   <table class="ui celled padded table">
     <thead>
       <tr class="center aligned">
-        <th>Orgão</th>
+        <th>Órgão</th>
         <th>Remover gestão</th>
       </tr>
     </thead>
@@ -45,14 +45,14 @@
   <div style="padding-left: 15%; padding-bottom: 0%; padding-right: 15%; margin-bottom: 80px;" class="table_div">
       <form class="ui form" method="post" >{% csrf_token %}
             <div class="field">
-              <label>Orgão</label>
+              <label>Órgão</label>
               <select name="orgao">
                 {% for orgao in orgaos%}
                       <option value="{{orgao.cod_orgao}}">{{orgao.nome}}</option>
                 {% endfor %}
               </select>
             </div>
-          <button class="ui primary button" type="submit">Adicionar Orgão</button>
+          <button class="ui primary button" type="submit">Adicionar Órgão</button>
       </form>
   </div>
 </div>

@@ -4,7 +4,7 @@
   {% if subordinados %}
     <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
       <div class="content">
-        <h2 style="float: left;" class="ui header">Orgãos subordinados</td>
+        <h2 style="float: left;" class="ui header">Órgãos subordinados</td>
         </h2>
       </div>
     </div>
@@ -13,7 +13,7 @@
       <table class="ui celled padded table">
         <thead>
           <tr class="center aligned">
-            <th>Orgão Subordinado</th>
+            <th>Órgão Subordinado</th>
             <th>Estado de envio</th>
             <th>Importar</th>
           </tr>
@@ -45,7 +45,69 @@
       <br>
     </div>
   {% endif %}
-  {% if not necessidades %}
+  {% if estado %}
+  <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
+      <div class="content">
+          <h2 style="float: left;" class="ui header">PCASF {{necessidades.0.cod_necessidade_orgao.cod_plano_capacitacao}} - Treinamentos solicitados para {{user.profile.orgao_ativo}}</td>
+          </h2>
+      </div>
+  </div>
+  <div style="padding-bottom:0%" class="table_div">
+      <br>
+      <table class="ui celled padded table">
+          <thead>
+              <tr class="center aligned">
+              <th>Área de Conhecimento</th>
+              <th>Treinamento</th>
+              <th>Quantidade de Servidores</th>
+              <th>Nível</th>
+              <th>Carga Horária</th>
+              <th>Modalidade</th>
+              <th>Prioridade</th>
+              <th>Ver</th>
+              {% if is_gestor%}
+              <th>Aprovado</th>
+              {% endif %}
+              </tr>
+          </thead>
+          <tbody>
+
+              {% for necessidade in necessidades %}
+                  <tr class="center aligned">
+                      <td>{{necessidade.cod_area_conhecimento}}</td>
+                      {% if necessidade.cod_treinamento.cod_treinamento == -1 %}
+                      <td>{{necessidade.txt_descricao}}</td>
+                      {% else %}
+                      <td>{{necessidade.cod_treinamento.nome}}</td>
+                      {% endif %}
+                      <td>{{necessidade.qtd_servidor}}</td>
+                      <td>{{necessidade.cod_nivel}}</td>
+                      {% if necessidade.hor_duracao %}
+                      <td>{{necessidade.hor_duracao}}</td>
+                      {% else %}
+                      <td>----</td>
+                      {% endif %}
+                      <td>{{necessidade.cod_modalidade}}</td>
+                      <td>{{necessidade.cod_prioridade}}</td>
+                      <td><a class="links" href="{% url 'necessidade_show' necessidade.cod_necessidade %}"><i class="search icon"></i></a></td>
+                      {% if is_gestor %}
+                      <th>
+                        {% if necessidade.aprovado == True %}
+                        <i class="check icon"></i>
+                        {% else %}
+                        <i class="delete icon"></i>
+                        {% endif %}
+                      </th>
+                      {% endif %}
+                  </tr>
+              {% endfor %}
+
+          </tbody>
+      </table>
+      <br><br><br><br>
+  </div>
+
+  {% elif not necessidades %}
     <div style="padding-left: 5%; padding-bottom: 4%" class="table_div">
         <div class="content">
             <h2 style="float: left;" class="ui header">Treinamentos solicitados para {{user.profile.orgao_ativo}}</h2>
@@ -99,7 +161,11 @@
                         {% endif %}
                         <td>{{necessidade.qtd_servidor}}</td>
                         <td>{{necessidade.cod_nivel}}</td>
+                        {% if necessidade.hor_duracao %}
                         <td>{{necessidade.hor_duracao}}</td>
+                        {% else %}
+                        <td>----</td>
+                        {% endif %}
                         <td>{{necessidade.cod_modalidade}}</td>
                         <td>{{necessidade.cod_prioridade}}</td>
                         <td><a class="links" href="{% url 'necessidade_show' necessidade.cod_necessidade %}"><i class="search icon"></i></a></td>
@@ -126,11 +192,11 @@
         {{necessidades.first.cod_necessidade.cod_necessidade_orgao}}
       </h1>
         <a href="/necessidade/new/"><button class="ui button basic secondary">Novo</button></a>
-        <button class="ui button basic secondary" data-toggle="modal" data-target="#confirm-submit">Enviar para
+        <button class="ui button basic secondary" data-toggle="modal" data-target="#confirm-submit">
           {% if superior %}
-            {{ superior }}
+            Enviar para {{ superior }}
           {% else %}
-            Nome pessoa
+            Salvar
           {% endif %}
         </button>
       <div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -144,6 +210,14 @@
               </div>
               <div class="modal-body">
                 <h4 class="aviso-corpo" style="color:red;">Após o envio para o superior não será possível enviar novamente neste plano de capacitação.</h4>
+                  <h6 style="color:red;">
+                    *<b>{{ total_necessidade }}</b>
+                    {%if total_necessidade == 1 %}
+                      Necessidade não foi aprovada.
+                    {% else %}
+                      Necessidades não foram aprovadas.
+                    {% endif %}
+                  </h6>
                   {% for subordinado in subordinados %}
                     {% if subordinado.importado == False %}
                       <h6 style="color:red;">

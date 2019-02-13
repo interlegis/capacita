@@ -13,18 +13,8 @@ from capacita.template_context_processors import is_admin
 @login_required
 def orgao(request):
     if (hasattr(request.user, 'profile')):
-        orgaos_list = Orgao.objects.all()
-        page = request.GET.get('page', 1)
-        paginator = Paginator(orgaos_list, 10)
-        permissao = False
-        paginator = Paginator(orgaos_list, 6)
         if is_admin(request)['is_admin']:
-            try:
-                orgaos = paginator.page(page)
-            except PageNotAnInteger:
-                orgaos = paginator.page(1)
-            except EmptyPage:
-                orgaos = paginator.page(paginator.num_pages)
+            orgaos = Orgao.objects.all()
             return render(request, 'orgao.html', {'orgaos' : orgaos})
         else:
             return render(request, 'error.html')
@@ -87,7 +77,10 @@ def gestores_orgao(request, pk):
     if (hasattr(request.user, 'profile')) and is_admin(request)['is_admin']:
         orgao_escolhido = Orgao.objects.get(pk=pk)
         if request.method == "POST":
+            print("AHORRRA")
             profile = Profile.objects.get(pk = request.POST['usuario'])
+            profile.orgao_ativo = Orgao.objects.get(pk=pk)
+            profile.save()
             profile.orgaos.add(pk)
 
         profiles_orgao = Profile.objects.filter(orgaos = pk)

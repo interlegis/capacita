@@ -47,21 +47,6 @@
             <div class="column">
                 <strong>Usuário</strong>
                 <p>{{ necessidade.cod_usuario.username }}</p>
-                {% if is_admin %}
-                <strong>Aprovado</strong>
-                <form class="ui form" action="" method="POST">{% csrf_token %}
-                    <select style="width: 100px;" onchange="this.form.submit();" class="ui field" name="aprovado">
-                        {% if necessidade.aprovado == True %}
-                            <option value="True" selected>Sim</option>
-                            <option value="False">Não</option>
-                        {% endif %}
-                        {% if necessidade.aprovado == False %}
-                            <option value="True">Sim</option>
-                            <option value="False" selected>Não</option>
-                        {% endif %}
-                    </select>
-                </form>
-                {% endif %}
             </div>
         </div>
         <br>
