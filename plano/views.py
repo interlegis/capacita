@@ -24,7 +24,8 @@ def plano_delete(request, id):
             return redirect("plano")
         except Exception as e:
             print(e)
-            return render(request, 'deleteError.html')
+            planos = Plano_Capacitacao.objects.all()
+            return render(request, 'deleteError.html', {'url': 'plano_capacitacao.html', 'planos': planos})
     else:
         return render(request, 'error.html')
 

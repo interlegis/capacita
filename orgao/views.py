@@ -63,7 +63,8 @@ def orgao_delete(request, id):
             return redirect("orgao")
         except Exception as e:
             print(e)
-            return render(request, 'deleteError.html')
+            orgaos = Orgao.objects.all()
+            return render(request, 'deleteError.html', {'url': 'orgao.html', 'orgaos': orgaos})
     else:
         return render(request, 'error.html')
 

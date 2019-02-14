@@ -54,7 +54,8 @@ def objetivo_delete(request, pk):
             return redirect("objetivos")
         except Exception as e:
             print(e)
-            return render(request, 'deleteError.html')
+            objetivos = Objetivo_Treinamento.objects.all()
+            return render(request, 'deleteError.html', {'url': 'objetivos.html', 'objetivos': objetivos})
     else:
         return render(request, 'error.html')
 

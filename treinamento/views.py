@@ -70,6 +70,6 @@ def treinamento_delete(request, pk):
             return redirect("treinamentos")
         except Exception as e:
             print(e)
-            return render(request, 'deleteError.html')
+            return render(request, 'deleteError.html', {'url': 'treinamentos.html'})
     else:
         return render(request, 'error.html')

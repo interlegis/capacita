@@ -20,7 +20,8 @@ def tipo_treinamento_delete(request, pk):
             return redirect("tipos_treinamento")
         except Exception as e:
             print(e)
-            return render(request, 'deleteError.html')
+            tipos = Tipo_Treinamento.objects.all()
+            return render(request, 'deleteError.html', {'url': 'tipo_treinamento.html', 'tipos': tipos})
     else:
         return render(request, 'error.html')
 

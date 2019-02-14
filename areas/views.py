@@ -17,10 +17,12 @@ def area_delete(request, pk):
     if is_admin(request)['is_admin']:
         try:
             Area_Conhecimento.objects.filter(pk=pk).delete()
+            areas = Area_Conhecimento.objects.all();
             return redirect("areas")
         except Exception as e:
             print(e)
-            return render(request, 'deleteError.html')
+            areas = Area_Conhecimento.objects.all();
+            return render(request, 'deleteError.html', {'url': 'areas.html', 'areas': areas})
     else:
         return render(request, 'error.html')
 

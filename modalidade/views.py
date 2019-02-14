@@ -53,7 +53,8 @@ def modalidade_delete(request, pk):
             return redirect("modalidade")
         except Exception as e:
             print(e)
-            return render(request, 'deleteError.html')
+            modalidades = Modalidade_Treinamento.objects.all()
+            return render(request, 'deleteError.html', {'url': 'modalidades.html', 'modalidades': modalidades})
     else:
         return redirect('error')
 

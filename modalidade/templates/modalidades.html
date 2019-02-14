@@ -25,12 +25,31 @@
                         {% else %}
                         <td><a class="links" href="{% url 'modalidade_visible' modalidade.cod_modalidade %}"><i class="eye slash icon"></i></a></td>
                         {% endif %}
-                        <td><a class="links" href="{% url 'modalidade_delete' modalidade.cod_modalidade %}"><i class="trash icon"></i></a></td>
+                        <td><a class="links" href="#" data-target="#{{modalidade.cod_modalidade}}" data-toggle="modal"><i class="trash icon"></i></a></td>
                     </tr>
+                    <div class="modal fade" id={{modalidade.cod_modalidade}} tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content" style="border:2px solid #01305c61;">
+                          <div class="modal-header">
+                            <h3 class="modal-title aviso-titulo" style="color: #01305c;">Tem certeza que deseja excluir?<h3>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="ui button basic secondary" data-dismiss="modal">Não</button>
+                              <a href="{% url 'modalidade_delete' modalidade.cod_modalidade %}">
+                                <button type="button" class="ui button basic secondary">Sim</button>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                 {% endfor %}
 
             </tbody>
         </table>
+
         <br>
         <a href="/modalidade/new/"><button class="ui button basic secondary">Novo</button></a>
     </div>
