@@ -28,6 +28,12 @@ def home(request):
     return render(request, 'home.html')
 
 @login_required
+def createProfile(request):
+    profile = Profile.objects.create(user_id = request.user.id)
+    profile.save()
+    return render(request, 'home.html')
+
+@login_required
 def relatorio(request):
     plano_habilitado = Plano_Capacitacao.objects.filter(plano_habilitado = True)
     orgao_id = Profile.objects.get(user=request.user).orgao_ativo_id

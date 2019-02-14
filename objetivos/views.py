@@ -49,13 +49,26 @@ def objetivo_new(request):
 def objetivo_delete(request, pk):
     admin = is_admin(request)['is_admin']
     if admin:
+        try:
+            Objetivo_Treinamento.objects.filter(pk=pk).delete()
+            return redirect("objetivos")
+        except Exception as e:
+            print(e)
+            return render(request, 'deleteError.html')
+    else:
+        return render(request, 'error.html')
+
+@login_required
+def objetivo_invisible(request, pk):
+    admin = is_admin(request)['is_admin']
+    if admin:
         Objetivo_Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("objetivos")
     else:
         return render(request, 'error.html')
 
 @login_required
-def objetivo_undelete(request, pk):
+def objetivo_visible(request, pk):
     admin = is_admin(request)['is_admin']
     if admin:
         Objetivo_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)

@@ -48,13 +48,26 @@ def modalidade_new(request):
 @login_required
 def modalidade_delete(request, pk):
     if is_admin(request)['is_admin']:
+        try:
+            Modalidade_Treinamento.objects.filter(pk=pk).delete()
+            return redirect("modalidade")
+        except Exception as e:
+            print(e)
+            return render(request, 'deleteError.html')
+    else:
+        return redirect('error')
+
+
+@login_required
+def modalidade_invisible(request, pk):
+    if is_admin(request)['is_admin']:
         Modalidade_Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("modalidade")
     else:
         return redirect('error')
 
 @login_required
-def modalidade_undelete(request, pk):
+def modalidade_visible(request, pk):
     if is_admin(request)['is_admin']:
         Modalidade_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("modalidade")

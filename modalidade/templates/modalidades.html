@@ -11,6 +11,7 @@
                     <th>Nome</th>
                     <th>Editar</th>
                     <th>Visível</th>
+                    <th>Excluir</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,11 +21,11 @@
                         <td>{{modalidade.nome}}</td>
                         <td><a class="links" href="{% url 'modalidade_edit' modalidade.cod_modalidade %}"><i class="pencil icon"></i></a></td>
                         {% if modalidade.ind_excluido == False %}
-                        <td><a class="links" href="{% url 'modalidade_delete' modalidade.cod_modalidade %}"><i class="eye icon"></i></a></td>
+                        <td><a class="links" href="{% url 'modalidade_invisible' modalidade.cod_modalidade %}"><i class="eye icon"></i></a></td>
                         {% else %}
-                        <td><a class="links" href="{% url 'modalidade_undelete' modalidade.cod_modalidade %}"><i class="eye slash icon"></i></a></td>
+                        <td><a class="links" href="{% url 'modalidade_visible' modalidade.cod_modalidade %}"><i class="eye slash icon"></i></a></td>
                         {% endif %}
-
+                        <td><a class="links" href="{% url 'modalidade_delete' modalidade.cod_modalidade %}"><i class="trash icon"></i></a></td>
                     </tr>
                 {% endfor %}
 

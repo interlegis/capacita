@@ -47,7 +47,7 @@ def treinamento_new(request):
         return render(request, 'error.html')
 
 @login_required
-def treinamento_delete(request, pk):
+def treinamento_invisible(request, pk):
     if is_admin(request)['is_admin']:
         Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("treinamentos")
@@ -55,9 +55,21 @@ def treinamento_delete(request, pk):
         return render(request, 'error.html')
 
 @login_required
-def treinamento_undelete(request, pk):
+def treinamento_visible(request, pk):
     if is_admin(request)['is_admin']:
         Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("treinamentos")
+    else:
+        return render(request, 'error.html')
+
+@login_required
+def treinamento_delete(request, pk):
+    if is_admin(request)['is_admin']:
+        try:
+            Treinamento.objects.filter(pk=pk).delete()
+            return redirect("treinamentos")
+        except Exception as e:
+            print(e)
+            return render(request, 'deleteError.html')
     else:
         return render(request, 'error.html')

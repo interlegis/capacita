@@ -17,7 +17,7 @@
     <!-- <script src="{% static 'js/dropdown.js' %}"></script> -->
 </head>
 <body>
-    <div class="ui inverted menu bgSenado">
+    <div class="ui inverted menu bgSenado" style="margin: 0rem;">
         <div class="item">
           <a href="https://www.senado.gov.br">
             <img class="logoSenado" src="{% static 'images/logo_senado_federal.svg' %}">
@@ -77,6 +77,8 @@
             {% endif %}
         </div>
     </div>
+    {% block aviso %}
+    {% endblock %}
 
     {% if user.is_authenticated %}
         {% block content %}

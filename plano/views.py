@@ -19,6 +19,19 @@ def plano(request):
 def plano_delete(request, id):
     if is_admin(request)['is_admin']:
         plano = get_object_or_404(Plano_Capacitacao, pk=id)
+        try:
+            plano.delete()
+            return redirect("plano")
+        except Exception as e:
+            print(e)
+            return render(request, 'deleteError.html')
+    else:
+        return render(request, 'error.html')
+
+@login_required
+def plano_invisible(request, id):
+    if is_admin(request)['is_admin']:
+        plano = get_object_or_404(Plano_Capacitacao, pk=id)
         plano.ind_excluido = 1
         plano.save()
         return redirect("plano")
@@ -26,7 +39,7 @@ def plano_delete(request, id):
         return render(request, 'error.html')
 
 @login_required
-def plano_undelete(request, id):
+def plano_visible(request, id):
     if is_admin(request)['is_admin']:
         plano = get_object_or_404(Plano_Capacitacao, pk=id)
         plano.ind_excluido = 0

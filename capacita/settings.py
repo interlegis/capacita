@@ -103,9 +103,9 @@ DATABASES = {
          'ENGINE': 'django.db.backends.postgresql_psycopg2',
          'NAME': 'capacita',
          'USER': 'capacita',
-         'PASSWORD': os.environ['ADMIN_PASSWORD'],
-         'HOST': os.environ['CAPACITA_DB_HOST'],
-         'PORT': os.environ['CAPACITA_DB_PORT'],
+         'PASSWORD': 'altereme',
+         'HOST': 'campeirohsabereslb.interlegis.leg.br',
+         'PORT': '5532',
     }
 }
 
@@ -153,3 +153,4 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 CAS_SERVER_URL = 'https://adm.senado.gov.br/cas-server/login'
 CAS_VERSION = '3'
+CAS_REDIRECT_URL = "https://capacita.interlegis.leg.br/createProfile"

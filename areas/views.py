@@ -15,13 +15,25 @@ def areas(request):
 @login_required
 def area_delete(request, pk):
     if is_admin(request)['is_admin']:
+        try:
+            Area_Conhecimento.objects.filter(pk=pk).delete()
+            return redirect("areas")
+        except Exception as e:
+            print(e)
+            return render(request, 'deleteError.html')
+    else:
+        return render(request, 'error.html')
+
+@login_required
+def area_invisible(request, pk):
+    if is_admin(request)['is_admin']:
         Area_Conhecimento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("areas")
     else:
         return render(request, 'error.html')
 
 @login_required
-def area_undelete(request, pk):
+def area_visible(request, pk):
     if is_admin(request)['is_admin']:
         Modalidade_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("areas")

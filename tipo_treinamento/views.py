@@ -15,13 +15,25 @@ def tipos_treinamento(request):
 @login_required
 def tipo_treinamento_delete(request, pk):
     if is_admin(request)['is_admin']:
+        try:
+            Tipo_Treinamento.objects.filter(pk=pk).delete()
+            return redirect("tipos_treinamento")
+        except Exception as e:
+            print(e)
+            return render(request, 'deleteError.html')
+    else:
+        return render(request, 'error.html')
+
+@login_required
+def tipo_treinamento_invisible(request, pk):
+    if is_admin(request)['is_admin']:
         Tipo_Treinamento.objects.filter(pk=pk).update(ind_excluido=True)
         return redirect("tipos_treinamento")
     else:
         return render(request, 'error.html')
 
 @login_required
-def tipo_treinamento_undelete(request, pk):
+def tipo_treinamento_visible(request, pk):
     if is_admin(request)['is_admin']:
         Tipo_Treinamento.objects.filter(pk=pk).update(ind_excluido=False)
         return redirect("tipos_treinamento")

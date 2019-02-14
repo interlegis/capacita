@@ -58,13 +58,26 @@ def orgao_new(request):
 def orgao_delete(request, id):
     admin = is_admin(request)['is_admin']
     if admin:
+        try:
+            Orgao.objects.filter(pk=id).delete()
+            return redirect("orgao")
+        except Exception as e:
+            print(e)
+            return render(request, 'deleteError.html')
+    else:
+        return render(request, 'error.html')
+
+@login_required
+def orgao_invisible(request, id):
+    admin = is_admin(request)['is_admin']
+    if admin:
         Orgao.objects.filter(pk=id).update(ind_excluido=1)
         return redirect("orgao")
     else:
         return render(request, 'error.html')
 
 @login_required
-def orgao_undelete(request, id):
+def orgao_visible(request, id):
     admin = is_admin(request)['is_admin']
     if admin:
         Orgao.objects.filter(pk=id).update(ind_excluido=0)
