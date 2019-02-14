@@ -8,7 +8,6 @@ import django_cas_ng.views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    url(r'^createProfile/$', views.createProfile, name='createProfile'),
     # url(r'^login/$', LoginView.as_view(), name='login'),
     # url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),

@@ -25,13 +25,13 @@ def mudanca_orgao(request, pk):
 
 @login_required
 def home(request):
+    try:
+        profile = Profile.objects.create(user_id = request.user.id)
+        profile.save()
+    except Exception as e:
+        print(e)
     return render(request, 'home.html')
 
-@login_required
-def createProfile(request):
-    profile = Profile.objects.create(user_id = request.user.id)
-    profile.save()
-    return render(request, 'home.html')
 
 @login_required
 def relatorio(request):
