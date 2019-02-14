@@ -103,9 +103,9 @@ DATABASES = {
          'ENGINE': 'django.db.backends.postgresql_psycopg2',
          'NAME': 'capacita',
          'USER': 'capacita',
-         'PASSWORD': 'altereme',
-         'HOST': 'campeirohsabereslb.interlegis.leg.br',
-         'PORT': '5532',
+         'PASSWORD': os.environ['ADMIN_PASSWORD'],
+         'HOST': os.environ['CAPACITA_DB_HOST'],
+         'PORT': os.environ['CAPACITA_DB_PORT'],
     }
 }
 
