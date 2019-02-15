@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {% if subordinados %}
+  {% if subordinados and estado == False %}
     <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
       <div class="content">
         <h2 style="float: left;" class="ui header">Órgãos subordinados</td>
