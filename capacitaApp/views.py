@@ -39,12 +39,12 @@ def relatorio(request):
     orgao_id = Profile.objects.get(user=request.user).orgao_ativo_id
     orgaos = Orgao.objects.filter(cod_superior=None)
     necessidades = Necessidade.objects.none()
-    # for orgao in orgaos:
-    #     try:
-    #         necessidade_orgao = Necessidade_Orgao.objects.get(cod_orgao = orgao, cod_plano_capacitacao = plano_habilitado[0], estado=True)
-    #         necessidades = necessidades | Necessidade.objects.all().filter(ind_excluido = False, cod_necessidade_orgao = necessidade_orgao, aprovado=True)
-    #     except Exception as e:
-    #         print(e)
+    for orgao in orgaos:
+        try:
+            necessidade_orgao = Necessidade_Orgao.objects.get(cod_orgao = orgao, cod_plano_capacitacao = plano_habilitado[0], estado=True)
+            necessidades = necessidades | Necessidade.objects.all().filter(ind_excluido = False, cod_necessidade_orgao = necessidade_orgao, aprovado=True)
+        except Exception as e:
+            print(e)
 
     if not necessidades:
         return render(request, 'tabelaErro.html')

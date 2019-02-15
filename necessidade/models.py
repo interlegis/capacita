@@ -34,7 +34,7 @@ class Necessidade(models.Model):
 
     class Meta:
         db_table = 'necessidade'
-        ordering = ['cod_area_conhecimento','cod_treinamento', 'cod_necessidade']
+        ordering = ['cod_area_conhecimento','cod_treinamento', 'cod_modalidade', 'cod_nivel', 'cod_tipo_treinamento', 'cod_prioridade', 'cod_objetivo_treinamento']
 
 class Necessidade_Orgao(models.Model):
     cod_necessidade_orgao = models.AutoField(primary_key=True)

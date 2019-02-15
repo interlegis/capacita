@@ -65,11 +65,12 @@ def treinamento_visible(request, pk):
 @login_required
 def treinamento_delete(request, pk):
     if is_admin(request)['is_admin']:
+        treinamentos = Treinamento.objects.all().exclude(pk=-1)
         try:
             Treinamento.objects.filter(pk=pk).delete()
             return redirect("treinamentos")
         except Exception as e:
             print(e)
-            return render(request, 'deleteError.html', {'url': 'treinamentos.html'})
+            return render(request, 'deleteError.html', {'url': 'treinamento.html', 'treinamentos': treinamentos})
     else:
         return render(request, 'error.html')
