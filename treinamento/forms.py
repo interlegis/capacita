@@ -6,11 +6,19 @@ from capacitaApp.models import *
 
 class TreinamentoForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        emptyField = [('', '---------')]
+        super(TreinamentoForm, self).__init__(*args, **kwargs)
+        # areas_conhecimento
+        self.fields['cod_area_conhecimento'].queryset = Area_Conhecimento.objects.all().exclude(ind_excluido=1)
+        self.fields['cod_area_conhecimento'].widget.attrs['onChange'] = 'selectTreinamento(this)'
+
     class Meta:
         model = Treinamento
-        fields = ('nome', )
+        fields = ('nome', 'cod_area_conhecimento')
         labels = {
-            'nome' : 'Nome'
+            'nome' : 'Nome',
+            'cod_area_conhecimento': 'Área de conhecimento',
         }
 
 class TipoTreinamentoForm(forms.ModelForm):
