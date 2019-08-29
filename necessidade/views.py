@@ -120,7 +120,8 @@ def necessidade_edit(request, pk):
         'cod_prioridade': necessidade.cod_prioridade.cod_prioridade,
         'qtd_servidor': necessidade.qtd_servidor,
         'cod_objetivo_treinamento': necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento,
-        'justificativa': necessidade.justificativa
+        'justificativa': necessidade.justificativa,
+        'ementa': necessidade.ementa,
     }
 
     gestor_orgao = True #Começa considerando que é o usuário é do mesmo orgão que a necessidade
@@ -200,7 +201,7 @@ def importar_necessidade(request, pk, pk_atual):
         necessidades = Necessidade.objects.all().filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao, aprovado=True)
         for necessidade in necessidades:
             necessidade_importada = necessidade
-            necessidade_importada.aprovado = False
+            necessidade_importada.aprovado = True
             necessidade_importada.cod_necessidade = None
             necessidade_importada.cod_necessidade_orgao = Necessidade_Orgao.objects.get(cod_necessidade_orgao = pk_atual)
             necessidade_importada.save()

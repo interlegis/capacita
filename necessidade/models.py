@@ -23,11 +23,13 @@ class Necessidade(models.Model):
     qtd_servidor = models.DecimalField(max_digits=6, decimal_places=0, validators=[MinValueValidator(0)])
     cod_objetivo_treinamento = models.ForeignKey('objetivos.Objetivo_Treinamento', models.DO_NOTHING)
     justificativa = models.CharField(max_length=300)
-    aprovado = models.NullBooleanField(null = False, default=False)
+    ementa = models.TextField()
+    aprovado = models.BooleanField( default=True)
     cod_usuario = models.ForeignKey(User, models.DO_NOTHING)
     cod_tipo_treinamento = models.ForeignKey('tipo_treinamento.Tipo_Treinamento', models.DO_NOTHING)
     cod_necessidade_orgao = models.ForeignKey('Necessidade_Orgao', models.DO_NOTHING)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
+    ind_excluido = models.BooleanField( default=False)
+
 
     def __str__(self):
         return self.txt_descricao

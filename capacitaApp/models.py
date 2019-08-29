@@ -14,7 +14,7 @@ from django import forms
 class Nivel(models.Model):
     cod_nivel = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200,unique=True)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
+    ind_excluido = models.BooleanField( default=False)
 
     def __str__(self):
         return self.nome
@@ -26,7 +26,7 @@ class Nivel(models.Model):
 class Prioridade(models.Model):
     cod_prioridade = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200, unique=True)
-    ind_excluido = models.NullBooleanField(null = False, default=False)
+    ind_excluido = models.BooleanField( default=False)
 
     def __str__(self):
         return self.nome

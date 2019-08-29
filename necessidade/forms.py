@@ -6,9 +6,35 @@ from necessidade.models import *
 
 class NecessidadeForm(forms.ModelForm):
     # Adicionando forms
-    justificativa = forms.CharField(widget=forms.Textarea)
+    justificativa = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'placeholder': "Explique por que este treinamento é necessário.\n" + 
+                                "Quais atividades serão impactadas/melhoradas com a " +
+                                "utilização dos conhecimentos chave da matéria a ser " + 
+                                "apresentada.",
+                'rows': '5', 
+                'cols': '15',
+                'style':'resize:none;'
+            }
+        )
+    )
     hor_duracao = forms.DecimalField(required=False)
     treinamento = forms.ChoiceField()
+    ementa = forms.CharField(
+        widget= forms.Textarea(
+            attrs={
+                'placeholder': "Descreva os pontos essenciais sobre o curso, " + 
+                                "fazendo um resumo que evidencie suas principais " + 
+                                "características.\nUma lista de pontos-chave da " + 
+                                "matéria a ser apresentada",
+                'rows': '5', 
+                'cols': '15',
+                'style':'resize:none;'
+                
+            }
+        )
+    )
 
     def __init__(self, *args, **kwargs):
         emptyField = [('', '---------')]
@@ -39,7 +65,7 @@ class NecessidadeForm(forms.ModelForm):
 
     class Meta:
         model = Necessidade
-        fields = ('qtd_servidor','hor_duracao','cod_nivel','cod_modalidade', 'cod_prioridade', 'cod_tipo_treinamento', 'justificativa', 'treinamento', 'cod_area_conhecimento', 'cod_objetivo_treinamento')
+        fields = ('qtd_servidor','hor_duracao','cod_nivel','cod_modalidade', 'cod_prioridade', 'cod_tipo_treinamento', 'justificativa', 'treinamento', 'cod_area_conhecimento', 'cod_objetivo_treinamento', 'ementa')
         labels = {
             'qtd_servidor' : 'Quantidade de Servidores Efetivos',
             'hor_duracao'  : 'Hora de duração',
@@ -50,5 +76,6 @@ class NecessidadeForm(forms.ModelForm):
             'cod_prioridade' : 'Prioridade',
             'treinamento': 'Treinamento',
             'cod_area_conhecimento': 'Área de conhecimento',
-            'cod_objetivo_treinamento': "Objetivo de Treinamento"
+            'cod_objetivo_treinamento': "Objetivo de Treinamento",
+            'ementa': "Ementa"
         }

@@ -81,11 +81,18 @@
                 </div>
             </div>
             <div class="field">
-                <label>Descrição</label>
+                <label>Justificativa</label>
                 {{ form.justificativa }}
                 <small class="text-danger">
                   {{ form.justificativa.errors }}
                 </small>
+            </div>
+            <div class="field">
+              <label>Ementa</label>
+              {{ form.ementa }}
+              <small class="text-danger">
+                {{ form.ementa.errors }}
+              </small>
             </div>
             <button class="ui primary button" type="submit">Salvar</button>
             <a href="/necessidade/"  class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
