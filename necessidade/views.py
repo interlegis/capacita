@@ -88,10 +88,10 @@ def necessidade_new(request):
                         necessidade.txt_descricao = None
                         necessidade.cod_treinamento = Treinamento.objects.get(pk=request.POST['treinamento'])
 
-                    if request.POST['treinamento_externo'] and request.POST['valor_estimado']:
+                    if 'treinamento_externo' in request.POST and request.POST['valor_estimado']:
                         necessidade.txt_descricao = request.POST['txt_descricao']
                         necessidade.valor_estimado = request.POST['valor_estimado']
-                    elif request.POST['treinamento_externo']:
+                    elif 'treinamento_externo' in request.POST:
                         return render(request, 'necessidade_edit.html', {'form': form, 'erro_valor_estimado': "Preencha o campo de valor estimado!", 'necessidade': necessidade})
 
                     necessidade.cod_usuario = usuario
@@ -151,9 +151,9 @@ def necessidade_edit(request, pk):
                 else:
                     necessidade.txt_descricao = ""
                     necessidade.cod_treinamento = Treinamento.objects.get(pk=request.POST['treinamento'])
-                if request.POST['treinamento_externo'] and request.POST['valor_estimado']:
-                    necessidade.valor_estimado = request.POST['valor_estimado']
-                elif request.POST['treinamento_externo']:
+                if 'treinamento_externo' in request.POST and request.POST['valor_estimado']:
+                    necessidade.valor_estimado = float(request.POST['valor_estimado'])
+                elif 'treinamento_externo' in request.POST:
                     return render(request, 'necessidade_edit.html', {'form': form, 'erro_valor_estimado': "Preencha o campo de valor estimado!", 'necessidade': necessidade})
 
                 necessidade.cod_usuario = usuario
