@@ -18,13 +18,15 @@
                 </div>
             </div>
             {% if erro_sugestao %}
-            <small class="text-danger">
+            <small class="text-danger" id="erro_sugestao">
               {{ erro_sugestao }}
             </small>
-            <div class="field" id="sugestao">
-            {% else %}
-            <div class="field" id="sugestao" style="display: none">
             {% endif %}
+            {% if necessidade.treinamento == -1 %}
+              <div class="field" id="sugestao">
+            {% else %}
+              <div class="field" id="sugestao" style="display: none">
+            {% endif%}
               <label>Sugestão de treinamento</label>
               {% if necessidade == None %}
               <input type="text" name="txt_descricao" id="descricao_necessidade">
@@ -93,6 +95,32 @@
               <small class="text-danger">
                 {{ form.ementa.errors }}
               </small>
+            </div>
+            <div class="field">
+              <label>Treinamento Externo</label>
+              {{ form.treinamento_externo }}
+              <small class="text-danger">
+                {{ form.treinamento_externo.errors }}
+              </small>
+            </div>
+            {% if erro_valor_estimado %}
+            <small class="text-danger" id="erro_valor_estimado">
+              {{ erro_valor_estimado }}
+            </small>
+            {% endif %}
+            {% if necessidade.treinamento_externo == True %}
+              <div class="field" id="valor_estimado">
+            {% else %}
+              <div class="field" id="valor_estimado" style="display: none">
+            {% endif %}
+              <label>Valor Estimado</label>
+              {% if necessidade == None %}
+              <input type="text" name="valor_estimado" id="descricao_necessidade">
+              {% elif necessidade.valor_estimado != None %}
+              <input type="text" name="valor_estimado" value="{{necessidade.valor_estimado}}" id="descricao_necessidade">
+              {% else %}
+              <input type="text" name="valor_estimado" id="descricao_necessidade">
+              {% endif %}
             </div>
             <button class="ui primary button" type="submit">Salvar</button>
             <a href="/necessidade/"  class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>

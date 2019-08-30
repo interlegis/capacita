@@ -29,6 +29,11 @@ class Necessidade(models.Model):
     cod_tipo_treinamento = models.ForeignKey('tipo_treinamento.Tipo_Treinamento', models.DO_NOTHING)
     cod_necessidade_orgao = models.ForeignKey('Necessidade_Orgao', models.DO_NOTHING)
     ind_excluido = models.BooleanField( default=False)
+    treinamento_externo = models.BooleanField()
+    valor_estimado = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+
+# DEmandas
+# Treinamento externo -> # Valor estimado
 
 
     def __str__(self):

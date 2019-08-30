@@ -46,6 +46,10 @@ class NecessidadeForm(forms.ModelForm):
         self.fields['treinamento'] = forms.ChoiceField(choices= treinamentos)
         self.fields['treinamento'].widget.attrs['onChange'] = 'selectSugestao(this)'
 
+        # treinamento_externo
+        self.fields['treinamento_externo'] = forms.BooleanField(required=False, widget= forms.CheckboxInput())
+        self.fields['treinamento_externo'].widget.attrs['onChange'] = 'selectTreinamentoExterno(this)'
+
         # areas_conhecimento
         self.fields['cod_area_conhecimento'].queryset = Area_Conhecimento.objects.all().exclude(ind_excluido=1)
         self.fields['cod_area_conhecimento'].widget.attrs['onChange'] = 'selectTreinamento(this)'
@@ -65,7 +69,7 @@ class NecessidadeForm(forms.ModelForm):
 
     class Meta:
         model = Necessidade
-        fields = ('qtd_servidor','hor_duracao','cod_nivel','cod_modalidade', 'cod_prioridade', 'cod_tipo_treinamento', 'justificativa', 'treinamento', 'cod_area_conhecimento', 'cod_objetivo_treinamento', 'ementa')
+        fields = ('qtd_servidor','hor_duracao','cod_nivel','cod_modalidade', 'cod_prioridade', 'cod_tipo_treinamento', 'justificativa', 'treinamento', 'cod_area_conhecimento', 'cod_objetivo_treinamento', 'ementa', 'treinamento_externo')
         labels = {
             'qtd_servidor' : 'Quantidade de Servidores Efetivos',
             'hor_duracao'  : 'Hora de duração',
@@ -77,5 +81,6 @@ class NecessidadeForm(forms.ModelForm):
             'treinamento': 'Treinamento',
             'cod_area_conhecimento': 'Área de conhecimento',
             'cod_objetivo_treinamento': "Objetivo de Treinamento",
-            'ementa': "Ementa"
+            'ementa': "Ementa",
+            'treinamento_externo': "Treinamento Externo",
         }

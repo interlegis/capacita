@@ -83,9 +83,16 @@ def necessidade_new(request):
                     if request.POST['treinamento'] == '-1' and request.POST['txt_descricao']:
                         necessidade.txt_descricao = request.POST['txt_descricao']
                     elif request.POST['treinamento'] == '-1':
-                        return render(request, 'necessidade_edit.html', {'form': form, 'erro_sugestao': "Preencha o campo de sugestão!"})
+                        return render(request, 'necessidade_edit.html', {'form': form, 'erro_sugestao': "Preencha o campo de sugestão!", 'necessidade': necessidade})
                     else:
+                        necessidade.txt_descricao = None
                         necessidade.cod_treinamento = Treinamento.objects.get(pk=request.POST['treinamento'])
+
+                    if request.POST['treinamento_externo'] and request.POST['valor_estimado']:
+                        necessidade.txt_descricao = request.POST['txt_descricao']
+                        necessidade.valor_estimado = request.POST['valor_estimado']
+                    elif request.POST['treinamento_externo']:
+                        return render(request, 'necessidade_edit.html', {'form': form, 'erro_valor_estimado': "Preencha o campo de valor estimado!", 'necessidade': necessidade})
 
                     necessidade.cod_usuario = usuario
                     necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao.cod_orgao)
@@ -121,7 +128,10 @@ def necessidade_edit(request, pk):
         'qtd_servidor': necessidade.qtd_servidor,
         'cod_objetivo_treinamento': necessidade.cod_objetivo_treinamento.cod_objetivo_treinamento,
         'justificativa': necessidade.justificativa,
+        'txt_descricao': necessidade.txt_descricao,
         'ementa': necessidade.ementa,
+        'treinamento_externo': necessidade.treinamento_externo,
+        'valor_estimado': necessidade.valor_estimado,
     }
 
     gestor_orgao = True #Começa considerando que é o usuário é do mesmo orgão que a necessidade
@@ -134,11 +144,18 @@ def necessidade_edit(request, pk):
             if form.is_valid():
                 necessidade = form.save(commit=False)
                 if request.POST['treinamento'] == '-1' and request.POST['txt_descricao']:
+                    necessidade.cod_treinamento = Treinamento.objects.get(pk=request.POST['treinamento'])
                     necessidade.txt_descricao = request.POST['txt_descricao']
                 elif request.POST['treinamento'] == '-1':
-                    return render(request, 'necessidade_edit.html', {'form': form, 'erro_sugestao': "Preencha o campo de sugestão!"})
+                    return render(request, 'necessidade_edit.html', {'form': form, 'erro_sugestao': "Preencha o campo de sugestão!", 'necessidade': necessidade})
                 else:
+                    necessidade.txt_descricao = ""
                     necessidade.cod_treinamento = Treinamento.objects.get(pk=request.POST['treinamento'])
+                if request.POST['treinamento_externo'] and request.POST['valor_estimado']:
+                    necessidade.valor_estimado = request.POST['valor_estimado']
+                elif request.POST['treinamento_externo']:
+                    return render(request, 'necessidade_edit.html', {'form': form, 'erro_valor_estimado': "Preencha o campo de valor estimado!", 'necessidade': necessidade})
+
                 necessidade.cod_usuario = usuario
                 necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao.cod_orgao)
                 necessidade.cod_necessidade_orgao = necessidade_orgao
@@ -146,7 +163,7 @@ def necessidade_edit(request, pk):
                 return redirect('necessidade')
         else:
             form = NecessidadeForm(necessidade_updated, instance=necessidade)
-            return render(request, 'necessidade_edit.html', {'form': form})
+            return render(request, 'necessidade_edit.html', {'form': form, 'necessidade': necessidade_updated})
     else:
         return render(request, 'error.html')
 

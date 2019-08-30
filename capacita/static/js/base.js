@@ -58,10 +58,14 @@ function selectTreinamento(){
 
 function selectSugestao(select){
   treinamento = $("#id_treinamento").val()
-  if($('#id_treinamento').val() == -1)
+  if($('#id_treinamento').val() == -1){
     $('#sugestao').css({'display': 'block'})
-  else
+    $('#erro_sugestao').css({'display': 'block'})
+  }
+  else{
     $('#sugestao').css({'display': 'none'})
+    $('#erro_sugestao').css({'display': 'none'})
+  }
 
     console.log($("#id_cod_area_conhecimento").val());
   $.getJSON("/api/treinamentos/", function(data){
@@ -77,6 +81,32 @@ function selectSugestao(select){
     }
   });
 }
+
+function selectTreinamentoExterno(select){
+  treinamento = $("#id_treinamento_externo")[0].checked
+  if(treinamento == false){
+    $('#erro_valor_estimado').css({'display': 'none'})
+    $('#valor_estimado').css({'display': 'none'})
+  }
+  else{
+    $('#erro_valor_estimado').css({'display': 'block'})
+    $('#valor_estimado').css({'display': 'block'})
+  }
+
+    console.log($("#id_cod_area_conhecimento").val());
+  $.getJSON("/api/treinamentos/", function(data){
+    for(var i = 0; i < data.length; i++){
+      if(data[i].cod_treinamento == treinamento ){
+        if (data[i].cod_area_conhecimento != $("#id_cod_area_conhecimento").val())
+          if ($("#id_treinamento_externo").val() != -1) {
+            $("#id_cod_area_conhecimento").val(data[i].cod_area_conhecimento_id)
+          }
+          break
+      }
+    }
+  });
+}
+
 
 var tipo;
 
@@ -99,7 +129,7 @@ $.getJSON("/api/planos/", function(data){
 });
 
 $(document).ready(function(){
-
+    selectSugestao();
     if(tipo == (parseInt($("#id_cod_tipo").val()))){
         $("#id_custoo").prop('disabled', false);
     }else{
@@ -107,6 +137,7 @@ $(document).ready(function(){
     }
 
     $("#descricao_necessidade").prop('disabled', false);
+
 
     $("#myInput").on("keyup", function() {
         var value = $(this).val().toLowerCase();
