@@ -16,6 +16,13 @@
             </div>
             <div class="field">
                 <div class="text-danger">
+                  {{ form.descricao.errors }}
+                </div>
+                <label>{{ form.descricao.label }}</label>
+                {{ form.descricao  }}
+            </div>
+            <div class="field">
+                <div class="text-danger">
                   {{ form.cod_superior.errors }}
                 </div>
                 <label>{{ form.cod_superior.label }}</label>

@@ -9,8 +9,9 @@ class OrgaoForm(forms.ModelForm):
 
     class Meta:
         model = Orgao
-        fields = ('nome', 'cod_superior')
+        fields = ('nome', 'cod_superior', 'descricao')
         labels = {
             'nome' : 'Nome',
-            'cod_superior': 'Orgao Superior'
+            'cod_superior': 'Orgao Superior',
+            'descricao': 'Descrição'
         }
