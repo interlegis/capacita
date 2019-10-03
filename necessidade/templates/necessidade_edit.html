@@ -28,7 +28,9 @@
               <div class="field" id="sugestao" style="display: none">
             {% endif%}
               <label>Especifique o objeto de capacitação</label>
-              {% if necessidade == None %}
+              {% if txt_descricao %}
+              <input type="text" name="txt_descricao" value={{txt_descricao}} id="descricao_necessidade">
+              {% elif necessidade == None %}
               <input type="text" name="txt_descricao" id="descricao_necessidade">
               {% elif necessidade.txt_descricao != None %}
               <input type="text" name="txt_descricao" value="{{necessidade.txt_descricao}}" id="descricao_necessidade">

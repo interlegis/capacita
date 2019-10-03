@@ -3,6 +3,9 @@ $('.ui.accordion').accordion();
 $('.ui.checkbox.permitido').checkbox('set checked');
 $('.ui.checkbox.sem_permissao').checkbox('set unchecked');
 
+selectTreinamentoExterno();
+selectSugestao();
+
  $('input.sem_permissao').on('change', function(){
     $.ajax({
     type: "POST",
@@ -81,6 +84,7 @@ function selectSugestao(select){
     }
   });
 }
+
 
 function selectTreinamentoExterno(select){
   treinamento = $("#id_treinamento_externo")[0].checked

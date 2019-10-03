@@ -69,9 +69,10 @@ def necessidade_new(request):
         usuario = User.objects.get(id = request.user.id)
         orgao = Orgao.objects.get(nome = Profile.objects.get(user=usuario).orgao_ativo)
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
-
+        txt_descricao = ''
         if(planos_habilitados.count() > 0 and gestor):
             if request.method == "POST":
+                txt_descricao = request.POST['txt_descricao']
                 data = request.POST.copy()
                 form = NecessidadeForm(request.POST)
                 if form.is_valid():
@@ -97,12 +98,12 @@ def necessidade_new(request):
                     necessidade.save()
                     return redirect('necessidade')
                 else:
-                    return render(request, 'necessidade_edit.html', {'form': form})
+                    return render(request, 'necessidade_edit.html', {'form': form, 'txt_descricao': txt_descricao})
             else:
                 form = NecessidadeForm()
-                return render(request, 'necessidade_edit.html', {'form': form})
+                return render(request, 'necessidade_edit.html', {'form': form, 'txt_descricao': txt_descricao})
         else:
-            return render(request, 'necessidade_edit.html', {'form': form})
+            return render(request, 'necessidade_edit.html', {'form': form, 'txt_descricao': txt_descricao})
     else:
         return redirect('error')
 
@@ -113,7 +114,7 @@ def necessidade_edit(request, pk):
     usuario = User.objects.get(id = request.user.id)
     gestor = is_gestor(request)
     orgao = Orgao.objects.get(nome = Profile.objects.get(user=usuario).orgao_ativo)
-    planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True);
+    planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
     necessidade_updated = {
         'treinamento': necessidade.cod_treinamento.cod_treinamento,
         'cod_nivel': necessidade.cod_nivel.cod_nivel,
@@ -137,6 +138,8 @@ def necessidade_edit(request, pk):
 
     if (gestor_orgao and gestor):
         if request.method == "POST":
+            necessidade_updated['txt_descricao'] = request.POST['txt_descricao']
+            necessidade_updated['valor_estimado'] = request.POST['valor_estimado']
             form = NecessidadeForm(request.POST, instance=necessidade)
             if form.is_valid():
                 necessidade = form.save(commit=False)
@@ -158,6 +161,9 @@ def necessidade_edit(request, pk):
                 necessidade.cod_necessidade_orgao = necessidade_orgao
                 necessidade.save()
                 return redirect('necessidade')
+            else:
+                return render(request, 'necessidade_edit.html', {'form': form, 'necessidade': necessidade_updated})
+
         else:
             form = NecessidadeForm(necessidade_updated, instance=necessidade)
             return render(request, 'necessidade_edit.html', {'form': form, 'necessidade': necessidade_updated})
