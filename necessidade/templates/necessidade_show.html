@@ -4,10 +4,10 @@
 
     <div class="table_div">
 
-        {% if necessidade.cod_treinamento %}
-        <h2 class="ui dividing header">{{ necessidade.cod_treinamento.nome }}</h2>
+        {% if necessidade.cod_treinamento.cod_treinamento != -1 %}
+            <h2 class="ui dividing header">{{ necessidade.cod_treinamento.nome }}</h2>
         {% else %}
-        <h2 class="ui dividing header">{{ necessidade.txt_descricao }}</h2>
+           <h2 class="ui dividing header">{{ necessidade.txt_descricao }}</h2>
         {% endif %}
 
         <br>
@@ -15,7 +15,7 @@
             <div class="column">
                 <strong>Código da Necessidade:</strong>
                 <p>{{ necessidade.cod_necessidade }}</p>
-                <strong>Descrição:</strong>
+                <strong>Objeto da Capacitação:</strong>
                 {% if necessidade.cod_treinamento.cod_treinamento != -1 %}
                 <p>{{ necessidade.cod_treinamento.nome }}</p>
                 {% else %}
@@ -23,8 +23,6 @@
                 {% endif %}
                 <strong>Área de Conhecimento:</strong>
                 <p>{{ necessidade.cod_area_conhecimento }}</p>
-                <strong>Objeto de Capacitação:</strong>
-                <p>{{ necessidade.cod_treinamento }}</p>
             </div>
             <div class="column">
                 <strong>Plano de Capacitação:</strong>
