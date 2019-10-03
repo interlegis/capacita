@@ -154,3 +154,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 #CAS_SERVER_URL = 'https://adm.senado.gov.br/cas-server/login'
 #CAS_VERSION = '3'
 #CAS_REDIRECT_URL = "https://capacita.interlegis.leg.br/createProfile"
+#CAS_FORCE_CHANGE_USERNAME_CASE = "lower"
