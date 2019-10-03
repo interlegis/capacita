@@ -58,6 +58,7 @@
       <table class="ui celled padded table">
           <thead>
               <tr class="center aligned">
+              <th>Órgão</th>
               <th>Área de Conhecimento</th>
               <th>Ação de Capacitação</th>
               <th>Quantidade de Servidores</th>
@@ -74,6 +75,7 @@
           <tbody>
               {% for necessidade in necessidades %}
                   <tr class="center aligned">
+                      <td>{{necessidade.cod_orgao_origem}}</td>
                       <td>{{necessidade.cod_area_conhecimento}}</td>
                       {% if necessidade.cod_treinamento.cod_treinamento == -1 %}
                       <td>{{necessidade.txt_descricao}}</td>
@@ -134,6 +136,7 @@
         <table class="ui celled padded table">
             <thead>
                 <tr class="center aligned">
+                <th>Órgão</th>
                 <th>Área de Conhecimento</th>
                 <th>Objeto de Capacitação</th>
                 <th>Quantidade de Servidores</th>
@@ -153,6 +156,7 @@
 
                 {% for necessidade in necessidades %}
                     <tr class="center aligned">
+                        <td>{{necessidade.cod_orgao_origem}}</td>
                         <td>{{necessidade.cod_area_conhecimento}}</td>
                         {% if necessidade.cod_treinamento.cod_treinamento == -1 %}
                         <td>{{necessidade.txt_descricao}}</td>
@@ -178,7 +182,11 @@
                           {% endif %}
                         </th>
                         <td><a class="links" href="{% url 'necessidade_edit' necessidade.cod_necessidade %}"><i class="pencil icon"></i></a></td>
-                        <td><a class="links" href="#" data-target="#{{necessidade.cod_necessidade}}" data-toggle="modal"><i class="trash icon"></i></a></td>
+                        {% if necessidade.cod_orgao_origem == necessidade.cod_necessidade_orgao.cod_orgao%}
+                          <td><a class="links" href="#" data-target="#{{necessidade.cod_necessidade}}" data-toggle="modal"><i class="trash icon"></i></a></td>
+                        {% else %}
+                          <td><a class="links"><i class="lock icon"></i></a></td>
+                        {% endif %}
                       {% endif %}
                     </tr>
                     <div class="modal fade" id={{necessidade.cod_necessidade}} tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

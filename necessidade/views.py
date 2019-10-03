@@ -18,10 +18,6 @@ def necessidade(request):
 
         gestor = is_gestor(request)
 
-        #Caso o orgão já tenha enviado o pedido para o orgão superior
-        # if (necessidade_orgao.estado == True):
-        #     return render(request, 'plano_fechado.html')
-        # else:
         orgao_object = Orgao.objects.get(nome = orgao)
         superior = None
         if orgao_object.cod_superior:
@@ -97,6 +93,7 @@ def necessidade_new(request):
                     necessidade.cod_usuario = usuario
                     necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao.cod_orgao)
                     necessidade.cod_necessidade_orgao = necessidade_orgao
+                    necessidade.cod_orgao_origem = orgao
                     necessidade.save()
                     return redirect('necessidade')
                 else:
@@ -175,10 +172,10 @@ def necessidade_delete(request, pk):
     gestor = is_gestor(request)
 
     gestor_orgao = True
-    if orgao != necessidade.cod_necessidade_orgao.cod_orgao:
+    if orgao != necessidade.cod_orgao_origem:
         gestor_orgao = False
 
-    if gestor_orgao and gestor:
+    if necessidade.cod_necessidade_orgao.importado == False and gestor_orgao and gestor:
         necessidade.ind_excluido = 1
         necessidade.save()
         return redirect("necessidade")
@@ -188,7 +185,7 @@ def necessidade_delete(request, pk):
 def necessidade_approve(request, pk):
     admin = is_admin(request)['is_admin']
     if (admin):
-        Necessidade.objects.filter(pk=pk).update(aprovado=False)
+        Necessidade.objects.exclude(cod_necessidade_orgao__importado = True).filter(pk=pk).update(aprovado=False)
         return redirect("necessidade")
     else:
         return render(request, 'error.html')
@@ -196,7 +193,7 @@ def necessidade_approve(request, pk):
 def necessidade_disapprove(request, pk):
     admin = is_admin(request)['is_admin']
     if (admin):
-        Necessidade.objects.filter(pk=pk).update(aprovado=True)
+        Necessidade.objects.exclude(cod_necessidade_orgao__importado = True).filter(pk=pk).update(aprovado=True)
         return redirect("necessidade")
     else:
         return render(request, 'error.html')

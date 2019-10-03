@@ -31,7 +31,6 @@ class NecessidadeForm(forms.ModelForm):
                 'rows': '5', 
                 'cols': '15',
                 'style':'resize:none;'
-                
             }
         )
     )
