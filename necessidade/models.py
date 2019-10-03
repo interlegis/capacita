@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 
 class Necessidade(models.Model):
     cod_necessidade = models.AutoField(primary_key=True)
+    cod_orgao_origem = models.ForeignKey('orgao.Orgao', on_delete=models.CASCADE)
     cod_area_conhecimento = models.ForeignKey('areas.Area_conhecimento', models.DO_NOTHING)
     cod_treinamento = models.ForeignKey('treinamento.Treinamento', models.DO_NOTHING, default=-1)
     txt_descricao = models.CharField(max_length=200, null=True)
@@ -31,10 +32,6 @@ class Necessidade(models.Model):
     ind_excluido = models.BooleanField( default=False)
     treinamento_externo = models.BooleanField()
     valor_estimado = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-
-# DEmandas
-# Treinamento externo -> # Valor estimado
-
 
     def __str__(self):
         return self.txt_descricao
