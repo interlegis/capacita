@@ -8,7 +8,24 @@
     {% endif %}
     {% if eh_necessidade == None %} 
     <div class="table_div">
-        <h1 class="ui header">Você não está autorizado a acessar essa página.</h1>
+        <h1 class="ui header">Acesso negado</h1>
+
+        <p style='font-size:16px'>A versão atual do Capacita é de uso exclusivo de chefes de serviço, coordenadores, coordenadores-gerais, 
+            diretores e chefes de gabinetes.
+        </p>
+
+        <p style="font-size:16px">Caso ache que esta mensagem é indevida ou se estiver substituindo o titular, entre em contato conosco para providenciarmos sua autorização.</p>
+
+        <hr>
+        <div align='center'>
+                <h3>Dúvidas, reclamações ou sugestões</h3>
+                <p>
+                  <img class="img-duvidas" src="/static/images/email.png">
+                  <a href="mailto:capacita_suporte@interlegis.leg.br" target="_top">capacita_suporte@interlegis.leg.br</a>
+                </p>
+                <p><img class="img-duvidas" src="/static/images/call.png">Cláudio Cunha (1395)</p>
+                <p><img class="img-duvidas" src="/static/images/call.png">Matheus Garcia (4221)</p>
+        </div>
     </div>
     {% endif %}
 {% endblock %}

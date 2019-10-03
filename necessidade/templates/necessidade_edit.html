@@ -5,14 +5,14 @@
     <div class="section_container ui container">
         <form class="ui form" method="post" >{% csrf_token %}
 
-            <h2 class="ui dividing header">Nova Necessidade</h2>
+            <h2 class="ui dividing header">Nova Atividade de Capacitação</h2>
             <div class="two fields">
                 <div class="field">
                   <label> {{ form.cod_area_conhecimento.label }}</label>
                   {{ form.cod_area_conhecimento }}
                 </div>
                 <div class="field">
-                  <label> {{ form.treinamento.label }}</label>
+                  <label>Objeto de Capacitação</label>
                   {{ form.treinamento }}
                   </select>
                 </div>
@@ -27,7 +27,7 @@
             {% else %}
               <div class="field" id="sugestao" style="display: none">
             {% endif%}
-              <label>Sugestão de treinamento</label>
+              <label>Especifique o objeto de capacitação</label>
               {% if necessidade == None %}
               <input type="text" name="txt_descricao" id="descricao_necessidade">
               {% elif necessidade.txt_descricao != None %}
@@ -39,7 +39,7 @@
             <div class="four fields">
                 <div class="field">
                     {{ form.cod_modalidade.errors  }}
-                    <label>Modalidade de Treinamento</label>
+                    <label>Modalidade</label>
                     {{ form.cod_modalidade }}
                 </div>
                 <div class="field">
@@ -48,14 +48,14 @@
                     {{ form.cod_nivel  }}
                 </div>
                 <div class="field">
-                    <label>Carga Horária</label>
+                    <label>Carga Horária Sugerida</label>
                     {{ form.hor_duracao }}
                     <small class="text-danger">
                       {{ form.hor_duracao.errors }}
                     </small>
                 </div>
                 <div class="field">
-                    <label>Tipo de Treinamento</label>
+                    <label>Tipo</label>
                     {{ form.cod_tipo_treinamento }}
                     <small class="text-danger">
                       {{ form.cod_tipo_treinamento.errors }}
@@ -78,7 +78,7 @@
                     </small>
                 </div>
                 <div class="field">
-                  <label> {{ form.cod_objetivo_treinamento.label }}</label>
+                  <label>Objetivo Prioritário</label>
                   {{ form.cod_objetivo_treinamento }}
                 </div>
             </div>
@@ -97,8 +97,7 @@
               </small>
             </div>
             <div class="field">
-              <label>Treinamento Externo</label>
-              {{ form.treinamento_externo }}
+              <label>{{ form.treinamento_externo }} Atividade de capacitação externa (congressos, seminários, palestras, etc)</label>
               <small class="text-danger">
                 {{ form.treinamento_externo.errors }}
               </small>
@@ -113,13 +112,13 @@
             {% else %}
               <div class="field" id="valor_estimado" style="display: none">
             {% endif %}
-              <label>Valor Estimado</label>
+              <label>Valor Estimado Unitário</label>
               {% if necessidade == None %}
-              <input type="text" name="valor_estimado" id="descricao_necessidade">
+              <input type="number" name="valor_estimado" id="descricao_necessidade">
               {% elif necessidade.valor_estimado != None %}
-              <input type="text" name="valor_estimado" value="{{necessidade.valor_estimado}}" id="descricao_necessidade">
+              <input type="number" name="valor_estimado" value="{{necessidade.valor_estimado}}" id="descricao_necessidade">
               {% else %}
-              <input type="text" name="valor_estimado" id="descricao_necessidade">
+              <input type="number" name="valor_estimado" id="descricao_necessidade">
               {% endif %}
             </div>
             <button class="ui primary button" type="submit">Salvar</button>

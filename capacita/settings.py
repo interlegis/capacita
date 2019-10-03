@@ -67,7 +67,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'django_cas_ng.backends.CASBackend',
+    #'django_cas_ng.backends.CASBackend',
 )
 
 ROOT_URLCONF = 'urls'
@@ -151,6 +151,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-CAS_SERVER_URL = 'https://adm.senado.gov.br/cas-server/login'
-CAS_VERSION = '3'
-CAS_REDIRECT_URL = "https://capacita.interlegis.leg.br/createProfile"
+#CAS_SERVER_URL = 'https://adm.senado.gov.br/cas-server/login'
+#CAS_VERSION = '3'
+#CAS_REDIRECT_URL = "https://capacita.interlegis.leg.br/createProfile"

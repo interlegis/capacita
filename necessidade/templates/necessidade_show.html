@@ -13,7 +13,7 @@
         <br>
         <div class="ui three column very relaxed grid">
             <div class="column">
-                <strong>Código da necessidade:</strong>
+                <strong>Código da Necessidade:</strong>
                 <p>{{ necessidade.cod_necessidade }}</p>
                 <strong>Descrição:</strong>
                 {% if necessidade.cod_treinamento.cod_treinamento != -1 %}
@@ -23,25 +23,25 @@
                 {% endif %}
                 <strong>Área de Conhecimento:</strong>
                 <p>{{ necessidade.cod_area_conhecimento }}</p>
-                <strong>Treinamento:</strong>
+                <strong>Objeto de Capacitação:</strong>
                 <p>{{ necessidade.cod_treinamento }}</p>
             </div>
             <div class="column">
                 <strong>Plano de Capacitação:</strong>
                 <p>{{ necessidade.cod_necessidade_orgao.cod_plano_capacitacao }}</p>
-                <strong>Modalidade de Treinamento</strong>
+                <strong>Modalidade</strong>
                 <p>{{ necessidade.cod_modalidade }}</p>
                 <strong>Nível:</strong>
                 <p>{{ necessidade.cod_nivel }}</p>
-                <strong>Carga Horária:</strong>
+                <strong>Carga Horária Sugerida:</strong>
                 <p>{{ necessidade.hor_duracao }}</p>
-                <strong>Tipo de Treinamento:</strong>
+                <strong>Tipo:</strong>
                 <p>{{ necessidade.cod_tipo_treinamento }}</p>
                 <strong>Prioridade:</strong>
                 <p>{{ necessidade.cod_prioridade }}</p>
                 <strong>Quantidade de Servidores:</strong>
                 <p>{{ necessidade.qtd_servidor }}</p>
-                <strong>Objetivo do Treinamento:</strong>
+                <strong>Objetivo:</strong>
                 <p>{{ necessidade.cod_objetivo_treinamento }}</p>
             </div>
             <div class="column">

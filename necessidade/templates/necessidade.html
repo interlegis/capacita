@@ -45,6 +45,7 @@
       <br>
     </div>
   {% endif %}
+  
   {% if estado %}
   <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
       <div class="content">
@@ -58,10 +59,10 @@
           <thead>
               <tr class="center aligned">
               <th>Área de Conhecimento</th>
-              <th>Treinamento</th>
+              <th>Ação de Capacitação</th>
               <th>Quantidade de Servidores</th>
               <th>Nível</th>
-              <th>Carga Horária</th>
+              <th>Carga Horária Sugerida</th>
               <th>Modalidade</th>
               <th>Prioridade</th>
               <th>Ver</th>
@@ -71,7 +72,6 @@
               </tr>
           </thead>
           <tbody>
-
               {% for necessidade in necessidades %}
                   <tr class="center aligned">
                       <td>{{necessidade.cod_area_conhecimento}}</td>
@@ -110,13 +110,13 @@
   {% elif not necessidades %}
     <div style="padding-left: 5%; padding-bottom: 4%" class="table_div">
         <div class="content">
-            <h2 style="float: left;" class="ui header">Treinamentos solicitados para {{user.profile.orgao_ativo}}</h2>
+            <h2 style="float: left;" class="ui header">Demandas solicitadas para {{user.profile.orgao_ativo}}</h2>
         </div>
     </div>
     <div style="padding-left: 5%; padding-bottom: 0%">
-        <div style="width:80%" class="ui warning message">Ainda não foi solicitado nenhum treinamento para {{user.profile.orgao_ativo}}.
+        <div style="width:80%" class="ui warning message">Ainda não foi registrada nenhuma demanda de capacitação para {{user.profile.orgao_ativo}}.
         <br><br>
-        Clique no botão abaixo para realizar um pedido de treinamento
+        Clique no botão abaixo para realizar um pedido.
         </div>
     </div>
     <div class="table_div">
@@ -125,7 +125,7 @@
     {% else %}
     <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
         <div class="content">
-            <h2 style="float: left;" class="ui header">PCASF {{necessidades.0.cod_necessidade_orgao.cod_plano_capacitacao}} - Treinamentos solicitados para {{user.profile.orgao_ativo}}</td>
+            <h2 style="float: left;" class="ui header">Demandas solicitadas para {{user.profile.orgao_ativo}}</td>
             </h2>
         </div>
     </div>
@@ -135,7 +135,7 @@
             <thead>
                 <tr class="center aligned">
                 <th>Área de Conhecimento</th>
-                <th>Treinamento</th>
+                <th>Objeto de Capacitação</th>
                 <th>Quantidade de Servidores</th>
                 <th>Nível</th>
                 <th>Carga Horária</th>
@@ -214,20 +214,26 @@
           {% if superior %}
             Enviar para {{ superior }}
           {% else %}
-            Salvar
+            Concluir relatório e enviar demandas para o ILB
           {% endif %}
         </button>
       <div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content" style="border:2px solid #01305c61;">
               <div class="modal-header">
-                <h3 class="modal-title aviso-titulo" style="color: #01305c;">Tem certeza que deseja enviar as necessidades do plano de {{necessidades.0.cod_necessidade_orgao.cod_plano_capacitacao}}?</h3>
+                <h3 class="modal-title aviso-titulo" style="color: #01305c;">
+                  Após o envio para {{ superior }}, não será possível modificar ou incluir novas demandas para {{user.profile.orgao_ativo}}
+                </h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <h4 class="aviso-corpo" style="color:red;">Após o envio para o superior não será possível enviar novamente neste plano de capacitação.</h4>
+                <h4 class="aviso-corpo" style="color:red;">
+
+                  As demandas serão encaminhadas para serem consolidadas pelo titular de {{superior}} antes de serem encaminhadas ao ILB.
+
+                  Após o envio para o superior não será possível enviar novamente neste plano de capacitação.</h4>
                   <h6 style="color:red;">
                     *<b>{{ total_necessidade }}</b>
                     {%if total_necessidade == 1 %}
@@ -243,11 +249,13 @@
                       </h6>
                     {% endif%}
                   {% endfor %}
+
+                  Deseja concluir o pedido de capacitações 
               </div>
               <div class="modal-footer">
-                <button type="button" class="ui button basic secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="ui button basic secondary" data-dismiss="modal">Cancelar envio para modificar pedidos</button>
                 <a href="{% url 'necessidade_orgao_close' necessidades.first.cod_necessidade_orgao.cod_necessidade_orgao %}">
-                  <button type="button" class="ui button basic secondary">Enviar</button>
+                  <button type="button" class="ui button basic secondary">Enviar para {{superior}} </button>
                 </a>
               </div>
             </div>

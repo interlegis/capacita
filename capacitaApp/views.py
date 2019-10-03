@@ -123,3 +123,15 @@ def relatorio(request):
 @login_required
 def error(request):
     return render(request, 'error.html')
+
+
+@login_required
+def processo_capacitacao(request):
+    return render(request, 'processo_capacitacao.html')
+
+def perguntas_frequentes(request):
+    return render(request, 'perguntas_frequentes.html')
+
+def manual(request):
+    return render(request, 'manual.html')
+    

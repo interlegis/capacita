@@ -9,7 +9,7 @@ class NecessidadeForm(forms.ModelForm):
     justificativa = forms.CharField(
         widget=forms.Textarea(
             attrs={
-                'placeholder': "Explique por que este treinamento é necessário.\n" + 
+                'placeholder': "Explique por que esta atividade de capacitação é necessária.\n" + 
                                 "Quais atividades serão impactadas/melhoradas com a " +
                                 "utilização dos conhecimentos chave da matéria a ser " + 
                                 "apresentada.",
@@ -24,7 +24,7 @@ class NecessidadeForm(forms.ModelForm):
     ementa = forms.CharField(
         widget= forms.Textarea(
             attrs={
-                'placeholder': "Descreva os pontos essenciais sobre o curso, " + 
+                'placeholder': "Descreva os pontos essenciais sobre a atividade de capacitação, " + 
                                 "fazendo um resumo que evidencie suas principais " + 
                                 "características.\nUma lista de pontos-chave da " + 
                                 "matéria a ser apresentada",

@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700|Montserrat:300" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/semantic.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/table.css' %}">
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
@@ -26,7 +27,7 @@
         <a class="item capacitaLogo" href="/">CAPACITA</a>
 
         {% if is_gestor %}
-        <a class="item" href="/necessidade/">Pedidos de Treinamento</a>
+        <a class="item" href="/necessidade/">Pedidos de Capacitação</a>
         {% endif %}
         {% if is_admin %}
         <div class="ui dropdown item">
@@ -39,12 +40,20 @@
                 <!--<a class="item" href="/avaliacao_cursos">Treinamentos Sugeridos</a>-->
                 <li class="divider"></li>
                 <a class="item" href="/areas/">Áreas de Conhecimento</a>
-                <a class="item" href="/treinamentos/">Treinamentos</a>
-                <a class="item"  href="/modalidade/">Modalidades de Treinamento</a>
-                <a class="item"  href="/tipos_treinamento/">Tipos de Treinamento</a>
-                <a class="item" href="/objetivos/">Objetivos de Treinamento</a>
+                <a class="item" href="/treinamentos/">Objetos de Capacitação</a>
+                <a class="item"  href="/modalidade/">Modalidades</a>
+                <a class="item"  href="/tipos_treinamento/">Tipos</a>
+                <a class="item" href="/objetivos/">Objetivos</a>
                 <li class="divider"></li>
                 <a class="item" href="/relatorio/">Planilha de Treinamentos</a>
+            </div>
+        </div>
+        <div class="ui dropdown item">Ajuda
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <a class="item" href="/manual/">Manual do Sistema</a>
+              <a class="item" href="/perguntas_frequentes/">Dúvidas Frequentes</a>
+              <a class="item" href="/processo_capacitacao/">Conheça as Etapas do Processo de Capacitação</a>
             </div>
         </div>
         {% endif %}
@@ -97,7 +106,7 @@
     <div class="senado_footer">
         <span class="versaoClass">Versão 2.0</span>
         <span class="centralText">Senado Federal - Praça dos Três Poderes - Brasília DF - CEP 70165-900 - Fone: (61)3303-4141</span>
-        <span class="madeby">2018 - Interlegis</span>
+        <span class="madeby">2019 - ILB/Interlegis</span>
     </div>
 
 </footer>
