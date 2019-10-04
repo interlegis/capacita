@@ -1,11 +1,8 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
-from .models import *
+
+from capacita.decorators import admin_required
 from .forms import *
-from django.http import HttpResponseRedirect
-from django.views.decorators.csrf import csrf_exempt
 from capacita.template_context_processors import is_admin
 
 @login_required
@@ -25,9 +22,11 @@ def usuarios(request):
         return render(request, 'error.html')
 
 @login_required
+@admin_required
 def usuario_new(request):
-    admin = is_admin(request)['is_admin']
-    if request.method == 'POST' and admin:
+    orgaos = Orgao.objects.all()
+    if request.method == 'POST':
+        groups = Group.objects.all()
         form = UserForm(request.POST)
         if form.is_valid():
             user_check = User.objects.filter(username=form.fields['username']).count()
@@ -39,75 +38,75 @@ def usuario_new(request):
                 usuario.save()
                 return redirect('usuario:usuarios')
             else:
-                return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : True})
+                return render(request, 'usuario_edit.html', {'form': form,
+                                                             'orgaos': orgaos,
+                                                             'groups': groups,
+                                                             'usuario': True})
 
         else:
             return render(request, 'usuario_edit.html', {'form' : form})
-    elif request.method != 'POST':
+    else:
         form = UserForm()
-        orgaos = Orgao.objects.all()
-        groups = Group.objects.all()
-    else:
-        return render(request, 'error.html')
-
-    orgaos = Orgao.objects.all()
-
-    if admin:
-        return render(request, 'usuario_edit.html', {'form' : form, 'orgaos' : orgaos, 'usuario' : True})
-    else:
-        return redirect('error')
+    return render(request, 'usuario_edit.html', {'form': form,
+                                                 'orgaos': orgaos,
+                                                 'usuario': True})
 
 @login_required
+@admin_required
 def usuario_orgao_adicionar(request, pk):
-    profile = Profile.objects.get(pk = pk)
-    if request.method == "POST" and is_admin(request)['is_admin']:
+    profile = Profile.objects.get(pk=pk)
+    if request.method == "POST":
         if not profile.orgao_ativo:
             profile.orgao_ativo = Orgao.objects.get(pk=request.POST['orgao'])
             profile.save()
         profile.orgaos.add(request.POST['orgao'])
-    elif not is_admin(request)['is_admin']:
-        return redirect('error')
 
     groups = Group.objects.all()
     orgaos_usuario = profile.orgaos.filter()
     orgaos = Orgao.objects.all().exclude(cod_orgao__in = [orgao.pk for orgao in orgaos_usuario])
-    return render(request, 'usuario_orgao.html', {'profile_user': profile, 'orgaos' : orgaos, 'groups' : groups, 'orgaos_usuario' : orgaos_usuario})
+    return render(request, 'usuario_orgao.html', {'profile_user': profile,
+                                                  'orgaos': orgaos,
+                                                  'groups': groups,
+                                                  'orgaos_usuario': orgaos_usuario})
 
 @login_required
+@admin_required
 def usuario_orgao_deletar(request, pk, orgao):
-    profile = Profile.objects.get(pk = pk)
+    profile = Profile.objects.get(pk=pk)
     profile.orgaos.remove(orgao)
-    if profile.orgao_ativo == Orgao.objects.get(pk=orgao) and is_admin(request)['is_admin']:
+    if profile.orgao_ativo == Orgao.objects.get(pk=orgao):
         if profile.orgaos.count() == 0:
             profile.orgao_ativo = None
             profile.save()
         else:
             profile.orgao_ativo = profile.orgaos.first()
             profile.save()
-    elif not is_admin(request)['is_admin']:
-        return redirect('error')
     return redirect(request.META['HTTP_REFERER'])
 
 
 @login_required
+@admin_required
 def usuario_edit(request, pk):
-    profile = get_object_or_404(Profile, id = pk)
+    profile = get_object_or_404(Profile, id=pk)
     usuario = get_object_or_404(User, pk=profile.user_id)
-    if request.method == "POST" and is_admin(request)['is_admin']:
+    if request.method == "POST":
         form = UserForm(request.POST, instance=usuario)
         if form.is_valid():
             usuario = form.save(commit=False)
             usuario.is_active = True
             usuario.save()
             return redirect('usuario:usuarios')
-    elif request.method != "POST":
-        form = UserForm(instance=usuario)
     else:
-        return redirect('error')
+        form = UserForm(instance=usuario)
     groups = Group.objects.all()
     orgaos = Orgao.objects.all()
     orgaos_usuario = profile.orgaos
-    return render(request, 'usuario_edit.html', {'form': form, 'orgaos' : orgaos, 'groups' : groups, 'usuario' : usuario, 'orgaos_usuario' : orgaos_usuario})
+    return render(request, 'usuario_edit.html', {'form': form,
+                                                 'orgaos': orgaos,
+                                                 'groups': groups,
+                                                 'usuario': usuario,
+                                                 'orgaos_usuario': orgaos_usuario})
+
 
 def admin_approve(request, pk):
     if is_admin(request)['is_admin']:
@@ -115,6 +114,7 @@ def admin_approve(request, pk):
         return redirect(request.META['HTTP_REFERER'])
     else:
         return render(request, 'error.html')
+
 
 def admin_disapprove(request, pk):
     if is_admin(request)['is_admin']:

@@ -15,8 +15,8 @@ from copy import deepcopy
 @login_required
 def mudanca_orgao(request, pk):
     profile = Profile.objects.get(user=request.user)
-    if profile.orgaos.get(pk = pk):
-        profile.orgao_ativo = Orgao.objects.get(cod_orgao = pk)
+    if profile.orgaos.get(pk=pk):
+        profile.orgao_ativo = Orgao.objects.get(cod_orgao=pk)
         profile.save()
         return redirect('/')
     else:
