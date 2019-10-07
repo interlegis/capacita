@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 class Necessidade(models.Model):
     cod_necessidade = models.AutoField(primary_key=True)
     cod_orgao_origem = models.ForeignKey('orgao.Orgao', on_delete=models.CASCADE)
-    cod_area_conhecimento = models.ForeignKey('areas.Area_conhecimento', models.DO_NOTHING)
+    cod_area_conhecimento = models.ForeignKey('areas.Area_conhecimento', models.DO_NOTHING, null=False)
     cod_treinamento = models.ForeignKey('treinamento.Treinamento', models.DO_NOTHING, default=-1)
     txt_descricao = models.CharField(max_length=200, null=True)
     cod_modalidade = models.ForeignKey('modalidade.Modalidade_Treinamento', models.DO_NOTHING)

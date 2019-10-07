@@ -1,8 +1,162 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="table_div">
-        <div  style="padding-top: 8%;" class="ui vertical masthead center aligned segment">
+<style>
+  div.alerta {
+    padding-top: 10px;
+    font-size: 15px;
+    color: red;
+  }
+  div.sucesso {
+    padding-top: 10px;
+    font-size: 15px;
+    color: green;
+  }
+    .espacamento40PC{
+                width: 70%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .circulo {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                transition: 0.3s ease;
+                margin-left: auto;
+                margin-right: auto;
+                border: 1px solid;
+            }
+            .circulo:hover{
+              /*transform: rotateY(180deg);*/
+            }
+            .circuloVerde{
+                background: #00B33C;
+                border: 0 !important;
+            }
+            .circuloAmarelo{
+                background: #FFA82C;
+                border: 0 !important;
+            }
+            .circuloVermelho{
+                background: #FF4238;
+                border: 0 !important;
+            }
+            .legendaSetor{
+              
+            }
+            .legendaSetor h2 {
+                width: 100px;
+                text-align: center;
+                font-size: 14px;
+                background: #00305c;
+                color: #fff;
+                display: inline-block;
+                padding: 5px 15px;
+                border-radius: 15px;
+                text-transform: uppercase;
+            }
+            .divCirculoLegendaLinha{
+    
+                display: inline-block;
+                float: left;
+                text-align: center;
+    
+            }
+            .divCirculoLegendaLinha:hover{
+                opacity: 0.9;
+            }
+            .rowCirculos{
+                padding: 1%;
+                margin: 1%;
+                border-radius: 30px;
+                border-color: #e0e0e0;
+                display:'inline-block';
+                background: white;
+                width: 100%;
+            }
+            .imgILB{
+                width: 100px;
+                border-radius: 50%;
+            }
+            .imgILB:hover{
+                opacity:0.8;
+            }
+            .linhaInterna{
+                height: 2px;
+                background: red;
+                position: absolute;
+                margin: 0 auto;
+                left: 0;
+                right: 0;
+                top: 56%;
+                z-index: -1;
+                width: 38%;
+            }
+            .setaIndicadoraContainer{
+                display: inline-block;
+                float: left;
+                text-align: center;
+            }
+            .setaIndicadora{
+                width: 50px;
+                margin-top: 50px;
+            }
+            .imagemSemCor{
+                filter: grayscale(100%);
+            }
+            .fl{
+                display: inline-block;
+                float: left;
+                margin-left: 5px;
+                margin-right:20px;
+            }
+            .miniCirculoLegendaBranco{
+                width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                transition: 0.3s ease;
+                margin-left: auto;
+                margin-right: auto;
+                border: 1px solid;
+                margin-top: 3px;
+            }
+            .miniCirculoLegenda{
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                transition: 0.3s ease;
+                margin-left: auto;
+                margin-right: auto;
+                border: 1px solid;
+                margin-top: 3px;
+            }
+            .propertiesLegenda{
+                width: 100%;
+                text-align: center;
+                margin-top: 2%;
+            }
+            .marginLeftRow{
+                margin-left: 25px;
+            }
+            .componenteCirculoComSeta{
+                width: 200px;
+                display: inline-block;
+                /*float: left;*/
+            }
+            .tamanhoDivILB{
+                width: 20%;
+                text-align: left;
+            }
+            .tickCorreto{
+                width: 40px;
+                margin-top: 50px;
+            }
+            .table_div {
+              padding-bottom: 0 !important;
+            }
+    </style>
+  <div class="table_div">
+        <div  style="padding-top: 2%;" class="ui vertical masthead center aligned segment">
 
             <div  class="ui text container">
               <h1 id="header-home" class="ui header">
@@ -12,15 +166,39 @@
 
               <br><br>
 
-                    <a id="link-home" class="ui big primary button" href="/necessidade/">
-                        Consultar ou realizar pedidos de capacitação
-                    </a>
-                    <br><br>
-                    <p>
-                    O prazo para envio de demandas ao ILB se encerra em 18/10/2019
-                    </p>
+              {% if plano_habilitado %}  
+                {% if estado %}  
+                <a id="link-home" class="ui big primary button" href="/necessidade/">
+                  Consultar pedidos de capacitação apresentados para {{ orgao }}
+                </a>
+                {% else %}  
+                  {% if ind_bloqueio %}
+                    <p>Não é possível realizar pedidos de capacitação para {{ orgao }}.<br>
+                    (o pedido já foi enviado pelo órgão superior na hierarquia)</p>
+                  {% else %}
+                  <a id="link-home" class="ui big primary button" href="/necessidade/">
+                    Realizar pedidos de capacitação para {{ orgao }}
+                  </a>
+                  {% endif %}
+                {% endif %}                  
+              <br><br>
+              {% else%}
+              O Capacita não está aberto para recebimento de demandas.
+              <a id="link-home" class="ui big primary button" href="/necessidade/">
+                Consultar pedidos de capacitação apresentados
+              </a>
+              {% endif %}
             </div>
-
+            
+            {% autoescape off %}
+      
+            {% if htmlsituacao %}
+            <h3>Acompanhe as etapas de tramitação de seu pedido</h3>
+            {{htmlsituacao}}
+            {% endif %}
+            
+            {% endautoescape %}
+            <br>
           </div>
     </div>
 
@@ -30,9 +208,8 @@
         <img class="img-duvidas" src="static/images/email.png">
         <a href="mailto:capacita_suporte@interlegis.leg.br" target="_top">capacita_suporte@interlegis.leg.br</a>
       </p>
+      <p><img class="img-duvidas" src="static/images/call.png">Matheus Garcia (5962)</p>
       <p><img class="img-duvidas" src="static/images/call.png">Cláudio Cunha (1395)</p>
-      <p><img class="img-duvidas" src="static/images/call.png">Matheus Garcia (4221)</p>
     </div>
-
 
 {% endblock %}

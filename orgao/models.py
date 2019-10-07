@@ -6,6 +6,7 @@ class Orgao(models.Model):
     nome = models.CharField(max_length=30, unique=True)
     descricao = models.CharField(max_length=500)
     ind_excluido = models.BooleanField( default=False)
+    nivel = models.IntegerField( default=-1)
 
     def __str__(self):
         return self.nome

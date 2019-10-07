@@ -26,7 +26,7 @@
         </div>
         <a class="item capacitaLogo" href="/">CAPACITA</a>
 
-        {% if is_gestor %}
+        {% if is_gestor and not ind_bloqueio %}
         <a class="item" href="/necessidade/">Pedidos de Capacitação</a>
         {% endif %}
         {% if is_admin %}
@@ -52,8 +52,8 @@
             <i class="dropdown icon"></i>
             <div class="menu">
               <a class="item" href="/manual/">Manual do Sistema</a>
-              <a class="item" href="/perguntas_frequentes/">Dúvidas Frequentes</a>
-              <a class="item" href="/processo_capacitacao/">Conheça as Etapas do Processo de Capacitação</a>
+              <!--<a class="item" href="/perguntas_frequentes/">Dúvidas Frequentes</a>
+              <a class="item" href="/processo_capacitacao/">Conheça as Etapas do Processo de Capacitação</a>-->
             </div>
         </div>
         {% endif %}

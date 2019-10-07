@@ -8,6 +8,8 @@ from necessidade.models import *
 from .forms import *
 from django.http import HttpResponse
 from capacita.template_context_processors import is_gestor, is_admin
+from django.db import connection
+
 
 # Para importação
 from copy import deepcopy
@@ -26,11 +28,104 @@ def mudanca_orgao(request, pk):
 @login_required
 def home(request):
     try:
-        profile = Profile.objects.create(user_id = request.user.id)
-        profile.save()
+        usuario = User.objects.get(id = request.user.id)
+        orgao = Profile.objects.get(user=usuario).orgao_ativo
+        planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True) 
+        try:
+            necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
+            pode_registrar_demandas = True
+        except Exception as e:
+            pode_registrar_demandas = False
+        
+        cursor = connection.cursor()
+        cursor.callproc("funHTMLSituacaoPedidoCapacitacao", (orgao.nome,))
+        htmlsituacao_tmp = cursor.fetchone()[0];
+        cursor.close()
+
+        htmlsituacao = """
+            <div class="espacamento40PC"><div class="rowCirculos"><center>
+            """;
+        setores = htmlsituacao_tmp.split('|');
+        
+        situacao_primeiro = ''
+        existe_green = False;
+        for setor in setores:
+            sigla_setor = setor.split('-')[0]
+            situacao = setor.split('-')[1]    
+            
+            if(not situacao_primeiro):
+                situacao_primeiro = situacao
+            else:
+                if (not existe_green and situacao == 'green'):
+                    existe_green = True;
+
+            if (situacao != 'green'):
+                ind_bloqueio = True;
+
+
+            imagemSemCor = '';
+            if( situacao != 'green'):
+                imagemSemCor = 'imagemSemCor'
+            
+            htmlsituacao = htmlsituacao + \
+                    '<div class="componenteCirculoComSeta">'+ \
+                    '    <div class="divCirculoLegendaLinha">'+ \
+                    '        <div>'+ \
+                    '            <div class="circulo circuloVerde ' + imagemSemCor + '">'+ \
+                    '            </div>'+ \
+                    '            <div class="legendaSetor ">'+ \
+                    '                <h2>' + sigla_setor + '</h2>'+ \
+                    '            </div>'+ \
+                    '        </div>'+ \
+                    '    </div>'+ \
+                    '    <div class="setaIndicadoraContainer">'+ \
+                    '        <img class="setaIndicadora imagemSemCor" src="https://cdn3.iconfinder.com/data/icons/signs-symbols-5/126/slice331-256.png">'+ \
+                    '    </div>'+ \
+                    '</div>';
+            
+        htmlsituacao = htmlsituacao + \
+            '    <div class="componenteCirculoComSeta">'+ \
+            '        <div class="divCirculoLegendaLinha">'+ \
+            '            <div>'+ \
+            '                <div>'+ \
+            '                    <img src="https://yt3.ggpht.com/a/AGF-l7_xvHq80BYmUfpfKvUFu5d_lOPTjNLlUwWSzg=s288-c-k-c0xffffffff-no-rj-mo" class="imgILB ' + imagemSemCor + '">'+ \
+            '                </div>'+ \
+            '                <div class="legendaSetor">'+ \
+            '                    <h2>ILB</h2>'+ \
+            '                </div>'+ \
+            '            </div>'+ \
+            '        </div>'+ \
+            '        <div class="setaIndicadoraContainer">'+ \
+            '            <img class="tickCorreto ' + imagemSemCor + '" src="https://cdn3.iconfinder.com/data/icons/flat-actions-icons-9/792/Tick_Mark_Dark-512.png">'+ \
+            '        </div>'+ \
+            '    </div>';
+
+        if imagemSemCor:
+            htmlsituacao = htmlsituacao + \
+                '   <div class="alerta">Atenção: o prazo para envio de demandas ao ILB se encerra em 18/10/2019</div>'
+        else:
+            htmlsituacao = htmlsituacao + \
+                '   <div class="sucesso">As demandas de capacitação foram encaminhadas com sucesso ao ILB!</div>'
+        
+        htmlsituacao = htmlsituacao + '<center></div></div>';
+
+            # '        <div class="fl propertiesLegenda marginLeftRow">'+ \
+            # '            <div class="fl miniCirculoLegendaBranco"></div><div class="fl">Não Iniciado</div>'+ \
+            # '            <div class="fl miniCirculoLegenda circuloAmarelo"></div><div class="fl">Em Andamento</div>'+ \
+            # '            <div class="fl miniCirculoLegenda circuloVerde"></div><div class="fl">Enviado Para Superior</div>'+ \
+            # '            <div class="fl miniCirculoLegenda circuloVermelho"></div><div class="fl">Impedido</div>'+ \
+            # '        </div>'+ \
+
+
+        #profile = Profile.objects.create(user_id = request.user.id)
+        #profile.save()
+        ind_bloqueio = (situacao_primeiro != 'green' and existe_green);
+        return render(request, 'home.html', {'plano_habilitado': pode_registrar_demandas, 'ind_bloqueio' : ind_bloqueio ,
+            'estado': necessidade_orgao.estado, 'orgao': orgao, 'htmlsituacao': htmlsituacao})
     except Exception as e:
+        pode_registrar_demandas = False;
         print(e)
-    return render(request, 'home.html')
+        return render(request, 'error.html')
 
 
 @login_required
@@ -129,9 +224,11 @@ def error(request):
 def processo_capacitacao(request):
     return render(request, 'processo_capacitacao.html')
 
+@login_required
 def perguntas_frequentes(request):
     return render(request, 'perguntas_frequentes.html')
 
+@login_required
 def manual(request):
     return render(request, 'manual.html')
     

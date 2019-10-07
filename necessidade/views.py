@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db import connection
 from .models import *
 from .forms import *
 from capacita.template_context_processors import is_gestor, is_admin
@@ -13,9 +14,12 @@ def necessidade(request):
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
         try:
             necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
+            pode_registrar_demandas = True
         except Exception as e:
-            return redirect('error')
-
+            planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = False)
+            pode_registrar_demandas = False
+            necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
+            
         gestor = is_gestor(request)
 
         orgao_object = Orgao.objects.get(nome = orgao)
@@ -31,6 +35,7 @@ def necessidade(request):
             subordinados_status.append({'nome': subordinado.nome, 'estado': necessidade_subordinado.estado, 'cod_necessidade_orgao': necessidade_subordinado.cod_necessidade_orgao, 'importado': necessidade_subordinado.importado})
         necessidades = Necessidade.objects.all().exclude(ind_excluido = True).filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
         total_necessidade = necessidades.filter(aprovado=False).count
+
         # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
         if(gestor):
             return render(request, 'necessidade.html', {'estado': necessidade_orgao.estado,'necessidades' : necessidades, 'total_necessidade': total_necessidade, 'cod_necessidade_orgao': necessidade_orgao.cod_necessidade_orgao, 'subordinados': subordinados_status, 'superior': superior})
