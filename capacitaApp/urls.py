@@ -8,13 +8,12 @@ from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-     url(r'^login/$', LoginView.as_view(), name='login'),
-     url(r'^logout/$', LogoutView.as_view(), name='logout'),
-    #url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
-    #url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),
-    #url(r'^callback/$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'),
+    #  url(r'^login/$', LoginView.as_view(), name='login'),
+    #  url(r'^logout/$', LogoutView.as_view(), name='logout'),
+    url(r'^login/$', django_cas_ng.views.login, name='cas_ng_login'),
+    url(r'^logout/$', django_cas_ng.views.logout, {'next_page': '/login/'} ,name='cas_ng_logout'),
+    url(r'^callback/$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'),
     url(r'^relatorio/$', views.relatorio, name='relatorio'),
-   # url(r'^avaliacao_cursos/$', views.avaliacao_cursos, name='avaliacao_cursos'),
     url(r'^error/$', views.error, name='error'),
     url(r'^processo_capacitacao/$', views.processo_capacitacao, name='processo_capacitacao'),
     url(r'^perguntas_frequentes/$', views.perguntas_frequentes, name='perguntas_frequentes'),
