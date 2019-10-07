@@ -35,7 +35,6 @@ def necessidade(request):
             subordinados_status.append({'nome': subordinado.nome, 'estado': necessidade_subordinado.estado, 'cod_necessidade_orgao': necessidade_subordinado.cod_necessidade_orgao, 'importado': necessidade_subordinado.importado})
         necessidades = Necessidade.objects.all().exclude(ind_excluido = True).filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
         total_necessidade = necessidades.filter(aprovado=False).count
-
         # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
         if(gestor):
             return render(request, 'necessidade.html', {'estado': necessidade_orgao.estado,'necessidades' : necessidades, 'total_necessidade': total_necessidade, 'cod_necessidade_orgao': necessidade_orgao.cod_necessidade_orgao, 'subordinados': subordinados_status, 'superior': superior})
@@ -233,3 +232,18 @@ def importar_necessidade(request, pk, pk_atual):
         return redirect("necessidade")
     else:
         return render(request, 'error.html')
+
+def orgaos_superiores(request):
+    admin = is_admin(request)['is_admin']
+    if (admin):
+        orgaos = Orgao.objects.all().filter(cod_superior=None)
+        orgaos_superiores = []
+        plano = Plano_Capacitacao.objects.filter(plano_habilitado=True)[0]
+        for orgao in orgaos:
+            necessidade_orgao = Necessidade_Orgao.objects.all().filter(cod_orgao=orgao, cod_plano_capacitacao=plano)[0]
+            orgaos_superiores.append({"nome": orgao.nome,"estado": necessidade_orgao.estado})
+        orgaos_superiores = sorted(orgaos_superiores, key=lambda x: x['estado'], reverse=True)
+        return render(request, 'orgaos_superiores.html', {'orgaos_superiores': orgaos_superiores})
+    else:
+        return render(request, 'error.html')
+
