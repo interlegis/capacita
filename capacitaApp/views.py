@@ -31,6 +31,9 @@ def home(request):
         usuario = User.objects.get(id = request.user.id)
         orgao = Profile.objects.get(user=usuario).orgao_ativo
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True) 
+        if profile.user.last_login == None:
+            profile = Profile.objects.create(user_id = request.user.id)
+            profile.save()
         try:
             necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
             pode_registrar_demandas = True
