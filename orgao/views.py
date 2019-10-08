@@ -43,6 +43,8 @@ def orgao_new(request):
         form = OrgaoForm(request.POST)
         if form.is_valid():
             orgao = form.save(commit=False)
+            orgao.nome = orgao.nome.upper()
+            orgao.descricao = orgao.descricao.upper()
             if orgao.cod_superior:
                 orgao.nivel = orgao.cod_superior.nivel + 1
             else:
