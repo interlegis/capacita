@@ -43,7 +43,10 @@ def orgao_new(request):
         form = OrgaoForm(request.POST)
         if form.is_valid():
             orgao = form.save(commit=False)
-            orgao.nivel = orgao.cod_superior.nivel + 1
+            if orgao.cod_superior:
+                orgao.nivel = orgao.cod_superior.nivel + 1
+            else:
+                orgao.nivel = 1
             orgao.save()
             plano = Plano_Capacitacao.objects.filter(plano_habilitado=True)[0]
             Necessidade_Orgao.objects.create(cod_orgao = orgao, cod_plano_capacitacao = plano, estado = False)
