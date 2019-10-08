@@ -1,22 +1,19 @@
-from django.shortcuts import render, redirect,get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from .models import *
+
+from capacita.decorators import admin_required
 from .forms import *
-from capacita.template_context_processors import is_gestor, is_admin
 
 @login_required
+@admin_required
 def sugestao(request):
     sugestoes = Sugestao.objects.all()
-    if is_admin(request)['is_admin']:
-        return render(request, 'sugestao.html', {'sugestoes' : sugestoes})
-    else:
-        return render(request, 'error.html')
+    return render(request, 'sugestao.html', {'sugestoes' : sugestoes})
 
 @login_required
+@admin_required
 def sugestao_new(request):
-    admin = is_admin(request)['is_admin']
-    if request.method == "POST" and admin:
+    if request.method == "POST":
         form = SugestaoForm(request.POST)
         if form.is_valid():
             sugestao = form.save(commit=False)
@@ -24,8 +21,6 @@ def sugestao_new(request):
             sugestao.cod_usuario = user
             sugestao.save()
             return redirect('sugestao')
-    elif request.method != "POST" and admin:
-        form = SugestaoForm()
     else:
-        return render(request, 'error.html')
+        form = SugestaoForm()
     return render(request, 'sugestao_edit.html', {'form': form})
