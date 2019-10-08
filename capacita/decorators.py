@@ -5,8 +5,9 @@ from capacita.template_context_processors import is_admin
 
 
 def admin_required(func):
-    def wrapper(request, *args, **kwargs):
+    def wrapper(request, **kwargs):
         if not is_admin(request)['is_admin']:
             return render(request, 'error.html')
-        return func(request, *args, **kwargs)
+        return func(request, **kwargs)
     return wrapper
+
