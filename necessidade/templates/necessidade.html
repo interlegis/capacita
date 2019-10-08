@@ -127,19 +127,26 @@
         </div>
     </div>
     <div style="padding-left: 5%; padding-bottom: 0%">
-        <div style="width:80%" class="ui warning message">Ainda não foi registrada nenhuma demanda de capacitação para {{user.profile.orgao_ativo}}.
-        <br><br>
-        {% if subordinados %}
-        Clique no botão abaixo para realizar um pedido, ou importe pedidos de órgãos subordinados, se houver.        
+        <div style="width:80%" class="ui warning message">
+        
+        {% if pode_registrar_demandas %}
+          Ainda não foi registrada nenhuma demanda de capacitação para {{user.profile.orgao_ativo}}.<br><br>
+          {% if subordinados %}
+          Clique no botão abaixo para realizar um pedido, ou importe pedidos de órgãos subordinados, se houver.        
+          {% else %}
+          Clique no botão abaixo para realizar um pedido.
+          {% endif %}
         {% else %}
-        Clique no botão abaixo para realizar um pedido.
+          Não foi registrada nenhuma demanda de capacitação para {{user.profile.orgao_ativo}}.
         {% endif %}
 
         </div>
     </div>
+    {% if pode_registrar_demandas %}
     <div class="table_div">
         <a href="/necessidade/new/"><button class="ui button basic secondary">Novo</button></a>
     </div>
+    {% endif %}
     {% else %}
     <div style="padding-left: 5%; padding-bottom: 0%" class="table_div">
         <div class="content">

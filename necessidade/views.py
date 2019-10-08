@@ -11,8 +11,8 @@ def necessidade(request):
     if (hasattr(request.user, 'profile')):
         usuario = User.objects.get(id = request.user.id)
         orgao = Profile.objects.get(user=usuario).orgao_ativo
-        planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
         try:
+            planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
             necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
             pode_registrar_demandas = True
         except Exception as e:
@@ -37,7 +37,7 @@ def necessidade(request):
         total_necessidade = necessidades.filter(aprovado=False).count
         # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
         if(gestor):
-            return render(request, 'necessidade.html', {'estado': necessidade_orgao.estado,'necessidades' : necessidades, 'total_necessidade': total_necessidade, 'cod_necessidade_orgao': necessidade_orgao.cod_necessidade_orgao, 'subordinados': subordinados_status, 'superior': superior})
+            return render(request, 'necessidade.html', {'estado': necessidade_orgao.estado,'necessidades' : necessidades, 'total_necessidade': total_necessidade, 'cod_necessidade_orgao': necessidade_orgao.cod_necessidade_orgao, 'subordinados': subordinados_status, 'superior': superior, 'pode_registrar_demandas': pode_registrar_demandas})
         else:
             return render(request, 'error.html')
     else:
