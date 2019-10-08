@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .passosProcesso {
+        margin-bottom: 60px;
+        position: relative;
+    }
+    #tituloSteps h4 {
+        font-size: 54px;
+        text-align: center;
+        text-transform: uppercase;
+        color:#78c043;
+        font-weight: 800;
+    }
+    .passosProcesso .painel {
+        border-top-left-radius: 60px;
+        border-bottom-left-radius: 60px;
+        color:#fff;
+        font-size: 16px;
+        box-shadow: 0px 1px 7px 1px rgba(0,0,0,0.4);
+        margin-bottom:15px;
+    }
+    .passosProcesso .painel span,
+    .passosProcesso .painel:hover span  {
+        -webkit-transition: all ease-out 0.3s;
+        -moz-transition: all ease-out 0.3s;
+        -o-transition: all ease-out 0.3s;
+        transition: all ease-out 0.3s;
+    }
+    .passosProcesso .painel:hover span {
+        background: rgba(0,0,0,0.4);
+    }
+    .passosProcesso .painelBody {
+        overflow-y: auto;
+        overflow: visible;
+        min-height: 150px;
+        padding-left: 120px;
+        position: relative;
+    }
+    .passosProcesso .painelBody span {
+        position: absolute;
+        left: 0px;
+        width: 90px;
+        height: 100%;
+        line-height: 150px;
+        background: #f6f6f6;
+        text-align: center;
+        font-size: 36px;
+        font-weight: 800;
+        border-top-left-radius: 60px;
+        border-bottom-left-radius: 60px;
+        box-shadow: 0px 2px 10px rgba(0,0,0,0.4);
+    }
+
+    .passosProcesso .tituloPasso {
+        font-size: 28px;
+        margin-top: 0px;
+        padding-top:15px;
+        text-transform: uppercase;
+        font-family: 'Montserrat', sans-serif;
+        margin-bottom: 10px !important;
+    }
+    .espacamentoPagina{
+        width: 86%;
+        margin-left: 7%;
+        margin-right: 7%;
+        margin-top: 5%;
+    }
+    .tituloPagina{
+        font-size: 50px;
+        color: white;
+        letter-spacing: 5px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+    }
+    .passo1{
+        background: #FF4238;
+        color: #FF4238;
+    }
+    .passo2{
+        background: #FF6F4A;
+        color: #FF6F4A;
+    }
+    .passo3{
+        background: #FFA82C;
+        color: #FFA82C;
+    }
+    .passo4{
+        background: #66AE35;
+        color: #66AE35;
+    }
+    .passo5{
+        background: #00B33C;
+        color: #00B33C;
+    }
+    .customTopic{
+        width: 99%;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-family: 'Montserrat', sans-serif;
+    }
+</style>
+<div class="table_div">
+    <h2 class="ui dividing header">Etapas do Processo de Capacitação</h2>
+
+    <div class="espacamentoPagina">
+        <div class="row">
+            <div class="passosProcesso" style="width: 100%">
+                <div>
+                    <div class="painel panel-default passo1">
+                        <div class="painelBody" id="titulo1">
+                            <span class="passo1"> 1 </span> <h3 class="tituloPasso"> Captura de Pedidos </h3>
+                            <div class="customTopic">
+                                • Áreas administrativas e gabinetes parlamentares deverão enviar pedidos de capacitação para servidores lotados em suas unidades
+                            </div>
+                            <div class="customTopic">
+                                • Os responsáveis pelo envio de pedidos de capacitação são os chefes dos gabinetes parlamentares e os titulares de cada secretaria (podendo estes delegar a chefes de gabinete, coordenadores-gerais ou mesmo descentralizar para coordenadores e chefes de serviço).
+                            </div>
+                        </div>
+                    </div>
+                    <div class="painel panel-default passo2">
+                        <div class="painelBody">
+                            <span class="passo2"> 2 </span> <h3 class="tituloPasso"> Elaboração do PCASF </h3>
+                            <div class="customTopic">
+                                • Nessa etapa, os pedidos de capacitação são consolidados pelo ILB/Interlegis e passam a compor o Plano de Capacitação de Servidores do Senado Federal (PCASF).
+                            </div>
+                        </div>
+                    </div>
+                    <div class="painel panel-default passo3">
+                        <div class="painelBody">
+                            <span class="passo3"> 3 </span> <h3 class="tituloPasso"> Aprovação do PCASF </h3>
+                            <div class="customTopic">
+                                • O plano de capacitação será apresentado ao Conselho de Supervisão do ILB, o qual poderá aprovar, total ou parcialmente, os treinamentos solicitados.
+                            </div>
+                            <div class="customTopic">
+                                • Treinamentos que acarretem ônus para o Senado estão sujeitos a deliberação da DGER
+                            </div>
+                        </div>
+                    </div>
+                    <div class="painel panel-default passo4">
+                        <div class="painelBody">
+                            <span class="passo4"> 4 </span> <h3 class="tituloPasso"> Seleção de facilitadores </h3>
+                            <div class="customTopic">
+                                • Por meio de pesquisa no Banco de Talentos do Senado Federal, os servidores serão convidados a participar de processo seletivo para ministrar os cursos
+                            </div>
+                            <div class="customTopic">
+                                • Caso não haja facilitador ou nenhum seja aprovado, o ILB irá procurar um profissional no mercado com as qualificações necessárias</div>
+                        </div>
+                    </div>
+                    <div class="painel panel-default passo5">
+                        <div class="painelBody">
+                            <span class="passo5"> 5 </span> <h3 class="tituloPasso"> Execução dos treinamentos </h3>
+                            <div class="customTopic">
+                                • Trata-se da realização dos cursos em si, os quais serão ministrados pelos facilitadores selecionados.
+                            </div>
+                            <div class="customTopic">
+                                • O ILB entrará em contato com cada secretaria para ajustar detalhes da realização do curso
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

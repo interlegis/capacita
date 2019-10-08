@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="table_div">
+
+        <h2 class="ui dividing header">Acompanhar envios de demandas</h2>
+        <table class="ui celled padded table">
+            <thead>
+                <tr class="center aligned">
+                  <th>Nome</th>
+                  <th>Enviado para o ILB</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for orgao in orgaos_superiores %}
+                    <tr class="center aligned">
+                        <td>{{orgao.nome}}</td>
+                        <td>
+                          {% if orgao.estado == True %}
+                          <a class="links"><i class="check icon"></i></a>
+                          {% else %}
+                          <a class="links"><i class="delete icon"></i></a>
+                          {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+
+    {% endblock %}

@@ -10,9 +10,9 @@ class NecessidadeForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={
                 'placeholder': "Explique por que esta atividade de capacitação é necessária.\n" + 
-                                "Quais atividades serão impactadas/melhoradas com a " +
+                                "(quais atividades serão impactadas/melhoradas com a " +
                                 "utilização dos conhecimentos chave da matéria a ser " + 
-                                "apresentada.",
+                                "apresentada, como essa atividade se alinha aos objetivos estratégicos do Senado etc)",
                 'rows': '5', 
                 'cols': '15',
                 'style':'resize:none;'
@@ -26,8 +26,8 @@ class NecessidadeForm(forms.ModelForm):
             attrs={
                 'placeholder': "Descreva os pontos essenciais sobre a atividade de capacitação, " + 
                                 "fazendo um resumo que evidencie suas principais " + 
-                                "características.\nUma lista de pontos-chave da " + 
-                                "matéria a ser apresentada",
+                                "características (uma lista de pontos-chave da " + 
+                                "matéria a ser apresentada)",
                 'rows': '5', 
                 'cols': '15',
                 'style':'resize:none;'

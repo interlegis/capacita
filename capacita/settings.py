@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'cl7h5!4x-4nyu*9gv1n8voo@m4$=gmx%xh6sxu!8tuifob*vk!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -67,7 +67,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    #'django_cas_ng.backends.CASBackend',
+    'django_cas_ng.backends.CASBackend',
 )
 
 ROOT_URLCONF = 'urls'
@@ -151,7 +151,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-#CAS_SERVER_URL = 'https://adm.senado.gov.br/cas-server/login'
-#CAS_VERSION = '3'
-#CAS_REDIRECT_URL = "https://capacita.interlegis.leg.br/createProfile"
-#CAS_FORCE_CHANGE_USERNAME_CASE = "lower"
+CAS_SERVER_URL = 'https://adm.senado.gov.br/cas-server/login'
+CAS_VERSION = '3'
+CAS_REDIRECT_URL = "https://capacita.interlegis.leg.br"
+CAS_FORCE_CHANGE_USERNAME_CASE = "lower"

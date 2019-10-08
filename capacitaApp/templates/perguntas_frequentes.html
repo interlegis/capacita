@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+<style>
+  .espacamentoFaq {
+    /* width: 90%;
+    margin-left: 5%;
+    margin-right: 5%; */
+  }
+
+  .tituloSetor {
+    color: black !important;
+    text-decoration: none;
+    font-size: 16px !important;
+    /* font-family: 'Montserrat', sans-serif; */
+  }
+
+  .tituloSetor:hover {
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .tituloSetor:focus {
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .propriedadesTextoConteudo {
+    font-family: 'Montserrat', sans-serif; 
+  }
+
+  .card-header:hover {
+    background: #e5e5e5;
+  }
+
+  .divTituloFaq {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 3%;
+    margin-bottom: 2%;
+    text-align: center;
+  }
+
+  .tituloFaq {
+    text-transform: uppercase;
+    font-size: 50px !important;
+    /* font-family: 'Montserrat', sans-serif; */
+  }
+
+  .divisaoCategoriaFaq {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 20px;
+    padding: 1%;
+    border-color: #dcdcdc;
+    margin: 1%;
+  }
+
+  .tituloDivisaoCategoria {
+    text-transform: capitalize;
+    font-size: 20px !important;
+    /* font-family: 'Montserrat', sans-serif;
+    text-align: center;*/
+    padding-top: 1%; 
+    padding-bottom: 2%;
+    font-weight: bold;
+  }
+</style>
+<div class="table_div">
+
+  <h2 class="ui dividing header">Dúvidas Frequentes</h2>
+
+  <div class="espacamentoFaq">
+    <div class="divisaoCategoriaFaq">
+      <div class="tituloDivisaoCategoria">
+        Público-Alvo
+      </div>
+      <div id="accordion">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed tituloSetor" data-toggle="collapse" data-target="#collapseOne"
+                aria-controls="collapseOne">
+                Collapsible Group Item #1
+              </button>
+            </h5>
+          </div>
+
+          <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body propriedadesTextoConteudo">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf
+              moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+              Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
+              shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
+              proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
+              aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed tituloSetor" data-toggle="collapse" data-target="#collapseTwo"
+                aria-controls="collapseTwo">
+                Collapsible Group Item #1
+              </button>
+            </h5>
+          </div>
+
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body propriedadesTextoConteudo">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf
+              moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+              Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
+              shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
+              proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
+              aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divisaoCategoriaFaq">
+      <div class="tituloDivisaoCategoria">
+        Processo de Capacitação
+      </div>
+      <div id="accordion2">
+        <div class="card">
+          <div class="card-header" id="headingFour">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed tituloSetor" data-toggle="collapse" data-target="#collapseFour"
+                aria-expanded="false" aria-controls="collapseFour">
+                Collapsible Group Item #1
+              </button>
+            </h5>
+          </div>
+
+          <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion2">
+            <div class="card-body propriedadesTextoConteudo">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf
+              moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+              Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
+              shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
+              proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
+              aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+
+
+<h3>Para unidades administrativas</h3>
+
+<h4>Passo 1: alimentação pelos chefes de serviço</h4>
+
+Chefes de serviço alimentam o Capacita registrando as ações de capacitação (cursos, eventos técnico-científicos etc) 
+desejadas para suas equipes.
+
+<h4>Passo 2: triagem inicial pelos coordenadores</h4>
+
+Os coordenadores fazem a primeira filtragem, endossando ou não as solicitações dos chefes de serviço.
+
+Também podem adicionar novas demandas.
+
+<h4>Passo 3: unificação das demandas pelos diretores de secretaria</h4>
+
+Diretores de secretaria e chefes de gabinete faz
+
+<h3>Para gabinetes parlamentares</h3>
+
+<h3>Visão Geral do Sistema</h3>
+O Capacita é o software desenvolvido pela Coordenação de Tecnologia da Informação do ILB/Interlegis (COTIN) para 
+auxiliar na captura de demandas de capacitação das diferentes áreas do Senado Federal, a fim de elaborar o Plano de 
+Capacitação de Servidores do Senado Federal (PCASF).
+
+<h3>Fluxos de trabalho</h3>
+
+Para gabinetes parlamentares, seus titulares irão encaminhar demandas de capacitação diretamente para o ILB.
+
+Para áreas administrativas, o processo pode se iniciar no chefe de serviço
+
+<h3>Já enviei pedidos de capacitação em anos anteriores para o ILB que não foram executados. Por que agora será diferente?</h3>
+O recebimento de pedidos de capacitação é apenas o primeiro passo para a elaboração do PCASF.
+Em anos anteriores, por motivos diversos, o PCASF não foi aprovado, e consequentemente 
+Para 2020, a nova diretoria do ILB tem se empenhado na reformulação do plano.
+
+<h3>Terei feedback a respeito do que foi pedido no plano</h3>
+A equipe da COTIN está trabalhando 
+
+<h3>Gostaria de incluir um treinamento que não consta no sistema. Como fazer?</h3>
+Selecione apenas a área de conhecimento na qual o treinamento se classifica
+
+<h3>Não tenho certeza a respeito da área de conhecimento. Como proceder?</h3>
+
+<h3>Observei um erro após ter feito um pedido</h3>
+
+<h3></h3>
+
+<h3>Por que devo usar o Capacita?</h3>
+
+<h3>Posso encaminhar demandas por e-mail ou outro canal?</h3>
+O Capacita é o instrumento oficial para recebimento de demandas para elaboração do Plano de Capacitação de Servidores 
+do Senado Federal referente ao ano de 2020.
+
+Somente por motivo de força maior é que serão recebidos pedidos por outro canal.
+
+<h3>Gostaria de sugerir melhorias para o sistema. Como faço?</h3>
+Sugestões são muito bem vindas! Basta encaminhar seu pedido por e-mail para capacita_suporte@interlegis.leg.br.   
+
+<h3>Quem pode utilizar o Capacita?</h3>
+Em sua versão atual, o Capacita pode ser utilizado
+
+<h3>Preciso modificar um pedido de treinamento</h3>
+
+<h3>O pedido de treinamento foi encaminhado para o ILB. E agora?</h3>
+
+<h3>Meu pedido de treinamento foi enviado com erros ou incompleto. Como posso corrigir?</h3>
+
+Se o pedido já tiver sido encaminhado para o ILB, a alteração somente pode ser feita mediante requerimento no SIGAD 
+encaminhado ao SETREINA (Serviço de Treinamento)
+
+Agora, se o pedido foi e

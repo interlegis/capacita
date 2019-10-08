@@ -26,7 +26,7 @@
         </div>
         <a class="item capacitaLogo" href="/">CAPACITA</a>
 
-        {% if is_gestor %}
+        {% if is_gestor and not ind_bloqueio %}
         <a class="item" href="/necessidade/">Pedidos de Capacitação</a>
         {% endif %}
         {% if is_admin %}
@@ -45,18 +45,19 @@
                 <a class="item"  href="/tipos_treinamento/">Tipos</a>
                 <a class="item" href="/objetivos/">Objetivos</a>
                 <li class="divider"></li>
+                <a class="item" href="/orgaos_superiores/">Acompanhar envios</a>
                 <a class="item" href="/relatorio/">Planilha de Treinamentos</a>
             </div>
         </div>
+        {% endif %}
         <div class="ui dropdown item">Ajuda
             <i class="dropdown icon"></i>
             <div class="menu">
               <a class="item" href="/manual/">Manual do Sistema</a>
-              <a class="item" href="/perguntas_frequentes/">Dúvidas Frequentes</a>
-              <a class="item" href="/processo_capacitacao/">Conheça as Etapas do Processo de Capacitação</a>
+              <!--<a class="item" href="/perguntas_frequentes/">Dúvidas Frequentes</a>
+              <a class="item" href="/processo_capacitacao/">Conheça as Etapas do Processo de Capacitação</a>-->
             </div>
         </div>
-        {% endif %}
         <div class="right menu dropdown show">
             {% if user.is_authenticated %}
               {% if profile.orgao_ativo %}
@@ -65,26 +66,22 @@
               </div>
               {% endif %}
 
-            {% if profile.orgaos.count %}
-            <a class="ui item dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="ui item dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ user.username }}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                {% for orgao in profile.orgaos.all %}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                {% if profile.orgaos.count %}
+                  {% for orgao in profile.orgaos.all %}
                   {% if orgao == profile.orgao_ativo%}
-                    <a class="dropdown-item" style="font-weight:bolder; color: #01305c;" href="{% url 'mudanca_orgao' pk=orgao.cod_orgao %}">{{orgao.nome}}*</a>
+                    <a class="dropdown-item" style="font-weight:bolder; color: #01305c;" href="{% url 'mudanca_orgao' pk=orgao.cod_orgao %}">{{orgao.nome}} (ativo)</a>
                   {% else %}
                     <a class="dropdown-item" href="{% url 'mudanca_orgao' pk=orgao.cod_orgao %}">{{orgao.nome}}</a>
                   {% endif %}
-                {% endfor %}
+                  {% endfor %}
+                {% endif %}
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/logout/">Sair</a>
-            </div>
-            {% else %}
-            <p class="ui item" >
-                {{ user.username }}
-            </p>
-            {% endif %}
+              </div>
             {% endif %}
         </div>
     </div>

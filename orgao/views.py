@@ -1,4 +1,11 @@
 from capacita.decorators import admin_required
+from django.shortcuts import render, redirect,get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
+from plano.models import *
+from necessidade.models import Necessidade_Orgao
+from .models import *
 from .forms import *
 from usuario.views import *
 from capacitaApp.models import *
@@ -35,7 +42,11 @@ def orgao_new(request):
     if request.method == "POST":
         form = OrgaoForm(request.POST)
         if form.is_valid():
-            form.save()
+            orgao = form.save(commit=False)
+            orgao.nivel = orgao.cod_superior.nivel + 1
+            orgao.save()
+            plano = Plano_Capacitacao.objects.filter(plano_habilitado=True)[0]
+            Necessidade_Orgao.objects.create(cod_orgao = orgao, cod_plano_capacitacao = plano, estado = False)
             return redirect('orgao')
         else:
             return render(request, 'orgao_edit.html', {'form': form})

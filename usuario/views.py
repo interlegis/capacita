@@ -32,9 +32,7 @@ def usuario_new(request):
             user_check = User.objects.filter(username=form.fields['username']).count()
             if(user_check == 0):
                 usuario = form.save()
-                profile = Profile.objects.create(user_id = usuario.id)
                 usuario.is_active = True
-                profile.save()
                 usuario.save()
                 return redirect('usuario:usuarios')
             else:

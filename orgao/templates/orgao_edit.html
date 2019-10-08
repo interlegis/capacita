@@ -4,9 +4,8 @@
     {% block content %}
 
     <div class="ui container">
-        <h2 class="ui dividing header">Órgão</h2>
         <form class="ui form" method="post">{% csrf_token %}
-
+            <h2 class="ui dividing header">Órgão</h2>
             <div class="field">
                 <div class="text-danger">
                   {{ form.nome.errors }}
