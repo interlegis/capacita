@@ -31,7 +31,8 @@ def usuario_new(request):
         if form.is_valid():
             user_check = User.objects.filter(username=form.fields['username']).count()
             if(user_check == 0):
-                usuario = form.save()
+                usuario = form.save(commit=False)
+                usuario.username = usuario.username.lower()
                 usuario.is_active = True
                 usuario.save()
                 return redirect('usuario:usuarios')
