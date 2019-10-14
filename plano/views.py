@@ -1,62 +1,52 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import *
+
+from capacita.decorators import admin_required
 from .forms import *
-from orgao.models import *
 from necessidade.models import *
 from capacita.template_context_processors import is_admin
 
 @login_required
+@admin_required
 def plano(request):
     planos = Plano_Capacitacao.objects.all()
     form = PlanoForm()
-    if is_admin(request)['is_admin']:
-        return render(request, 'plano_capacitacao.html', {'planos' : planos, 'form' : form})
-    else:
-        return render(request, 'error.html')
+    return render(request, 'plano_capacitacao.html', {'planos' : planos, 'form' : form})
 
 @login_required
+@admin_required
 def plano_delete(request, id):
-    if is_admin(request)['is_admin']:
-        plano = get_object_or_404(Plano_Capacitacao, pk=id)
-        try:
-            plano.delete()
-            return redirect("plano")
-        except Exception as e:
-            print(e)
-            planos = Plano_Capacitacao.objects.all()
-            return render(request, 'deleteError.html', {'url': 'plano_capacitacao.html', 'planos': planos})
-    else:
-        return render(request, 'error.html')
+    plano = get_object_or_404(Plano_Capacitacao, pk=id)
+    try:
+        plano.delete()
+        return redirect("plano")
+    except Exception as e:
+        print(e)
+        planos = Plano_Capacitacao.objects.all()
+        return render(request, 'deleteError.html', {'url': 'plano_capacitacao.html', 'planos': planos})
 
 @login_required
+@admin_required
 def plano_invisible(request, id):
-    if is_admin(request)['is_admin']:
-        plano = get_object_or_404(Plano_Capacitacao, pk=id)
-        plano.ind_excluido = 1
-        plano.save()
-        return redirect("plano")
-    else:
-        return render(request, 'error.html')
+    plano = get_object_or_404(Plano_Capacitacao, pk=id)
+    plano.ind_excluido = 1
+    plano.save()
+    return redirect("plano")
 
 @login_required
+@admin_required
 def plano_visible(request, id):
-    if is_admin(request)['is_admin']:
-        plano = get_object_or_404(Plano_Capacitacao, pk=id)
-        plano.ind_excluido = 0
-        plano.save()
-        return redirect("plano")
-    else:
-        return render(request, 'error.html')
+    plano = get_object_or_404(Plano_Capacitacao, pk=id)
+    plano.ind_excluido = 0
+    plano.save()
+    return redirect("plano")
 
 
 @login_required
+@admin_required
 def plano_show(request, id):
     plano = get_object_or_404(Plano_Capacitacao, pk=id)
-    if is_admin(request)['is_admin']:
-        return render(request, 'plano_show.html', {'plano' : plano})
-    else:
-        return redirect('error')
+    return render(request, 'plano_show.html', {'plano' : plano})
 
 @login_required
 def plano_new(request):
