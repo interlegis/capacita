@@ -22,6 +22,30 @@
         text-align: center;
         margin-bottom: 10px !important;
     }
+    #subirTopo {
+        text-decoration: none;
+        background: #00305c;
+        bottom: 30px;
+        right: 10px;
+        color: #fff;
+        text-align: center;
+        cursor: pointer;
+        padding: 10px;
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        position: fixed;
+        border: 0;
+        font-family: sans-serif;
+        opacity: 0;
+        border-radius: 10px;
+    }
+    #subirTopo:hover {
+        opacity:1 !important;
+    }
+    .opacity6{
+        opacity: 0.7 !important;
+    }
 </style>
 <div class="table_div alinhamentoConteudo">
     <h1 class="ui dividing header titleManualCapacita" id="manualDoCapacita">Manual do Capacita (em elaboração)</h1>
@@ -203,8 +227,33 @@
 
     Em caso de dúvidas, sugestões de melhoria ou dificuldades de acesso, entre em contato conosco pelo e-mail <a href='mailto:capacita_suporte@interlegis.leg.br'>
     capacita_suporte@interlegis.leg.br</a> ou por um dos ramais indicados na página inicial do Capacita.
-<hr>
-    <a class="btn btn-primary float-right" href="#manualDoCapacita">Subir</a>
+
+    <a id="subirTopo">
+        <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+    </a>
 
 </div>
+        <script type="text/javascript">
+            jQuery(document).ready(function(){
+                jQuery("#subirTopo").hide();
+                $("#subirTopo").addClass("opacity6");
+
+
+
+                jQuery('a#subirTopo').click(function () {
+                    jQuery('body,html').animate({
+                        scrollTop: 0
+                    }, 300);
+                    return false;
+                });
+                jQuery(window).scroll(function () {
+                    if (jQuery(this).scrollTop() > 1000) {
+                        jQuery('#subirTopo').fadeIn();
+                    } else {
+                        jQuery('#subirTopo').fadeOut();
+                    }
+                });
+            });
+    </script>
+
 {% endblock %}
