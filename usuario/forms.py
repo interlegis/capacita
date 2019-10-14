@@ -13,6 +13,11 @@ class UserForm(forms.ModelForm):
     is_active = True
     is_superuser = False
 
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['style'] = 'text-transform:lowercase;'
+
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'is_staff', 'is_superuser', 'is_active')

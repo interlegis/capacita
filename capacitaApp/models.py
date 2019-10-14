@@ -46,7 +46,7 @@ class AuthGroup(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_admin = models.BooleanField(default=False)
-    orgao_ativo = models.ForeignKey(Orgao, null=True, on_delete=models.CASCADE)
+    orgao_ativo = models.ForeignKey(Orgao, null=True, on_delete=models.SET_NULL)
     orgaos = models.ManyToManyField(Orgao, related_name='orgao_gestor')
 
     class Meta:

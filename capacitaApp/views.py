@@ -17,8 +17,8 @@ from copy import deepcopy
 @login_required
 def mudanca_orgao(request, pk):
     profile = Profile.objects.get(user=request.user)
-    if profile.orgaos.get(pk = pk):
-        profile.orgao_ativo = Orgao.objects.get(cod_orgao = pk)
+    if profile.orgaos.get(pk=pk):
+        profile.orgao_ativo = Orgao.objects.get(cod_orgao=pk)
         profile.save()
         return redirect('/')
     else:
@@ -31,13 +31,13 @@ def home(request):
         usuario = User.objects.get(id = request.user.id)
         orgao = Profile.objects.get(user=usuario).orgao_ativo
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True) 
-        if profile.user.last_login == None:
-            profile = Profile.objects.create(user_id = request.user.id)
-            profile.save()
+
         try:
             necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
             pode_registrar_demandas = True
         except Exception as e:
+            planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = False) 
+            necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao)
             pode_registrar_demandas = False
         
         cursor = connection.cursor()
@@ -66,15 +66,23 @@ def home(request):
                 ind_bloqueio = True;
 
 
-            imagemSemCor = '';
-            if( situacao != 'green'):
-                imagemSemCor = 'imagemSemCor'
+            corCirculo = '';
+            if( situacao == 'green'):
+                corCirculo = 'circuloVerde'
+                corSeta = 'setaIndicadora'
+                corILB = 'imgILB'
+                corTick = 'tickCorreto'
+            else:
+                corCirculo = 'circuloCinza'
+                corSeta = 'setaIndicadoraCinza'
+                corILB = 'imgILBCinza'
+                corTick = 'tickCorretoCinza'
             
             htmlsituacao = htmlsituacao + \
                     '<div class="componenteCirculoComSeta">'+ \
                     '    <div class="divCirculoLegendaLinha">'+ \
                     '        <div>'+ \
-                    '            <div class="circulo circuloVerde ' + imagemSemCor + '">'+ \
+                    '            <div class="circulo ' + corCirculo + '">'+ \
                     '            </div>'+ \
                     '            <div class="legendaSetor ">'+ \
                     '                <h2>' + sigla_setor + '</h2>'+ \
@@ -82,7 +90,7 @@ def home(request):
                     '        </div>'+ \
                     '    </div>'+ \
                     '    <div class="setaIndicadoraContainer">'+ \
-                    '        <img class="setaIndicadora imagemSemCor" src="https://cdn3.iconfinder.com/data/icons/signs-symbols-5/126/slice331-256.png">'+ \
+                    '        <img class="' + corSeta + '" src="/static/images/seta.png">'+ \
                     '    </div>'+ \
                     '</div>';
             
@@ -91,7 +99,7 @@ def home(request):
             '        <div class="divCirculoLegendaLinha">'+ \
             '            <div>'+ \
             '                <div>'+ \
-            '                    <img src="https://yt3.ggpht.com/a/AGF-l7_xvHq80BYmUfpfKvUFu5d_lOPTjNLlUwWSzg=s288-c-k-c0xffffffff-no-rj-mo" class="imgILB ' + imagemSemCor + '">'+ \
+            '                    <img src="/static/images/ilb.jpg" class="' + corILB + '">'+ \
             '                </div>'+ \
             '                <div class="legendaSetor">'+ \
             '                    <h2>ILB</h2>'+ \
@@ -99,11 +107,11 @@ def home(request):
             '            </div>'+ \
             '        </div>'+ \
             '        <div class="setaIndicadoraContainer">'+ \
-            '            <img class="tickCorreto ' + imagemSemCor + '" src="https://cdn3.iconfinder.com/data/icons/flat-actions-icons-9/792/Tick_Mark_Dark-512.png">'+ \
+            '            <img class="' + corTick + '" src="/static/images/tick.png">'+ \
             '        </div>'+ \
             '    </div>';
 
-        if imagemSemCor:
+        if corTick != 'tickCorreto':
             htmlsituacao = htmlsituacao + \
                 '   <div class="alerta">Atenção: o prazo para envio de demandas ao ILB se encerra em 18/10/2019</div>'
         else:
