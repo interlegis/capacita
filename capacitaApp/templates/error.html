@@ -1,34 +1,63 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <style>
+        .display-1 {text-align:center;color:#df726a;}
+        .display-1 .fa {animation:fa-spin 5s infinite linear;}
+        .display-3 {text-align:center;color:#c94c4c;letter-spacing: 2px; text-transform: uppercase;}
+        .lower-case {text-align:center;}
+        .tamanhoModal{height: 60%; width: 60%;}
+        .pTextProperties{margin-bottom: 5px !important;font-size:16px;}
+        .customButton{padding: 10px; height: 50px; width: 170px; border-radius: 50px; margin-top: 15px;}
+        .vaMiddle{vertical-align: middle;}
+        .centralizacaoMeio{flex-direction: row; justify-content: center; align-items: center;}
+        .tamanhoTela{width: 100%; height: calc(100% - 111px);}
+    </style>
     {% if eh_necessidade %}
     <div class="table_div">
         <h1 class="ui header">Não há plano de capacitação aberto</h1>
     </div>
     {% endif %}
-    {% if eh_necessidade == None %} 
-    <div class="table_div">
-        <h1 class="ui header">Acesso negado</h1>
+    {% if eh_necessidade == None %}
+        <div class="tamanhoTela">
+            <div class="table_div centralizacaoMeio">
+                <div style="text-align: center">
+                    <h1 class="display-1"><i class="fa fa-spin fa-cog fa-3x"></i></h1>
+                    <h1 class="display-3">Acesso negado</h1>
+                    <p class="pTextProperties">A versão atual do Capacita é de uso exclusivo de chefes de serviço, coordenadores, coordenadores-gerais,
+                        diretores e chefes de gabinetes. </p>
+                    <p class="pTextProperties">Caso ache que esta mensagem é indevida ou se estiver substituindo o titular, entre em contato conosco para providenciarmos sua autorização.</p>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary customButton" data-toggle="modal" data-target="#exampleModalLong" data-backdrop="static">
+                        <i class="fa fa-question-circle fa-2x vaMiddle" aria-hidden="true"></i> Suporte Capacita
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content ">
+                                <div class="modal-header">
+                                    <h2 class="modal-title" id="exampleModalLongTitle">Dúvidas, reclamações ou sugestões</h2>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div align='center'>
+                                        <p>
+                                            <img class="img-duvidas" src="/static/images/email.png">
+                                            <a href="mailto:capacita_suporte@interlegis.leg.br" target="_top">capacita_suporte@interlegis.leg.br</a>
+                                        </p>
+                                        <p><img class="img-duvidas" src="/static/images/call.png">Matheus Garcia (5962)</p>
+                                        <p><img class="img-duvidas" src="/static/images/call.png">Cláudio Cunha (1395)</p>
+                                    </div>
+                                </div>
 
-        <p style='font-size:16px'>A versão atual do Capacita é de uso exclusivo de chefes de serviço, coordenadores, coordenadores-gerais, 
-            diretores e chefes de gabinetes.
-        </p>
-
-        <p style="font-size:16px">Caso ache que esta mensagem é indevida ou se estiver substituindo o titular, entre em contato conosco para providenciarmos sua autorização.</p>
-
-        <hr>
-        <div align='center'>
-                <h3>Dúvidas, reclamações ou sugestões</h3>
-                <p>
-                  <img class="img-duvidas" src="/static/images/email.png">
-                  <a href="mailto:capacita_suporte@interlegis.leg.br" target="_top">capacita_suporte@interlegis.leg.br</a>
-                </p>
-                <p><img class="img-duvidas" src="/static/images/call.png">Matheus Garcia (5962)</p>
-                <p><img class="img-duvidas" src="/static/images/call.png">Cláudio Cunha (1395)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
     {% endif %}
 {% endblock %}
-
-
-

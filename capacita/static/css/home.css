@@ -25,8 +25,8 @@
 
 .logoSenado{
     margin-left: 5% !important;
-    width: 160px !important;
-    height: 31px !important;
+    width: 150px !important;
+    height: 25px !important;
 }
 
 .senado_footer{
@@ -37,8 +37,8 @@
     font: normal 0.7em "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     color: #fff;
     clear: both;
-    position: fixed;
     bottom:0;
+    position: initial;
 }
 
 .versaoClass{
