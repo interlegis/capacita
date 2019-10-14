@@ -2,15 +2,18 @@
 
 {% block content %}
 <style>
-    img {
+    .imgDemonstracao {
         text-align:center !important;
         margin-left: auto;
         margin-right: auto;
+        margin-top: 5px;
+        margin-bottom: 5px;
         display: block;
         border: 1px solid;
         max-width: 100% !important;
         padding: 5px;
     }
+
     .sumarioP{
         margin-bottom: 0 !important;
         font-size: 17px;
@@ -65,15 +68,15 @@
     <h2>3. Etapas de tramitação de pedidos</h2>
 
     <h4>Etapa 1: antes do envio de pedidos do SEFREQ</h4>
-    <img src='/static/images/manual/acompanhamento-sefreq-etapa1.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/acompanhamento-sefreq-etapa1.png'>
 
     <h4>Etapa 2: após o envio de pedidos do SEFREQ para a COAPES</h4>
-    <img src='/static/images/manual/acompanhamento-sefreq-etapa2.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/acompanhamento-sefreq-etapa2.png'>
 
     <h4>Etapa 3: após o envio de pedidos da COAPES para a SEGP</h4>
-   <img src='/static/images/manual/acompanhamento-sefreq-etapa3.png'>
+   <img class="imgDemonstracao"  src='/static/images/manual/acompanhamento-sefreq-etapa3.png'>
     <h4>Etapa 4: após o envio de pedidos da SEGP para o ILB</h4>
-   <img src='/static/images/manual/acompanhamento-sefreq-etapa4.png'>
+   <img class="imgDemonstracao" src='/static/images/manual/acompanhamento-sefreq-etapa4.png'>
 
     <p>No caso de gabinetes parlamentares, o procedimento continua o mesmo, isto é, as demandas são encaminhadas ao ILB diretamente
     pelos chefes de gabinete, sem intermediários.</p>
@@ -87,25 +90,25 @@
     <h2 id="atividadesRealizadasSEFREQ">5. Atividades a serem realizadas pelo chefe do SEFREQ</h2>
 
     O responsável pelo preenchimento de demandas do SEFREQ deverá clicar no botão
-   <img src='/static/images/manual/botao_registrar_demandas_sefreq.png'>
+   <img class="imgDemonstracao" src='/static/images/manual/botao_registrar_demandas_sefreq.png'>
 
     Em seguida, terá acesso a interface de realização de pedidos, onde inicialmente terá a informação de que ainda não realizou nenhuma demanda.
-   <img src='/static/images/manual/visao_inicial_sefreq.png'>
+   <img class="imgDemonstracao" src='/static/images/manual/visao_inicial_sefreq.png'>
 
     <p>Ao clicar no botão "Novo", será aberto um formulário onde ele poderá registrar a demanda desejada.</p>
-    <img src='/static/images/manual/formulario_registro_demandas.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/formulario_registro_demandas.png'>
 
     <p>Todos os campos são obrigatórios e devem ser informados para que a demanda seja registrada no sistema.<p>
     <p>Esse procedimento deve ser repetido para cada nova demanda de capacitação a ser apresentada.</p>
 
     <p>As demandas registradas são exibidas em uma tabela, e podem ser modificadas ou mesmo excluídas,
     mas somente enquanto não forem submetidas ao órgão superior (no caso, à COAPES).
-    <img src='/static/images/manual/relacao_demandas_sefreq_com_botoes.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/relacao_demandas_sefreq_com_botoes.png'>
 
     <p>Quando todas as demandas do SEFREQ já tiverem sido cadastradas no sistema, devem ser encaminhadas para a COAPES clicando no botão
         "Enviar para COAPES". O sistema irá mostrar a seguinte mensagem:<p>
 
-    <img src='/static/images/manual/confirmacao_envio_coapes.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/confirmacao_envio_coapes.png'>
 
     <p>Caso não haja pendências, basta confirmar, e os pedidos já estarão disponíveis para consulta pelo coordenador da COAPES.</p>
     <hr>
@@ -119,13 +122,13 @@
 
     <p>O sistema irá exibir uma relação de órgãos subordinados, e para aqueles que tiverem enviado seu pedido de
             capacitação estará habilitada a opção de "Importar".</p>
-    <img src='/static/images/manual/visao_coapes_apos_envio_sefreq.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/visao_coapes_apos_envio_sefreq.png'>
 
 
     <p>Após importar os pedidos do SEFREQ, estes passam a compor a relação de demandas da COAPES tal como foram enviados pelo titular
         daquela área, como pode ser visto a seguir:</p>
 
-       <img src='/static/images/manual/demandas_coapes_apos_importar_sefreq.png'>
+       <img class="imgDemonstracao" src='/static/images/manual/demandas_coapes_apos_importar_sefreq.png'>
 
     <p>Por padrão, todas as demandas importadas são automaticamente endossadas pelo titular do órgão importador.</p>
     <p>Para fins de exemplo,
@@ -133,20 +136,20 @@
         basta clicar sobre o ícone na coluna "Aprovado" que o treinamento não terá mais seu endosso e, consequentemente,
         não conste na relação de demandas de capacitação da COAPES.</p>
 
-   <img src='/static/images/manual/demandas_coapes_apos_importacao_sefreq_sem_botoes.png'>
+   <img class="imgDemonstracao" src='/static/images/manual/demandas_coapes_apos_importacao_sefreq_sem_botoes.png'>
 
     <p>Suponhamos agora que ele deseje reduzir a carga horária desejada do curso "Gestão de Conhecimento", cadastrada como sendo
         8 horas pelo SEFREQ, para apenas 4 horas. Nesse caso, basta clicar sobre o ícone do lápis na coluna "Editar", fazer a
         alteração desejada e salvar.</p>
     <p>A nova visão de demandas da COAPES passaria então a constar como na imagem a seguir:</p>
 
-   <img src='/static/images/manual/demandas_coapes_modificacao_sefreq.png'>
+   <img class="imgDemonstracao" src='/static/images/manual/demandas_coapes_modificacao_sefreq.png'>
 
     <p>O titular da COAPES também pode incluir novas demandas. Bastaria clicar no botão "Novo" e informar os campos desejados,
         de forma similar ao já apresentado.</p>
     <p>Após incluir a demanda para um curso de "Criação de Macros no Excel", a visão de demandas da COAPES passaria a ser a seguinte:</p>
 
-    <img src='/static/images/manual/demandas_coapes_apos_inclusao.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/demandas_coapes_apos_inclusao.png'>
 
     <p>Após revisar as demandas de todos os órgãos subordinados e incluir suas próprias, o titular da COAPES deve submeter o pedidos em
     nome da coordenação para a secretaria (no caso, SEGP).</p>
@@ -155,13 +158,13 @@
         como parte das demandas da COAPES), e também que há órgãos cujo pedido não foi importado. O grande número de órgãos aqui
         listados é que, neste exemplo, estamos importando apenas pedidos de um serviço, SEFREQ. Na prática, o procedimento aqui
         demonstrado deve ser feito para todos os órgãos subordinados à COAPES que enviaram seus pedidos de capacitação para a coordenação. </p>
-    <img src='/static/images/manual/confirmacao_envio_segp.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/confirmacao_envio_segp.png'>
 
     <p>Após a confirmação do envio, o sistema irá permitir apenas a consulta das demandas enviadas para a COAPES, sem possibilidades
         de novas modificações.
     </p>
 
-   <img src='/static/images/manual/demandas_coapes_apos_nao_aprovacao_sefreq.png'>
+   <img class="imgDemonstracao" src='/static/images/manual/demandas_coapes_apos_nao_aprovacao_sefreq.png'>
     <hr>
     <h2 id="atividadesRealizadasSEGP">7. Atividades a serem realizadas pelo diretor da SEGP</h2>
 
@@ -169,18 +172,18 @@
     demandas de capacitação, e poderá então importar os pedidos de cada um deles, criando a relação de demandas que será encaminhadas
     ao ILB em nome de sua secretaria.</p>
 
-    <img src='/static/images/manual/orgaos_subordinados_segp.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/orgaos_subordinados_segp.png'>
 
     <p>No caso deste exemplo, há apenas demandas enviadas pela COAPES, as quais, após importadas, são incluídas como demandas da SEGP.</p>
 
     <p>Observe que a demanda de "Educação Corporativa" que não foi aprovada pelo coordenador da COAPES não consta na relação.</p>
 
-    <img src='/static/images/manual/visao_segp_apos_importar_coapes.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/visao_segp_apos_importar_coapes.png'>
 
     <p>Novamente, o titular da SEGP pode reprovar as demandas que achar inadequadas, fazer ajustes ou mesmo incluir novas demandas.</p>
     <p>Como exemplo, após incluir nova demanda para curso de "Desenvolvimento de Pessoas", a relação de demandas da SEGP fica a seguinte:</p>
 
-   <img src='/static/images/manual/visão_segp_apos_nova_demanda_com_botoes.png'>
+   <img class="imgDemonstracao" src='/static/images/manual/visão_segp_apos_nova_demanda_com_botoes.png'>
 
     <p>Após assegurar que todas as demandas da SEGP foram devidamente incluídas, a etapa final é o envio das mesmas para o ILB, o que
         pode ser feito clicando em "Concluir relatório e enviar demandas para o ILB".</p>
@@ -188,11 +191,11 @@
     <p>O sistema irá alertar quanto a eventuais órgãos cujas demandas não tiverem sido importadas ou não aprovadas. Se estiver tudo OK
         é só confirmar.
     </p>
-   <img src='/static/images/manual/confirmacao_envio_ilb.png'>
+   <img class="imgDemonstracao" src='/static/images/manual/confirmacao_envio_ilb.png'>
 
     <p>Uma vez enviadas as demandas para o ILB, elas já estarão disponíveis para inclusão no PCASF.</p>
 
-    <img src='/static/images/manual/visao_segp_apos_envio_ilb.png'>
+    <img class="imgDemonstracao" src='/static/images/manual/visao_segp_apos_envio_ilb.png'>
     <hr>
     <h2 id="consideracoesFinais">8. Considerações finais</h2>
 
