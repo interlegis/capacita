@@ -29,13 +29,13 @@
             {% endif%}
               <label>Especifique o objeto de capacitação</label>
               {% if txt_descricao %}
-              <input type="text" name="txt_descricao" value={{txt_descricao}} id="descricao_necessidade">
+              <input type="text" name="txt_descricao"  maxlength = "200" value={{txt_descricao}} id="descricao_necessidade">
               {% elif necessidade == None %}
-              <input type="text" name="txt_descricao" id="descricao_necessidade">
+              <input type="text" name="txt_descricao"  maxlength = "200" id="descricao_necessidade">
               {% elif necessidade.txt_descricao != None %}
-              <input type="text" name="txt_descricao" value="{{necessidade.txt_descricao}}" id="descricao_necessidade">
+              <input type="text" name="txt_descricao"  maxlength = "200" value="{{necessidade.txt_descricao}}" id="descricao_necessidade">
               {% else %}
-              <input type="text" name="txt_descricao" id="descricao_necessidade">
+              <input type="text" name="txt_descricao"  maxlength = "200" id="descricao_necessidade">
               {% endif %}
             </div>
             <div class="four fields">
