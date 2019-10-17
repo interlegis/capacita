@@ -157,7 +157,7 @@ $("#nome_curso_form").on('change', function(){
     }else{
         $("#descricao_necessidade").prop('disabled', true);
     }
-})
+});
 
 $("#id_cod_tipo").on('change', function(){
     if(tipo == (parseInt($("#id_cod_tipo").val()))){
@@ -165,4 +165,5 @@ $("#id_cod_tipo").on('change', function(){
     }else{
         $("#id_custoo").prop('disabled', true);
     }
-})
+});
+
