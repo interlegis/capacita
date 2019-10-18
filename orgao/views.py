@@ -28,13 +28,23 @@ def orgao_edit(request, pk):
     if request.method == "POST":
         form = OrgaoForm(request.POST, instance=orgao)
         if form.is_valid():
-            form.save()
+            orgao_edit = form.save(commit=False)
+            orgao_edit.nivel = (orgao_edit.cod_superior.nivel+1) if orgao_edit.cod_superior else 1
+            orgao_edit.save()
+            change_nivel(orgao_edit)
             return redirect('orgao')
         else:
             return render(request, 'orgao_edit.html', {'form': form})
     else:
         form = OrgaoForm(instance=orgao)
         return render(request, 'orgao_edit.html', {'form': form})
+
+def change_nivel(orgao_superior):
+    orgaos = Orgao.objects.filter(cod_superior=orgao_superior)
+    for orgao in orgaos:
+        orgao.nivel = orgao_superior.nivel+1
+        orgao.save()
+        change_nivel(orgao)
 
 @login_required
 @admin_required
