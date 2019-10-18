@@ -113,7 +113,7 @@ def home(request):
 
         if corTick != 'tickCorreto':
             htmlsituacao = htmlsituacao + \
-                '   <div class="alerta">Atenção: o prazo para envio de demandas ao ILB se encerra em 18/10/2019</div>'
+                '   <div class="alerta">Atenção: o prazo para envio de demandas ao ILB se encerra em 25/10/2019</div>'
         else:
             htmlsituacao = htmlsituacao + \
                 '   <div class="sucesso">As demandas de capacitação foram encaminhadas com sucesso ao ILB!</div>'
