@@ -229,9 +229,8 @@ def relatorio(request):
 
         fh = open("Necessidades.xlsx", 'rb')
 
-        response = HttpResponse(fh) # mimetype is replaced by content_type for django 1.7
-        response['Content-Disposition'] = 'attachment; filename=%s' % "Necessidades.xlsx"
-        response['X-Sendfile'] = fh
+        response = HttpResponse(fh, content_type='application/pdf') # mimetype is replaced by content_type for django 1.7
+        response['Content-Disposition'] = 'attachment; filename=%s' % "Necessidades.XLSX"
 
         return response
     else:
