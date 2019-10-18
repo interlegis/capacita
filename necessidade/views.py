@@ -70,8 +70,9 @@ def necessidade_new(request):
         usuario = User.objects.get(id = request.user.id)
         orgao = Orgao.objects.get(nome = Profile.objects.get(user=usuario).orgao_ativo)
         planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
+        necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao.cod_orgao)
         txt_descricao = ''
-        if(planos_habilitados.count() > 0):
+        if(planos_habilitados.count() > 0 and necessidade_orgao.estado==False):
             if request.method == "POST":
                 txt_descricao = request.POST['txt_descricao']
                 data = request.POST.copy()
@@ -93,7 +94,6 @@ def necessidade_new(request):
                         return render(request, 'necessidade_edit.html', {'form': form, 'erro_valor_estimado': "Preencha o campo de valor estimado!", 'necessidade': necessidade})
 
                     necessidade.cod_usuario = usuario
-                    necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao.cod_orgao)
                     necessidade.cod_necessidade_orgao = necessidade_orgao
                     necessidade.cod_orgao_origem = orgao
                     necessidade.save()
@@ -104,7 +104,7 @@ def necessidade_new(request):
                 form = NecessidadeForm()
                 return render(request, 'necessidade_edit.html', {'form': form, 'txt_descricao': txt_descricao})
         else:
-            return render(request, 'necessidade_edit.html', {'form': form, 'txt_descricao': txt_descricao})
+            return redirect('error')
     else:
         return redirect('error')
 
