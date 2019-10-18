@@ -1,3 +1,9 @@
 $("#gestorInput").on('change', function () {
-            console.log($(`option[value="${$(this).val()}"]`).data("id"));
-        });
+    let user = $(`option[value="${$(this).val()}"]`).data("id");
+    if (user == null) {
+        $("#addGestor").addClass('disabled');
+    } else {
+        $("#addGestor").removeClass('disabled');
+        $("#novoGestor").val(user);
+    }
+});
