@@ -69,10 +69,14 @@ def necessidade_new(request):
     if (hasattr(request.user, 'profile')):
         usuario = User.objects.get(id = request.user.id)
         orgao = Orgao.objects.get(nome = Profile.objects.get(user=usuario).orgao_ativo)
-        planos_habilitados = Plano_Capacitacao.objects.filter(plano_habilitado = True)
-        necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = planos_habilitados[0].cod_plano_capacitacao, cod_orgao = orgao.cod_orgao)
+        try:
+            plano_habilitado = Plano_Capacitacao.objects.filter(plano_habilitado = True)[0]
+        except:
+            return redirect('error')
+
+        necessidade_orgao = Necessidade_Orgao.objects.all().get(cod_plano_capacitacao = plano_habilitado.cod_plano_capacitacao, cod_orgao = orgao.cod_orgao)
         txt_descricao = ''
-        if(planos_habilitados.count() > 0 and necessidade_orgao.estado==False):
+        if(necessidade_orgao.estado==False):
             if request.method == "POST":
                 txt_descricao = request.POST['txt_descricao']
                 data = request.POST.copy()

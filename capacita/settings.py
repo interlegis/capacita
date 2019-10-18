@@ -8,12 +8,12 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-
 from decouple import config
 from dj_database_url import parse as db_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -22,16 +22,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'cl7h5!4x-4nyu*9gv1n8voo@m4$=gmx%xh6sxu!8tuifob*vk!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-LOGIN_URL = "/login/"
-LOGOUT_REDIRECT_URL = "/login/"
+LOGIN_URL="/login/"
+LOGOUT_REDIRECT_URL="/login/"
 
 # Application definition
 
-INSTALLED_APPS = [  # components
+INSTALLED_APPS = [ #components
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -99,13 +99,13 @@ TEMPLATES = [
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'capacita',
-        'USER': 'capacita',
-        'PASSWORD': os.environ['ADMIN_PASSWORD'],
-        'HOST': os.environ['CAPACITA_DB_HOST'],
-        'PORT': os.environ['CAPACITA_DB_PORT'],
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+         'NAME': 'capacita',
+         'USER': 'capacita',
+         'PASSWORD': os.environ['ADMIN_PASSWORD'],
+         'HOST': os.environ['CAPACITA_DB_HOST'],
+         'PORT': os.environ['CAPACITA_DB_PORT'],
     }
 }
 
@@ -145,6 +145,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
@@ -152,5 +153,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 CAS_SERVER_URL = 'https://adm.senado.gov.br/cas-server/login'
 CAS_VERSION = '3'
-CAS_REDIRECT_URL = "https://capacita.interlegis.leg.br/createProfile"
+CAS_REDIRECT_URL = "https://capacita.interlegis.leg.br"
 CAS_FORCE_CHANGE_USERNAME_CASE = "lower"
