@@ -201,7 +201,7 @@ def relatorio(request):
             worksheet.write(row, col + 3, treinamento, center)
             worksheet.write(row, col + 4, necessidade.cod_modalidade.nome, center)
             worksheet.write(row, col + 5, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
-            worksheet.write(row, col + 6, necessidade.hor_duracao, center)
+            worksheet.write(row, col + 6, (necessidade.hor_duracao if necessidade.hor_duracao else ' '), center)
             worksheet.write(row, col + 7, necessidade.cod_tipo_treinamento.nome, center)
             worksheet.write(row, col + 8, Prioridade.objects.get(cod_prioridade=necessidade.cod_prioridade.cod_prioridade).nome, center)
             worksheet.write(row, col + 9, necessidade.qtd_servidor, center)
