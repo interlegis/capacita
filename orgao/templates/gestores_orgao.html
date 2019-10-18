@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block content %}
 
@@ -52,17 +53,23 @@
         <div style="padding-left: 15%; padding-bottom: 0%; padding-right: 15%; margin-bottom: 80px;" class="table_div">
           <form class="ui form" method="post" >{% csrf_token %}
             <div class="field">
-              <label>Usuário</label>
-              <select name="usuario">
+              <label for="gestorInput">Usuário</label>
+              <input list="users" id="gestorInput">
+              <datalist id="users">
                 {% for profile in profiles%}
-                <option value="{{profile.id}}">{{profile.user.username}}</option>
+                    <option data-id="{{ profile.id }}" value="{{profile.user.username}}">
                 {% endfor %}
-              </select>
+              </datalist>
             </div>
-            <button class="ui primary button" type="submit">Adicionar Gestor</button>
+            <input id="novoGestor" type="hidden" name="usuario" value="">
+            <button id="addGestor" class="ui primary button disabled" type="submit">Adicionar Gestor</button>
             <a href="/orgao/"  class="ui button basic secondary" role="button" aria-pressed="true">Voltar</a>
           </form>
         </div>
+
     </div>
 
+    <script src="{% static 'js/gestao.js' %}"></script>
+
     {% endblock %}
+
