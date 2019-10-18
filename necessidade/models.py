@@ -31,7 +31,7 @@ class Necessidade(models.Model):
     cod_necessidade_orgao = models.ForeignKey('Necessidade_Orgao', models.DO_NOTHING)
     ind_excluido = models.BooleanField( default=False)
     treinamento_externo = models.BooleanField()
-    valor_estimado = models.IntegerField(null=True)
+    valor_estimado = models.PositiveIntegerField(null=True)
 
     def __str__(self):
         return self.txt_descricao
