@@ -6,6 +6,8 @@ from .models import *
 from .forms import *
 from capacita.template_context_processors import is_gestor, is_admin
 from capacita.decorators import admin_required, gestor_required
+from django.urls import reverse
+from django.contrib.messages import error
 
 @login_required
 @gestor_required
@@ -36,7 +38,7 @@ def necessidade(request):
         necessidades = Necessidade.objects.all().exclude(ind_excluido = True).filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
         total_necessidade = necessidades.filter(aprovado=False).count
         # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
-        return render(request, 'necessidade.html', {'estado': necessidade_orgao.estado,'necessidades' : necessidades, 'total_necessidade': total_necessidade, 'necessidade_orgao': necessidade_orgao, 'subordinados': subordinados_status, 'superior': superior, 'pode_registrar_demandas': pode_registrar_demandas})
+        return render(request, 'necessidade.html', {'estado': necessidade_orgao.estado,'necessidades' : necessidades, 'total_necessidade': total_necessidade, 'necessidade_orgao': necessidade_orgao, 'subordinados': subordinados_status, 'superior': superior, 'pode_registrar_demandas': pode_registrar_demandas, 'error': request.GET.get('error')})
     else:
         return redirect('error')
 
@@ -215,21 +217,27 @@ def cancelar_envio(request, pk):
         necessidade.save()
         return redirect("necessidade")
     else:
-        return render(request, 'error.html')
+        error(request, 'O pedido já foi importado')
+        return redirect("necessidade")
 
 @gestor_required
 def importar_necessidade(request, pk, pk_atual):
     necessidade_orgao = get_object_or_404(Necessidade_Orgao, pk=pk)
-    necessidade_orgao.importado = True
-    necessidade_orgao.save()
-    necessidades = Necessidade.objects.all().filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao, aprovado=True)
-    for necessidade in necessidades:
-        necessidade_importada = necessidade
-        necessidade_importada.aprovado = True
-        necessidade_importada.cod_necessidade = None
-        necessidade_importada.cod_necessidade_orgao = Necessidade_Orgao.objects.get(cod_necessidade_orgao = pk_atual)
-        necessidade_importada.save()
-    return redirect("necessidade")
+    if necessidade_orgao.estado == True:
+        necessidade_orgao.importado = True
+        necessidade_orgao.save()
+        necessidades = Necessidade.objects.all().filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao, aprovado=True)
+        for necessidade in necessidades:
+            necessidade_importada = necessidade
+            necessidade_importada.aprovado = True
+            necessidade_importada.cod_necessidade = None
+            necessidade_importada.cod_necessidade_orgao = Necessidade_Orgao.objects.get(cod_necessidade_orgao = pk_atual)
+            necessidade_importada.save()
+        return redirect("necessidade")
+    else:
+        error(request, 'O pedido deste orgão foi cancelado')
+        return redirect('necessidade')
+        # return redirect(reverse('necessidade')+"?error=O pedido deste orgão foi cancelado")
 
 @gestor_required
 def devolver_necessidade(request, pk, pk_atual):
