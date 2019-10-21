@@ -32,11 +32,11 @@ def necessidade(request):
         subordinados_status = []
         for subordinado in subordinados:
             necessidade_subordinado = necessidade_subordinados.get(cod_orgao = subordinado)
-            subordinados_status.append({'nome': subordinado.nome, 'estado': necessidade_subordinado.estado, 'cod_necessidade_orgao': necessidade_subordinado.cod_necessidade_orgao, 'importado': necessidade_subordinado.importado})
+            subordinados_status.append({'nome': subordinado.nome, 'estado': necessidade_subordinado.estado, 'cod_necessidade_orgao': necessidade_subordinado.cod_necessidade_orgao, 'cod_orgao':  subordinado.cod_orgao,'importado': necessidade_subordinado.importado})
         necessidades = Necessidade.objects.all().exclude(ind_excluido = True).filter(cod_necessidade_orgao = necessidade_orgao.cod_necessidade_orgao)
         total_necessidade = necessidades.filter(aprovado=False).count
         # Quem não é admin vê apenas os pedidos registrados em nome do órgão para o qual está autorizado
-        return render(request, 'necessidade.html', {'estado': necessidade_orgao.estado,'necessidades' : necessidades, 'total_necessidade': total_necessidade, 'cod_necessidade_orgao': necessidade_orgao.cod_necessidade_orgao, 'subordinados': subordinados_status, 'superior': superior, 'pode_registrar_demandas': pode_registrar_demandas})
+        return render(request, 'necessidade.html', {'estado': necessidade_orgao.estado,'necessidades' : necessidades, 'total_necessidade': total_necessidade, 'necessidade_orgao': necessidade_orgao, 'subordinados': subordinados_status, 'superior': superior, 'pode_registrar_demandas': pode_registrar_demandas})
     else:
         return redirect('error')
 
@@ -208,6 +208,16 @@ def necessidade_orgao_close(request, pk):
     return redirect("necessidade")
 
 @gestor_required
+def cancelar_envio(request, pk):
+    necessidade = Necessidade_Orgao.objects.filter(pk=pk)[0]
+    if necessidade.importado == False:
+        necessidade.estado = False
+        necessidade.save()
+        return redirect("necessidade")
+    else:
+        return render(request, 'error.html')
+
+@gestor_required
 def importar_necessidade(request, pk, pk_atual):
     necessidade_orgao = get_object_or_404(Necessidade_Orgao, pk=pk)
     necessidade_orgao.importado = True
@@ -219,6 +229,18 @@ def importar_necessidade(request, pk, pk_atual):
         necessidade_importada.cod_necessidade = None
         necessidade_importada.cod_necessidade_orgao = Necessidade_Orgao.objects.get(cod_necessidade_orgao = pk_atual)
         necessidade_importada.save()
+    return redirect("necessidade")
+
+@gestor_required
+def devolver_necessidade(request, pk, pk_atual):
+    necessidade_orgao = get_object_or_404(Necessidade_Orgao, pk=pk)
+    orgao = necessidade_orgao.cod_orgao
+    necessidade_orgao.importado = False
+    necessidade_orgao.estado = False
+    necessidade_orgao.save()
+    necessidades = Necessidade.objects.all().filter(cod_orgao_origem_id = orgao, cod_necessidade_orgao_id = pk_atual)
+    for necessidade in necessidades:
+        necessidade.delete()
     return redirect("necessidade")
 
 @admin_required

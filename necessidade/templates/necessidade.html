@@ -32,14 +32,33 @@
               </td>
               <td>
                 {% if subordinado.importado == True %}
-                  Já foi importado!
+                  Já foi importado!<a href="" data-toggle="modal" data-target="#{{subordinado.cod_necessidade_orgao}}">(Devolver para ajustes)</a>
                 {% elif subordinado.estado == True %}
-                  <a href="{% url 'importar_necessidade' pk=subordinado.cod_necessidade_orgao pk_atual=cod_necessidade_orgao%}">Importar</a>
+                  <a href="{% url 'importar_necessidade' pk=subordinado.cod_necessidade_orgao pk_atual=necessidade_orgao.cod_necessidade_orgao%}">Importar</a>
                 {% else %}
                   Aguarde o envio
                 {% endif %}
               </td>
           </tr>
+          <div class="modal fade align" id={{subordinado.cod_necessidade_orgao}} tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                  <div class="modal-content" style="border:2px solid #01305c61; margin-top: 400px;">
+                    <div class="modal-body"> 
+                        <h4 class="aviso-corpo" style="color:red;">
+                            As alterações feitas no pedido importado de {{subordinado.nome}} serão perdidas. Deseja devolver os pedidos de capacitação para {{subordinado.nome}}?  
+                          </h4>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="ui button basic secondary" data-dismiss="modal">Cancelar</button>
+                      <a href="{% url 'devolver_necessidade' pk=subordinado.cod_necessidade_orgao pk_atual=necessidade_orgao.cod_necessidade_orgao%}">
+                        <button type="button" class="ui button basic secondary">
+                          Confirmar
+                        </button>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+            </div>
         {% endfor %}
         </tbody>
       </table>
@@ -108,7 +127,17 @@
           </tbody>
       </table>
       <br><br>
-      <div class="alert alert-info" role="alert">
+      {% if not necessidade_orgao.importado %}
+      <a href="{% url 'cancelar_envio' necessidade_orgao.cod_necessidade_orgao %}">
+        <button class="ui button basic secondary" data-toggle="modal" data-target="#confirm-submit">
+            Cancelar envio para 
+            {%if superior%}{{ superior }}
+            {%else%}ILB
+            {%endif%}
+        </button>
+      </a>
+      {% endif %}
+      <div class="alert alert-info" style="margin-top:20px;" role="alert">
           {% if superior %}
           As demandas de {{user.profile.orgao_ativo}} foram encaminhadas para {{superior}}.
           Se necessário, entre em contato com o titular de {{superior}} para realizar eventuais ajustes.  
@@ -231,7 +260,6 @@
                         </div>
                       </div>
                 {% endfor %}
-
             </tbody>
         </table>
         <br>
