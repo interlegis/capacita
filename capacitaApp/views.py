@@ -1,3 +1,7 @@
+import re
+
+from django.core.mail import send_mail
+from django.core.serializers import serialize
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 import xlsxwriter
@@ -6,7 +10,7 @@ from django.contrib.auth.models import Group
 from .models import *
 from necessidade.models import *
 from .forms import *
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from capacita.template_context_processors import is_gestor, is_admin
 from django.db import connection
 
@@ -252,4 +256,61 @@ def perguntas_frequentes(request):
 @login_required
 def manual(request):
     return render(request, 'manual.html')
-    
+
+
+@login_required
+def notificacao(request):
+    if request.method == 'POST':
+        form = NotificacaoForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data.copy()
+
+            remetente = data['remetente']
+            destinatarios_tipo = data['destinatarios']
+            cc = re.split('[,;/|]', data['cc'].replace(' ', '')) if data['cc'] else ''
+            cc = [x for x in cc if '@' in x]
+            assunto = data['assunto']
+            mensagem = data['mensagem']
+            destinatarios = []
+
+            if cc:
+                destinatarios.append(cc)
+
+            kwargs = {}
+            if destinatarios_tipo == 2:
+                kwargs = {'nivel': 1}
+            elif destinatarios_tipo == 3:
+                kwargs = {'nivel__in': (1, 2)}
+
+            for orgao in Orgao.objects.filter(**kwargs):
+                for profile in orgao.profile_set.all():
+                    username = profile.user.username
+                    if username.isalpha():
+                        destinatarios.append(f"{username}@senado.leg.br")
+
+            send_mail(assunto, mensagem, remetente, destinatarios)
+    else:
+        form = NotificacaoForm()
+
+    return render(request, 'notificacao.html', {'form': form})
+
+
+@login_required
+def api_get_notificacoes(request):
+    return HttpResponse(serialize('json', Notificacao.objects.all()), content_type="application/json")
+
+
+@login_required
+def api_set_notificacao(request):
+    data = request.POST
+    notificacao = Notificacao.objects.filter(tipo_id=int(data['tipo_id'])).first()
+    notificacao.remetente = data['remetente']
+    notificacao.destinatarios_id = data['destinatarios_id']
+    notificacao.cc = data['cc']
+    notificacao.assunto = data['assunto']
+    notificacao.mensagem = data['mensagem']
+    save_error = notificacao.save()
+
+    status = 200 if not save_error else 500
+
+    return JsonResponse(data={}, status=status)

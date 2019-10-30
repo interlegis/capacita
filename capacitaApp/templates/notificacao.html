@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui container">
+    <form id="id_form" class="ui form" method="POST" onsubmit="return confirm('Deseja enviar os e-mails?');">{% csrf_token %}
+        <h2 class="ui dividing header">Notificação</h2>
+        <div class="field">
+            <div class="text-danger">
+                {{ form.tipo.errors }}
+            </div>
+            <label>Tipo</label>
+            {{ form.tipo }}
+        </div>
+        <div class="field">
+            <div class="text-danger">
+                {{ form.remetente.errors }}
+            </div>
+            <label>Remetente</label>
+            {{ form.remetente }}
+        </div>
+        <div class="field">
+            <div class="text-danger">
+                {{ form.destinatarios.errors }}
+            </div>
+            <label>Destinatarios</label>
+            {{ form.destinatarios }}
+        </div>
+        <div class="field">
+            <div class="text-danger">
+                {{ form.cc.errors }}
+            </div>
+            <label>CC</label>
+            {{ form.cc }}
+        </div>
+        <div class="field">
+            <div class="text-danger">
+                {{ form.assunto.errors }}
+            </div>
+            <label>Assunto</label>
+            {{ form.assunto }}
+        </div>
+        <div class="field">
+            <div class="text-danger">
+                {{ form.mensagem.errors }}
+            </div>
+            <label>Mensagem</label>
+            {{ form.mensagem }}
+        </div>
+
+        <button class="ui primary button">Enviar</button>
+        <button class="ui button basic secondary" onclick="salvaAlteracoes()" type="button">Salvar</button>
+    </form>
+    <br>
+</div>
+<script>
+    let notificacoes = [];
+
+    let form = $('#id_form');
+    tipo = $('#id_tipo');
+    let remetente = $('#id_remetente');
+    let destinatarios = $('#id_destinatarios');
+    let cc = $('#id_cc');
+    let assunto = $('#id_assunto');
+    let mensagem = $('#id_mensagem');
+
+    form.submit(() => {
+        alert("E-mails enviados.");
+    });
+
+    tipo.change(() => {
+        if (['1', '2'].includes(tipo.val())) {
+            let index = tipo.val() - 1;
+            remetente.val(notificacoes[index]['remetente']);
+            destinatarios.val(notificacoes[index]['destinatarios']);
+            cc.val(notificacoes[index]['cc']);
+            assunto.val(notificacoes[index]['assunto']);
+            mensagem.val(notificacoes[index]['mensagem']);
+        } else {
+            tipo.val(1).change()
+        }
+    });
+
+    destinatarios.change(() => {
+        if (destinatarios.val() == '')
+            destinatarios.val(1);
+    });
+
+    salvaAlteracoes = () => {
+        if (confirm("Deseja salvar as alterações?\nNão será possível reverter as alterações depois.")) {
+            $.ajax({
+                method: 'POST',
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                url: '/api_set_notificacao/',
+                data: {
+                    'tipo_id': tipo.val(),
+                    'remetente': remetente.val(),
+                    'destinatarios_id': destinatarios.val(),
+                    'cc': cc.val(),
+                    'assunto': assunto.val(),
+                    'mensagem': mensagem.val()
+                },
+                dataType: "json",
+                success: () => {
+                    alert("Template atualizado com sucesso.");
+                    let index = tipo.val() - 1;
+                    notificacoes[index]['remetente'] = remetente.val();
+                    notificacoes[index]['destinatarios'] = destinatarios.val();
+                    notificacoes[index]['cc'] = cc.val();
+                    notificacoes[index]['assunto'] = assunto.val();
+                    notificacoes[index]['mensagem'] = mensagem.val();
+                },
+                error: err => {
+                    console.log(err);
+                    alert(`${err.status} ${err.statusText}`);
+                }
+            })
+        }
+    };
+
+    $(document).ready(() => {
+        $.get('/api_get_notificacoes/', res => {
+            notificacoes.push(res[0]['fields']);
+            notificacoes.push(res[1]['fields']);
+        })
+            .done(() => {
+                tipo.val(1).change();
+            });
+    });
+</script>
+
+{% endblock %}

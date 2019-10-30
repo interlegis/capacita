@@ -1,6 +1,8 @@
 from django.db import models
 
 from django.contrib.auth.models import User
+from django.db.models import PROTECT
+
 from plano.models import Plano_Capacitacao
 from orgao.models import Orgao
 from areas.models import Area_Conhecimento
@@ -175,3 +177,38 @@ class DjangoSession(models.Model):
     class Meta:
         managed = False
         db_table = 'django_session'
+
+
+class TipoNotificacao(models.Model):
+    descricao = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ['id']
+
+    def __str__(self):
+        return self.descricao
+
+
+class TipoDestinatarios(models.Model):
+    descricao = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ['id']
+
+    def __str__(self):
+        return self.descricao
+
+
+class Notificacao(models.Model):
+    tipo = models.ForeignKey(TipoNotificacao, on_delete=PROTECT)
+    remetente = models.CharField(max_length=34)
+    destinatarios = models.ForeignKey(TipoDestinatarios, on_delete=PROTECT)
+    cc = models.CharField(max_length=100, blank=True)
+    assunto = models.CharField(max_length=100)
+    mensagem = models.TextField()
+
+    class Meta:
+        ordering = ['tipo']
+
+    def __str__(self):
+        return f"{self.tipo} {self.assunto}"

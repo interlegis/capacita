@@ -39,6 +39,7 @@ INSTALLED_APPS = [ #components
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_cas_ng',
+    'django_extensions',
     'capacita',
     'plano',
     'capacitaApp',
@@ -123,14 +124,8 @@ AUTH_USER_MODEL = 'auth.User'
 
 X_FRAME_OPTIONS = 'ALLOWALL'
 
-EMAIL_HOST = config('EMAIL_HOST', default='localhost')
-EMAIL_PORT = config('EMAIL_PORT', cast=int, default=587)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool, default=True)
-EMAIL_SEND_USER = config('EMAIL_SEND_USER', cast=str, default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', cast=str, default='')
-SERVER_EMAIL = config('SERVER_EMAIL', cast=str, default='')
+EMAIL_HOST = 'smtp.interlegis.leg.br'
+EMAIL_PORT = 25
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

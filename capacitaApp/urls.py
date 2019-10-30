@@ -16,6 +16,10 @@ urlpatterns = [
     url(r'^perguntas_frequentes/$', views.perguntas_frequentes, name='perguntas_frequentes'),
     url(r'^manual/$', views.manual, name='manual'),
     url(r'^orgao/(?P<pk>\d+)/mudanca/$', views.mudanca_orgao, name='mudanca_orgao'),
+    url(r'^notificacao/$', views.notificacao, name='notificacao'),
+    url(r'^api_get_notificacoes/$', views.api_get_notificacoes, name='api_get_notificacoes'),
+    url(r'^api_set_notificacao/$', views.api_set_notificacao, name='api_set_notificacao'),
+
 ]
 
 

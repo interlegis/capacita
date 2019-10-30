@@ -21,3 +21,9 @@ class TreinamentoForm(forms.ModelForm):
     class Meta:
         model = Treinamento
         fields = ('cod_treinamento', 'cod_area_conhecimento', 'nome')
+
+
+class NotificacaoForm(forms.ModelForm):
+    class Meta:
+        model = Notificacao
+        fields = '__all__'
