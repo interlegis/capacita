@@ -96,19 +96,6 @@ function selectTreinamentoExterno(select){
     $('#erro_valor_estimado').css({'display': 'block'})
     $('#valor_estimado').css({'display': 'block'})
   }
-
-    console.log($("#id_cod_area_conhecimento").val());
-  $.getJSON("/api/treinamentos/", function(data){
-    for(var i = 0; i < data.length; i++){
-      if(data[i].cod_treinamento == treinamento ){
-        if (data[i].cod_area_conhecimento != $("#id_cod_area_conhecimento").val())
-          if ($("#id_treinamento_externo").val() != -1) {
-            $("#id_cod_area_conhecimento").val(data[i].cod_area_conhecimento_id)
-          }
-          break
-      }
-    }
-  });
 }
 
 
@@ -157,7 +144,7 @@ $("#nome_curso_form").on('change', function(){
     }else{
         $("#descricao_necessidade").prop('disabled', true);
     }
-})
+});
 
 $("#id_cod_tipo").on('change', function(){
     if(tipo == (parseInt($("#id_cod_tipo").val()))){
@@ -165,4 +152,5 @@ $("#id_cod_tipo").on('change', function(){
     }else{
         $("#id_custoo").prop('disabled', true);
     }
-})
+});
+

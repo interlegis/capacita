@@ -113,7 +113,7 @@ def home(request):
 
         if corTick != 'tickCorreto':
             htmlsituacao = htmlsituacao + \
-                '   <div class="alerta">Atenção: o prazo para envio de demandas ao ILB se encerra em 18/10/2019</div>'
+                '   <div class="alerta">Atenção: o prazo para envio de demandas ao ILB se encerra em 25/10/2019</div>'
         else:
             htmlsituacao = htmlsituacao + \
                 '   <div class="sucesso">As demandas de capacitação foram encaminhadas com sucesso ao ILB!</div>'
@@ -201,7 +201,7 @@ def relatorio(request):
             worksheet.write(row, col + 3, treinamento, center)
             worksheet.write(row, col + 4, necessidade.cod_modalidade.nome, center)
             worksheet.write(row, col + 5, Nivel.objects.get(cod_nivel=necessidade.cod_nivel.cod_nivel).nome, center)
-            worksheet.write(row, col + 6, necessidade.hor_duracao, center)
+            worksheet.write(row, col + 6, (necessidade.hor_duracao if necessidade.hor_duracao else ' '), center)
             worksheet.write(row, col + 7, necessidade.cod_tipo_treinamento.nome, center)
             worksheet.write(row, col + 8, Prioridade.objects.get(cod_prioridade=necessidade.cod_prioridade.cod_prioridade).nome, center)
             worksheet.write(row, col + 9, necessidade.qtd_servidor, center)
@@ -229,9 +229,8 @@ def relatorio(request):
 
         fh = open("Necessidades.xlsx", 'rb')
 
-        response = HttpResponse(fh) # mimetype is replaced by content_type for django 1.7
-        response['Content-Disposition'] = 'attachment; filename=%s' % "Necessidades.xlsx"
-        response['X-Sendfile'] = fh
+        response = HttpResponse(fh, content_type='application/pdf') # mimetype is replaced by content_type for django 1.7
+        response['Content-Disposition'] = 'attachment; filename=%s' % "Necessidades.XLSX"
 
         return response
     else:

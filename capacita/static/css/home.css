@@ -38,7 +38,7 @@
     color: #fff;
     clear: both;
     bottom:0;
-    position: initial;
+    position: fixed;
 }
 
 .versaoClass{

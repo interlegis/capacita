@@ -11,7 +11,9 @@ urlpatterns = [
     url(r'^necessidade/(?P<pk>\d+)/approve$', views.necessidade_approve, name='necessidade_approve'),
     url(r'^necessidade/(?P<pk>\d+)/disapprove$', views.necessidade_disapprove, name='necessidade_disapprove'),
     url(r'^necessidade/(?P<pk>\d+)/close$', views.necessidade_orgao_close, name='necessidade_orgao_close'),
+    url(r'^necessidade/(?P<pk>\d+)/cancelar$', views.cancelar_envio, name='cancelar_envio'),
     url(r'^necessidade/(?P<pk>\d+)/(?P<pk_atual>\d+)/importar$', views.importar_necessidade, name='importar_necessidade'),
+    url(r'^necessidade/(?P<pk>\d+)/(?P<pk_atual>\d+)/devolver$', views.devolver_necessidade, name='devolver_necessidade'),
     url(r'^necessidade/new/$', views.necessidade_new, name='necessidade_new'),
     url(r'^orgaos_superiores/$', views.orgaos_superiores, name='orgaos_superiores'),
 ]

@@ -15,7 +15,8 @@ class NecessidadeForm(forms.ModelForm):
                                 "apresentada, como essa atividade se alinha aos objetivos estratégicos do Senado etc)",
                 'rows': '5', 
                 'cols': '15',
-                'style':'resize:none;'
+                'style':'resize:none;',
+                'maxlength': '300' 
             }
         )
     )
