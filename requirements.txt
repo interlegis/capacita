@@ -16,7 +16,7 @@ django-filter==2
 django-floppyforms==1.6.2
 django-model-utils==2.5
 django-sass-processor==0.5.4
-djangorestframework==3.4.0
+djangorestframework==3.11.2
 drfdocs==0.0.11
 easy-thumbnails==2.3
 #django-image-cropping==1.1.0
